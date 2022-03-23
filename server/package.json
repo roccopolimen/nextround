@@ -1,0 +1,19 @@
+{
+  "name": "nextround-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roccopolimen/nextround.git"
+  },
+  "author": "Michael Karsen, Grace Mattern, Marco Polimeni, Rocco Polimeni, Brian Wormser",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roccopolimen/nextround/issues"
+  },
+  "homepage": "https://github.com/roccopolimen/nextround#readme"
+}
