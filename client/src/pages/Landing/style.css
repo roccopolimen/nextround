@@ -1,2 +1,174 @@
 /* TODO: this entire file is optional, just showing you it can be here */
 /* Use this to add css styles to the Landing React Element */
+
+html {
+  background-color: var(--primary);
+}
+
+.landing-page {
+    align-items: flex-start;
+    display: flex;
+    /* height: 1024px;
+    width: 1440px; */
+  }
+  
+  .landing-design-v1 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    margin-top: 54px;
+    min-height: 916px;
+    width: 1440px;
+  }
+  
+  .nav-bar {
+    align-items: flex-end;
+    display: flex;
+    height: 88px;
+    min-width: 1440px;
+    padding: 0 69.7px;
+  }
+  
+  .logo_flat-1 {
+    height: 151px;
+    margin-bottom: -108.38px;
+    width: 151px;
+  }
+  
+  .content {
+    align-items: center;
+    display: flex;
+    height: 739px;
+    justify-content: center;
+    min-width: 1440px;
+  }
+  
+  .heading-logo {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    min-height: 494px;
+    width: 663px;
+  }
+  
+  .heading-cta {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    min-height: 263px;
+    width: 663px;
+  }
+  
+  .heading-text {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    min-height: 179px;
+    width: 663px;
+  }
+  
+  .find-the-most-exciti {
+    color: var(--brand);
+    font-weight: 700;
+    min-height: 63px;
+    width: 663px;
+  }
+  
+  .vestibulum-placerat {
+    color: var(--brand);
+    font-weight: 300;
+    margin-top: 20px;
+    min-height: 96px;
+    width: 663px;
+  }
+  
+  .cta-button {
+    align-items: flex-start;
+    display: flex;
+    min-width: 248px;
+  }
+  .cta-button-1 {
+    padding-right: 30px
+  }
+
+
+  
+  .logo-cloud {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    margin-top: 128px;
+    min-height: 103px;
+    width: 663px;
+  }
+  
+  .heading {
+    color: var(--brand);
+    font-weight: 500;
+    min-height: 42px;
+    width: 663px;
+  }
+  
+  .logos {
+    align-items: center;
+    display: flex;
+    margin-top: 20px;
+    min-width: 663px;
+  }
+  
+  .google-logo-colour {
+    height: 40px;
+    width: 123px;
+  }
+  
+  .netflix-logo-colour {
+    height: 30px;
+    margin-left: 32px;
+    width: 123px;
+  }
+  
+  .amazon-logo-colour {
+    height: 36px;
+    margin-left: 32px;
+    margin-top: 0;
+    width: 123px;
+  }
+  
+  .spotify-logo-colour {
+    align-self: flex-start;
+    height: 41px;
+    margin-left: 32px;
+    margin-top: -0.5px;
+    width: 123px;
+  }
+  
+  .design {
+    height: 643px;
+    margin-left: 34px;
+    width: 663px;
+  }
+  
+  .image {
+    align-items: flex-start;
+    background-color: var(--primary);
+    display: flex;
+    height: 89px;
+    justify-content: flex-end;
+    min-width: 1440px;
+    padding: 0 63px;
+  }
+  
+  .image-01 {
+    align-items: flex-start;
+    background-color: var(--primary);
+    border-radius: 6px;
+    display: flex;
+    height: 712px;
+    justify-content: flex-end;
+    margin-top: -661px;
+    min-width: 537px;
+    padding: 190px 11px;
+    position: relative;
+  }
+  
+  

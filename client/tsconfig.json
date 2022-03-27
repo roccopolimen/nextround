@@ -18,7 +18,11 @@
       "noFallthroughCasesInSwitch": true,
       "resolveJsonModule": true,
       "skipLibCheck": true,
-      "strict": true
+      "strict": true,
+      "paths": {
+        "@nextround-styles/*": ["styles/*"],
+        "@nextround-pages/*": ["pages/*"]
+      }
     },
     "include": ["src"]
   }

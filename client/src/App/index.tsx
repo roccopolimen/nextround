@@ -1,17 +1,22 @@
 import './style.css';
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-} from "react-router-dom";
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from 'constants';
-import { AuthProvider } from 'context';
+// import {
+//     BrowserRouter as Router,
+//     Routes,
+//     Route,
+// } from "react-router-dom";
+// import { CssBaseline, ThemeProvider } from '@mui/material';
+// import theme from 'constants';
+// import { AuthProvider } from 'context';
 import Landing from 'pages/Landing';
+// import { Landing } from '@nextround-pages/Landing';
+import "../styles/styleguide.css"
+// import '@nextround-styles/styleguide.css'
 
 const App = () => {
     return (
-        <ThemeProvider theme={theme}>
+        <>
+        <Landing />
+        {/* <ThemeProvider theme={theme}>
         <AuthProvider>
         <CssBaseline />
         <Router>
@@ -20,7 +25,8 @@ const App = () => {
             </Routes>
         </Router>
         </AuthProvider>
-        </ThemeProvider>
+        </ThemeProvider> */}
+        </>
     );
 }
 
