@@ -1,18 +1,8 @@
 import './style.css';
 // TODO import './ResponsiveLanding.css'
+import { Button } from '@mui/material';
 
-import * as React from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#6c50ed',
-      }
-    },
-  });
-
-export const Landing = () => {
+const Landing = () => {
     return (
         // components
         // <Navbar />
@@ -40,14 +30,12 @@ export const Landing = () => {
                             <div className="cta-01 border-1px-eye-catch">
                                 <div className="button-text-1 buttons">Log in</div>
                             </div> */}
-                            <ThemeProvider theme={theme}>
                                 <div className="cta-button-1">
-                                <Button variant="contained" color="primary">Sign up</Button>
+                                    <Button variant="contained" color="primary">Sign up</Button>
                                 </div>
                                 <div className="cta-button-2">
-                                <Button variant="outlined" color="primary" className="cta-button-2">Log in</Button>
+                                    <Button variant="outlined" color="primary" className="cta-button-2">Log in</Button>
                                 </div>
-                            </ThemeProvider>
                             </div>
                         </div>
                         <div className="logo-cloud">
