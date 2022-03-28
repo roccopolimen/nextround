@@ -1,5 +1,5 @@
 import './style.css';
-import 'styles/styleguide.css';
+import '../styles/styleguide.css';
 import {
     BrowserRouter as Router,
     Routes,

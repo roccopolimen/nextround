@@ -1,7 +1,7 @@
 :root { 
   --black: #000000;
   --brand: #190446;
-  --eye-catch: #6c50ed;
+  --accent: #6c50ed;
   --light-brand: #ada7bd;
   --medium-carmine: #b33a3a;
   --primary: #f9f8ff;
@@ -44,6 +44,6 @@
   letter-spacing: 0;
 }
 
-.border-1px-eye-catch {
-  border: 1px solid var(--eye-catch);
+.border-1px-accent {
+  border: 1px solid var(--accent);
 }

@@ -19,10 +19,7 @@
       "resolveJsonModule": true,
       "skipLibCheck": true,
       "strict": true,
-      "paths": {
-        "@nextround-styles/*": ["styles/*"],
-        "@nextround-pages/*": ["pages/*"]
-      }
+      "paths": { }
     },
     "include": ["src"]
   }

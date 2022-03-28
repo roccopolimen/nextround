@@ -1,15 +1,14 @@
 /* TODO: this entire file is optional, just showing you it can be here */
 /* Use this to add css styles to the Landing React Element */
 
-html {
+.container-center-horizontal {
   background-color: var(--primary);
 }
+
 
 .landing-page {
     align-items: flex-start;
     display: flex;
-    /* height: 1024px;
-    width: 1440px; */
   }
   
   .landing-design-v1 {
@@ -29,7 +28,7 @@ html {
     padding: 0 69.7px;
   }
   
-  .logo_flat-1 {
+  .nextround-logo {
     height: 151px;
     margin-bottom: -108.38px;
     width: 151px;
@@ -67,14 +66,14 @@ html {
     width: 663px;
   }
   
-  .find-the-most-exciti {
+  .header-1 {
     color: var(--brand);
     font-weight: 700;
     min-height: 63px;
     width: 663px;
   }
   
-  .vestibulum-placerat {
+  .blurb {
     color: var(--brand);
     font-weight: 300;
     margin-top: 20px;
@@ -90,8 +89,6 @@ html {
   .cta-button-1 {
     padding-right: 30px
   }
-
-
   
   .logo-cloud {
     align-items: flex-start;
@@ -116,25 +113,25 @@ html {
     min-width: 663px;
   }
   
-  .google-logo-colour {
+  .google-logo {
     height: 40px;
     width: 123px;
   }
   
-  .netflix-logo-colour {
+  .netflix-logo {
     height: 30px;
     margin-left: 32px;
     width: 123px;
   }
   
-  .amazon-logo-colour {
+  .amazon-logo {
     height: 36px;
     margin-left: 32px;
     margin-top: 0;
     width: 123px;
   }
   
-  .spotify-logo-colour {
+  .spotify-logo {
     align-self: flex-start;
     height: 41px;
     margin-left: 32px;
