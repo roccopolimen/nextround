@@ -2,10 +2,10 @@ import { serverSignIn, serverSignOut, serverSignUp } from 'api/server';
 import firebase from 'firebase/compat/app';
 
 export const doEmailSignUp = async (email: string, password: string, displayName: string) => {
-    const userCreds: firebase.auth.UserCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-    firebase.auth().currentUser?.updateProfile({displayName: displayName});
+    await firebase.auth().createUserWithEmailAndPassword(email, password);
+    await firebase.auth().currentUser?.updateProfile({ displayName: displayName });
     try {
-        serverSignUp(userCreds);
+        serverSignUp();
     } catch(e: any) {
         console.log(e);
         await doSignOut();
@@ -13,7 +13,7 @@ export const doEmailSignUp = async (email: string, password: string, displayName
 };
 
 export const doEmailSignIn = async (email: string, password: string) => {
-    const userCreds: firebase.auth.UserCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+    await firebase.auth().signInWithEmailAndPassword(email, password);
     try {
         serverSignIn();
     } catch(e: any) {
@@ -24,7 +24,7 @@ export const doEmailSignIn = async (email: string, password: string) => {
 
 export const doGoogleSignIn = async () => {
     const socialProvider = new firebase.auth.GoogleAuthProvider();
-    const userCreds: firebase.auth.UserCredential = await firebase.auth().signInWithPopup(socialProvider);
+    await firebase.auth().signInWithPopup(socialProvider);
     try {
         serverSignIn();
     } catch(e: any) {

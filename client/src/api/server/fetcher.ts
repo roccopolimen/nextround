@@ -19,7 +19,6 @@ const headers: Readonly<Record<string, string | boolean>> = {
 const injectToken = async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
     try {
         const token: string = await firebase.auth().currentUser?.getIdToken(true)!;
-        console.log(token);
         if(token !== null && config.headers !== undefined)
             config.headers.Authorization = `JWT ${token}`;
     } catch(e) {

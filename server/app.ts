@@ -8,22 +8,10 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve() + '/.env' });
 initializeApp({
-    credential: applicationDefault(),
-    databaseURL: "mongodb://localhost:27017/"
+    credential: applicationDefault()
 });
 
 const app = express();
-
-// const checkAuth = async (req, res, next) => {
-//     try {
-//         if(!req.headers.authtoken) throw new Error('no auth token in header');
-//         await firebaseAuth.verifyIdToken(req.headers.authtoken);
-//         next();
-//     } catch(e) {
-//         res.status(403).json({ message: 'Unauthorized', error: e.message });
-//     }
-// };
-
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -50,7 +38,6 @@ app.use('*', (req, _, next) => {
     console.log(`[${date}]: ${reqmethod} ${reqroute} | Authorized: ${loggedin}`);
     next();
 });
-
 configRoutes(app);
 
 app.listen(4000, () => {

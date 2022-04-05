@@ -1,14 +1,13 @@
 import { fetcher } from "./fetcher";
-import firebase from 'firebase/compat/app';
 
 export const serverSignIn = async () => {
     return await fetcher.post('/users/signIn');
 };
 
-export const serverSignUp = async (userCredentials: firebase.auth.UserCredential) => {
-    return await fetcher.post<firebase.auth.UserCredential>('/users/signUp', userCredentials);
+export const serverSignUp = async () => {
+    return await fetcher.post('/users/signUp');
 };
 
 export const serverSignOut = async () => {
-    return await fetcher.post('/users/signOut');
+    return await fetcher.get('/users/signOut');
 };
