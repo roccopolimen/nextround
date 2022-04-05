@@ -1,0 +1,14 @@
+.logos {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.google-logo {
+    width: 100px;
+    height: 100px;
+}
+
+.linkedin-logo {
+    width: 100px;
+    height: 100px;
+}
