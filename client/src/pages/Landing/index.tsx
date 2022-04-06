@@ -1,8 +1,9 @@
 import './style.css';
 
 const Landing = () => {
+
     return (
-        <div>Landing Page</div>
+        <div>Hello World</div>
     );
 };
 
