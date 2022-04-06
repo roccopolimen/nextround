@@ -23,7 +23,8 @@
     "express": "^4.17.3",
     "express-session": "^1.17.2",
     "firebase-admin": "^10.0.2",
-    "jose": "^4.6.0"
+    "jose": "^4.6.0",
+    "mongodb": "^4.5.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
