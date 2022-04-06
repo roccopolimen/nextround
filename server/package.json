@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/roccopolimen/nextround/issues"
   },
-  "homepage": "https://github.com/roccopolimen/nextround#readme"
+  "homepage": "https://github.com/roccopolimen/nextround#readme",
+  "dependencies": {
+    "mongodb": "^4.5.0"
+  }
 }
