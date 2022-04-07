@@ -1,15 +1,15 @@
-import * as React from 'react';
+import './style.css';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { faGoogle, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function SignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -38,7 +38,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign Up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -102,10 +102,10 @@ export default function SignUp() {
         </Box>
         <div className="logos">
           <a href=""> {/* TODO */}
-            <img className="google-logo" alt="google-logo" src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"/>
+            <FontAwesomeIcon className="google-logo" icon={faGoogle} size="3x"/>
           </a>
           <a href=""> {/* TODO */}
-          <img className="linkedin-logo" alt="linkedin-logo"src="https://upload.wikimedia.org/wikipedia/commons/0/01/LinkedIn_Logo.svg" />
+            <FontAwesomeIcon className="linkedin-logo" icon={faLinkedin} size="3x"/>
           </a>
         </div>
       </Container>

@@ -1,7 +1,6 @@
 import './style.css';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
@@ -9,6 +8,8 @@ import Box from '@mui/material/Box';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { faGoogle, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function SignIn() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -23,7 +24,6 @@ export default function SignIn() {
 
     return (
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
@@ -83,10 +83,10 @@ export default function SignIn() {
         </Box>
         <div className="logos">
           <a href=""> {/* TODO */}
-            <img className="google-logo" alt="google-logo" src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"/>
+            <FontAwesomeIcon className="google-logo" icon={faGoogle} size="3x"/>
           </a>
           <a href=""> {/* TODO */}
-          <img className="linkedin-logo" alt="linkedin-logo"src="https://upload.wikimedia.org/wikipedia/commons/0/01/LinkedIn_Logo.svg" />
+            <FontAwesomeIcon className="linkedin-logo" icon={faLinkedin} size="3x"/>
           </a>
         </div>
       </Container>
