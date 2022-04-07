@@ -90,7 +90,7 @@ export default function SignIn() {
           </a>
 
 
-          <img src={require('../../images/logo.svg').default} alt="logo" />
+          {/* <img src={require('../../images/logo.svg').default} alt="logo" /> TODO remove just testing for landing*/}
 
 
         </div>
