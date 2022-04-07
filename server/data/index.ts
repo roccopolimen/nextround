@@ -1,3 +1,3 @@
-import cycleData from './cycles';
+import cycles from './cycles';
 
-export const cycles = cycleData;
+export const cycleData = cycles;

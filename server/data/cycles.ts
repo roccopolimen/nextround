@@ -52,9 +52,9 @@ export default {
      */
     create: async (userId: string): Promise<object> => {
         // TODO: Error handling
-
+        let currDate: Date = new Date();
         let cycle: object = {
-            startDate: new Date(),
+            startDate: currDate,
             endDate: null,
             applications: []
         }
@@ -67,13 +67,17 @@ export default {
             throw new Error("Could not add cycle.");
         }
 
-        // Add to user's cycles list
+        // Finish previous cycle if unfinished
         const newId = insertInfo.insertedId;
         const user = await userCollection.findOne({
             _id: new ObjectId(userId) });
         if(user === null) {
             throw new Error("There is no user with that id.");
+        } else if(user.cycles.slice(-1)[0].endDate === null) {
+            user.cycles[user.cycles.length - 1].endDate = currDate;
         }
+
+        // Add to user's cycles list
         user.cycles.push(newId.toString());
         const updateInfo = await userCollection.updateOne({
             _id: new ObjectId(userId) }, {
