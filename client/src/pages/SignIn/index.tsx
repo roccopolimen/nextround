@@ -88,6 +88,11 @@ export default function SignIn() {
           <a href=""> {/* TODO */}
             <FontAwesomeIcon className="linkedin-logo" icon={faLinkedin} size="3x"/>
           </a>
+
+
+          <img src={require('../../images/logo.svg').default} alt="logo" />
+
+
         </div>
       </Container>
   );
