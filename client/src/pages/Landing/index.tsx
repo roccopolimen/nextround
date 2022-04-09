@@ -3,6 +3,7 @@ import './style.css';
 import { Button } from '@mui/material';
 
 const Landing = () => {
+
     return (
         // components
         // <Navbar />

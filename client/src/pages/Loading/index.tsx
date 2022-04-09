@@ -7,11 +7,6 @@ import {
 const Loading = () => {
     return (
         <Box
-            sx={{
-            bgcolor: 'background.paper',
-            pt: 8,
-            pb: 6,
-            }}
             display="flex"
             justifyContent="center"
             alignItems="center"
