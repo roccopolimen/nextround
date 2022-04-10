@@ -1,5 +1,6 @@
 import { cycles, users } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
+import { checkObjectId } from '../helpers/error';
 
 export default {
 
@@ -9,7 +10,9 @@ export default {
      * @returns {Promise<Object>} Cycle object
      */
     readById: async (id: string): Promise<object> => {
-        // TODO: Error handling
+        if(!checkObjectId(id)){
+            throw new Error('Invalid id');
+        }
 
         const cycleCollection = await cycles();
         const cycle = await cycleCollection.findOne({_id: new ObjectId(id)});
@@ -26,7 +29,9 @@ export default {
      * @returns List of cycles
      */
     readAll: async (userId: string): Promise<object[]> => {
-        // TODO: Error handling
+        if(!checkObjectId(userId)){
+            throw new Error('Invalid id');
+        }
 
         const cycleCollection: any = await cycles();
         const userCollection: any = await users();
@@ -51,7 +56,10 @@ export default {
      * @returns The newly created cycle object
      */
     create: async (userId: string): Promise<object> => {
-        // TODO: Error handling
+        if(!checkObjectId(userId)){
+            throw new Error('Invalid id');
+        }
+
         let currDate: Date = new Date();
         let cycle: object = {
             startDate: currDate,
@@ -99,7 +107,9 @@ export default {
      * @returns The updated cycle object
      */
     finishCycle: async (cycleId: string): Promise<object> => {
-        // TODO: Error handling
+        if(!checkObjectId(cycleId)){
+            throw new Error('Invalid id');
+        }
 
         // Retrieve the cycle
         const cycleCollection: any = await cycles();

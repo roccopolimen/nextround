@@ -1,5 +1,7 @@
 import express from 'express';
 import cycleData from '../data/cycles';
+import { checkObjectId } from '../helpers/error';
+
 const router = express.Router();
 
 // GET /cycles
@@ -17,7 +19,9 @@ router.get('/', async (req, res) => {
 
 // GET /cycles/:id
 router.get('/:id', async (req, res) => {
-    // TODO: Error handling
+    if(!checkObjectId(req.params.id)){
+        throw new Error('Invalid id');
+    }
     // Gets cycle with id of :id
     try {
         let cycle: object = await cycleData.readById(req.params.id);
@@ -31,7 +35,6 @@ router.get('/:id', async (req, res) => {
 
 // POST /cycles
 router.post('/', async (req, res) => {
-    // TODO: Error handling
     // Creates a new cycle
     try {
         let cycle: object = await cycleData.create(req.session.user._id);
