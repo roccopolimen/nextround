@@ -16,10 +16,8 @@ const getCollectionFn = (collection: string) => {
 
 /* Now, you can list your collections here: */
 
-const collections = {
-    cycles: getCollectionFn('cycles'),
-    media: getCollectionFn('media'),
-    users: getCollectionFn('users')
-};
+export const cycles = getCollectionFn('cycles');
+export const media = getCollectionFn('media');
+export const users = getCollectionFn('users');
 
-export default collections;
+// export default collections;
