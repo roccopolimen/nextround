@@ -1,6 +1,7 @@
 import { cycles, users } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
-// import { errors } from '../helpers/error';
+import {checkObjectId, checkNonEmptyString, checkArrayOfStrings, checkPositiveNumber, checkNegativeNumber,
+    checkEmail, checkName, checkArrayObjectId, checkDate, checkTime} from '../helpers/error';
 
 export default {
     
@@ -12,7 +13,13 @@ export default {
      * and throws an error otherwise
      */
     readById: async (cycleId: string, appId: string): Promise<object> => {
-        //TODO error checking
+        if(!cycleId || !checkObjectId(cycleId)) {
+            throw new Error("A proper cycle id must be provided.");
+        }
+
+        if(!appId || !checkObjectId(appId)) {
+            throw new Error("A proper application id must be provided.");
+        }
 
         //Finds cycle with cycleId
         const cycleCollection: any = await cycles();
@@ -46,7 +53,9 @@ export default {
      * otherwise throws and error
      */
     readAll: async (cycleId: string): Promise<object[]> => {
-        //TODO error checking
+        if(!cycleId || !checkObjectId(cycleId)) {
+            throw new Error("a proper cycle id must be provided.")
+        }
 
         //Find the cycle with cycleId
         const cycleCollection: any = await cycles();
@@ -84,7 +93,36 @@ export default {
     create: async (cycleId: string, company: string, position: string, location: string,
         salary: number, jobPostUrl: string, cardColor: string, description: string):
         Promise<object> => {
-        //TODO error checking
+        if(!cycleId || !checkObjectId(cycleId)) {
+            throw new Error("A proper cycle id must be provided.");
+        }
+
+        if(!company || !checkNonEmptyString(company)) {
+            throw new Error("A company name must be provided.");
+        }
+
+        if(!position || !checkNonEmptyString(position)) {
+            throw new Error("A position name must be provided.");
+        }
+
+        if(!location || !checkNonEmptyString(location)) {
+            throw new Error("A location must be provided.");
+        }
+
+        if(!salary || !checkPositiveNumber(salary)) {
+            throw new Error("A salary must be provided.");
+        }
+        if(!jobPostUrl || !checkNonEmptyString(jobPostUrl)) {
+            throw new Error("An application url must be provided.");
+        }
+
+        if(!cardColor || !checkNonEmptyString(cardColor)) {
+            throw new Error("A card color must be selected.");
+        }
+
+        if(!description || !checkNonEmptyString(description)) {
+            throw new Error("A description must be provided.");
+        }
         
         //Unsure of how the logo is getting stored if we are using that auto logo finder
         let newApp: object = {
@@ -145,7 +183,17 @@ export default {
      * throws an error otherwise
      */
     update: async (cycleId: string, appId: string, appObject: object): Promise<object> => {
-        //TODO error checking
+        if(!cycleId || !checkObjectId(cycleId)) {
+            throw new Error("A proper cycle id must be provided.")
+        }
+
+        if(!appId || !checkObjectId(appId)) {
+            throw new Error("A proper application id must be provided.");
+        }
+
+        if(!appObject) {
+            throw new Error("An object with attributes to update must be provided.");
+        }
 
         //Finds the cycle with cycleId
         const cycleCollection: any = await cycles();
@@ -170,7 +218,9 @@ export default {
         //Updates the new attributed from appObject to app
         for(let attribute in appObject) {
             if(attribute in app) {
-                app[attribute] = appObject[attribute];
+                if(appObject[attribute] === null) {
+                    throw new Error("Cannot update with null value");
+                }
             } else {
                 throw new Error("Invalid application attribute given.");
             }
@@ -206,7 +256,13 @@ export default {
      * throws an error otherwise
      */
     delete: async (cycleId: string, appId: string): Promise<boolean> => {
-        //TODO error checking
+        if(!cycleId || !checkObjectId(cycleId)) {
+            throw new Error("a proper cycle id must be provided.")
+        }
+
+        if(!appId || !checkObjectId(appId)) {
+            throw new Error("A proper application id must be provided.");
+        }
 
         //Finds the cycle with cycleId
         const cycleCollection: any = await cycles();
