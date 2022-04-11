@@ -1,2 +1,70 @@
 /* TODO: this entire file is optional, just showing you it can be here */
 /* Use this to add css styles to the Landing React Element */
+
+#title, #blurb, #subtitle {
+  font-family: "Poppins", Helvetica, Arial, sans-serif;
+}
+
+.HomePageContainer {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  font-family: "Poppins", Helvetica, Arial, sans-serif;
+}
+
+.AppBar {
+  box-shadow: none;
+  flex-grow: 1;
+  white-space: nowrap;
+  font-family: "Poppins", Helvetica, Arial, sans-serif;
+}
+
+.HeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.HeaderLeftContainer {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+
+#signup {
+  margin-right: 20px;
+  font-family: "Poppins", Helvetica, Arial, sans-serif;
+}
+
+#signin {
+  font-family: "Poppins", Helvetica, Arial, sans-serif;
+}
+
+#login {
+  font-family: "Poppins", Helvetica, Arial, sans-serif;
+}
+
+.logos {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 2em;
+}
+
+.google-logo {
+  color: #d4422f;
+}
+
+.spotify-logo {
+  color: #1DB954;
+}
+
+.amazon-logo {
+  color: #ff9900;
+}
+
+.microsoft-logo {
+  color: #01a6f0;
+}
