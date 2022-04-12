@@ -31,9 +31,10 @@ const seedDB = async () => {
 
 
 // FUNCTIONS TO MAKE OBJECTS 
-    const makeUser = (id: ObjectId, email: string, name: string): UserObject => {
+    const makeUser = (id: ObjectId, firebaseId: ObjectId, email: string, name: string): UserObject => {
         return {
             _id: id,
+            firebaseId: firebaseId,
             email: email,
             name: name,
             cycles: []
@@ -125,11 +126,11 @@ const seedDB = async () => {
     const listOfMedia: Array<MediaObject> = [];
 
 // CREATE USERS
-    const michael: UserObject = makeUser(new ObjectId('624e16475be3fb3026fa8bb4'), 'mkarsen@stevens.edu',  'Michael Karsen');
-    const rocco: UserObject   = makeUser(new ObjectId('624e169643afefcc06801ea2'), 'rpolimen@stevens.edu', 'Rocco Polimeni');
-    const marco: UserObject   = makeUser(new ObjectId('624e16aa16662f0fa5a22f78'), 'mpolimen@stevens.edu', 'Marco Polimeni');
-    const brian: UserObject   = makeUser(new ObjectId('624e16ad52210043ef57890a'), 'bwormser@stevens.edu', 'Brian Wormser');
-    const grace: UserObject   = makeUser(new ObjectId('624e16b16bf9399b0f8d3687'), 'gmattern@stevens.edu', 'Grace Mattern');
+    const michael: UserObject = makeUser(new ObjectId('624e16475be3fb3026fa8bb4'), new ObjectId('0337af99-6cde-462b-b49d-ec6beaa4afdf'), 'mkarsen@stevens.edu',  'Michael Karsen');
+    const rocco: UserObject   = makeUser(new ObjectId('624e169643afefcc06801ea2'), new ObjectId('07d9c107-e9a9-461e-a865-b1f1522d57aa'), 'rpolimen@stevens.edu', 'Rocco Polimeni');
+    const marco: UserObject   = makeUser(new ObjectId('624e16aa16662f0fa5a22f78'), new ObjectId('3a66aca4-526e-48fb-a3d5-9a25a38e8ffc'),'mpolimen@stevens.edu', 'Marco Polimeni');
+    const brian: UserObject   = makeUser(new ObjectId('624e16ad52210043ef57890a'), new ObjectId('ce265229-5f2f-4245-83b8-8a95f5787b8c'),'bwormser@stevens.edu', 'Brian Wormser');
+    const grace: UserObject   = makeUser(new ObjectId('624e16b16bf9399b0f8d3687'), new ObjectId('7cf14c13-6bd4-4586-83e4-b233439946af'),'gmattern@stevens.edu', 'Grace Mattern');
 
 // CREATE CYCLES
     const michaelFall: CycleObject = makeCycle(new ObjectId('624e956c4c06f2509b940b1d'), new Date('September 22, 2021'), new Date('December 20, 2021'));
@@ -184,8 +185,8 @@ const seedDB = async () => {
 
     // Google events
     const googleEvent1: EventObject = makeEvent(new ObjectId('624e26fb85375bb9375ae04a'), false, 'Apply',               new Date('September 24, 2021'), 'Online');
-    const googleEvent2: EventObject = makeEvent(new ObjectId('624e324e7c4f596651ddba11'), false, 'Phone Interview',     new Date('September 27, 2021'), 'Phone');
-    const googleEvent3: EventObject = makeEvent(new ObjectId('624e3253799a20c356c9cef7'), false, 'In Person Interview', new Date('October 10, 2021'),   'In Person');
+    const googleEvent2: EventObject = makeEvent(new ObjectId('624e324e7c4f596651ddba11'), false, 'Phone Interview',     new Date('September 27, 2021'), '(254)293-5221');
+    const googleEvent3: EventObject = makeEvent(new ObjectId('624e3253799a20c356c9cef7'), false, 'In Person Interview', new Date('October 10, 2021'),   `436 Constitution Way South San Francisco, California(CA), 94080`);
     
     addEventToApplication(google, googleEvent1);
     addEventToApplication(google, googleEvent2);
@@ -193,18 +194,18 @@ const seedDB = async () => {
 
     // Apple events
     const appleEvent1: EventObject = makeEvent(new ObjectId('624e3256e0b7bde5c2634843'), true,  'Apply',               new Date('September 28, 2021'), 'Online');
-    const appleEvent2: EventObject = makeEvent(new ObjectId('624e325a74555dc07f5cc1c4'), false, 'Phone Interview',     new Date('October 1, 2021'),    'Phone');
+    const appleEvent2: EventObject = makeEvent(new ObjectId('624e325a74555dc07f5cc1c4'), false, 'Phone Interview',     new Date('October 1, 2021'),    '(501)722-5915');
     const appleEvent3: EventObject = makeEvent(new ObjectId('624e3984d3c0dff0ef801fd2'), false, 'Technical Interview', new Date('October 5, 2021'),    'Online');
-    const appleEvent4: EventObject = makeEvent(new ObjectId('624e325d6ffcd86beaf6b99d'), false, 'In Person Interview', new Date('October 12, 2021'),   'In Person');
+    const appleEvent4: EventObject = makeEvent(new ObjectId('624e325d6ffcd86beaf6b99d'), false, 'In Person Interview', new Date('October 12, 2021'),   `864 Alta Loma Dr South San Francisco, California(CA), 94080`);
     
-    addEventToApplication(apple, appleEvent1);
+    addEventToApplication(apple, appleEvent1);`This`
     addEventToApplication(apple, appleEvent2);
     addEventToApplication(apple, appleEvent3);
     addEventToApplication(apple, appleEvent4);
 
     // Meta events
     const metaEvent1: EventObject = makeEvent(new ObjectId('624e325f1c62e84fab6b390f'), true, 'Apply',               new Date('September 20, 2021'), 'Online');
-    const metaEvent2: EventObject = makeEvent(new ObjectId('624e3262676ebcef2a4a4fdb'), true, 'Phone Interview',     new Date('September 23, 2021'), 'Phone');
+    const metaEvent2: EventObject = makeEvent(new ObjectId('624e3262676ebcef2a4a4fdb'), true, 'Phone Interview',     new Date('September 23, 2021'), '(314)625-8621');
     const metaEvent3: EventObject = makeEvent(new ObjectId('624e32660ed84646f83ce09c'), true, 'Technical Interview', new Date('September 30, 2021'), 'Online');
     
     addEventToApplication(meta, metaEvent1);
@@ -213,9 +214,9 @@ const seedDB = async () => {
 
     // Amazon events
     const amazonEvent1: EventObject = makeEvent(new ObjectId('624e326959f20a0932331466'), true, 'Apply',               new Date('June 25, 2021'), 'Online');
-    const amazonEvent2: EventObject = makeEvent(new ObjectId('624e326c28190989e6555ec7'), true, 'Phone Interview',     new Date('June 30, 2021'), 'Phone');
+    const amazonEvent2: EventObject = makeEvent(new ObjectId('624e326c28190989e6555ec7'), true, 'Phone Interview',     new Date('June 30, 2021'), '(312)842-6260');
     const amazonEvent3: EventObject = makeEvent(new ObjectId('624e326f124149fbc3ddf59c'), true, 'Technical Interview', new Date('July 5, 2021'),  'Online');
-    const amazonEvent4: EventObject = makeEvent(new ObjectId('624e39c6ecb3a48dd0b60f5f'), true, 'In Person Interview', new Date('July 14, 2021'), 'In Person');
+    const amazonEvent4: EventObject = makeEvent(new ObjectId('624e39c6ecb3a48dd0b60f5f'), true, 'In Person Interview', new Date('July 14, 2021'), `58 Middle Point Rd San Francisco, California(CA), 94124`);
     
     addEventToApplication(amazon, amazonEvent1);
     addEventToApplication(amazon, amazonEvent2);
@@ -224,7 +225,7 @@ const seedDB = async () => {
 
     // Microsoft events
     const microsoftEvent1: EventObject = makeEvent(new ObjectId('624e3272afc8bd8aa7fd09cd'), true,  'Apply',               new Date('October 5, 2021'),  'Online');
-    const microsoftEvent2: EventObject = makeEvent(new ObjectId('624e32750d376ab4ebda7a13'), false, 'Phone Interview',     new Date('October 9, 2021'),  'Phone');
+    const microsoftEvent2: EventObject = makeEvent(new ObjectId('624e32750d376ab4ebda7a13'), false, 'Phone Interview',     new Date('October 9, 2021'),  '(608)855-1490');
     const microsoftEvent3: EventObject = makeEvent(new ObjectId('624e327857414a900bed8f15'), false, 'Technical Interview', new Date('October 14, 2021'), 'Online');
     
     addEventToApplication(microsoft, microsoftEvent1);
@@ -233,10 +234,10 @@ const seedDB = async () => {
 
     // HRT events
     const hrtEvent1: EventObject = makeEvent(new ObjectId('624e327b2428725014db7ddf'), false, 'Apply',               new Date('March 26, 2021'), 'Online');
-    const hrtEvent2: EventObject = makeEvent(new ObjectId('624e327e9f51bd07e8480c04'), false, 'Phone Interview',     new Date('March 30, 2021'), 'Phone');
+    const hrtEvent2: EventObject = makeEvent(new ObjectId('624e327e9f51bd07e8480c04'), false, 'Phone Interview',     new Date('March 30, 2021'), '(229)246-8621');
     const hrtEvent3: EventObject = makeEvent(new ObjectId('624e3281115427fee6306918'), false, 'Technical Interview', new Date('April 3, 2021'),  'Online');
-    const hrtEvent4: EventObject = makeEvent(new ObjectId('624e3a48f0cce62a3e2bfe47'), false, 'In Person Interview', new Date('April 10, 2021'), 'In Person');
-    const hrtEvent5: EventObject = makeEvent(new ObjectId('624e3a781b4ca271f3c6d2da'), false, 'Peer Interview',      new Date('April 12, 2021'), 'In Person');
+    const hrtEvent4: EventObject = makeEvent(new ObjectId('624e3a48f0cce62a3e2bfe47'), false, 'In Person Interview', new Date('April 10, 2021'), `212 Rey St New York, New York(NY), 08032`);
+    const hrtEvent5: EventObject = makeEvent(new ObjectId('624e3a781b4ca271f3c6d2da'), false, 'Peer Interview',      new Date('April 12, 2021'), `212 Rey St New York, New York(NY), 08032`);
     
     addEventToApplication(hrt, hrtEvent1);
     addEventToApplication(hrt, hrtEvent2);
@@ -246,7 +247,7 @@ const seedDB = async () => {
 
     // JPMorgan events
     const jpmEvent1: EventObject = makeEvent(new ObjectId('624e3283622c59a07e43bf45'), true,  'Apply',               new Date('August 10, 2021'), 'Online');
-    const jpmEvent2: EventObject = makeEvent(new ObjectId('624e32870f7e38bb3e667112'), false, 'Phone Interview',     new Date('August 13, 2021'), 'Phone');
+    const jpmEvent2: EventObject = makeEvent(new ObjectId('624e32870f7e38bb3e667112'), false, 'Phone Interview',     new Date('August 13, 2021'), '(319)874-8286');
     const jpmEvent3: EventObject = makeEvent(new ObjectId('624e32890b7ff5f93863306b'), false, 'Technical Interview', new Date('August 16, 2021'), 'Online');
     
     addEventToApplication(jpmorgan, jpmEvent1);
@@ -255,7 +256,7 @@ const seedDB = async () => {
 
     // Bank of America events
     const boaEvent1: EventObject = makeEvent(new ObjectId('624e328c359f4c73586ca3b5'), true, 'Apply',               new Date('January 4, 2022'),  'Online');
-    const boaEvent2: EventObject = makeEvent(new ObjectId('624e328f94869178a8c1b9c3'), true, 'Phone Interview',     new Date('January 7, 2022'),  'Phone');
+    const boaEvent2: EventObject = makeEvent(new ObjectId('624e328f94869178a8c1b9c3'), true, 'Phone Interview',     new Date('January 7, 2022'),  '(360)988-8510');
     const boaEvent3: EventObject = makeEvent(new ObjectId('624e329277b5952a2121a3e9'), true, 'Technical Interview', new Date('January 14, 2022'), 'Online');
     
     addEventToApplication(boa, boaEvent1);
@@ -264,9 +265,9 @@ const seedDB = async () => {
 
     // Netflix events
     const netflixEvent1: EventObject = makeEvent(new ObjectId('624e3295586193609ba847cf'), true, 'Apply',               new Date('November 5, 2021'),  'Online');
-    const netflixEvent2: EventObject = makeEvent(new ObjectId('624e32978eeeb12e21965496'), true, 'Phone Interview',     new Date('November 8, 2021'),  'Phone');
+    const netflixEvent2: EventObject = makeEvent(new ObjectId('624e32978eeeb12e21965496'), true, 'Phone Interview',     new Date('November 8, 2021'),  '(289)244-8977');
     const netflixEvent3: EventObject = makeEvent(new ObjectId('624e329b14c7adca2034a372'), true, 'Technical Interview', new Date('November 13, 2021'), 'Online');
-    const netflixEvent4: EventObject = makeEvent(new ObjectId('624e3aa0f02ff0a59c9a8522'), true, 'In Person Interview', new Date('November 20, 2021'), 'In Person');
+    const netflixEvent4: EventObject = makeEvent(new ObjectId('624e3aa0f02ff0a59c9a8522'), true, 'In Person Interview', new Date('November 20, 2021'), `1845 25th St San Francisco, California(CA), 94107`);
     
     addEventToApplication(netflix, netflixEvent1);
     addEventToApplication(netflix, netflixEvent2);
@@ -275,8 +276,8 @@ const seedDB = async () => {
 
     // Airbnb events
     const airbnbEvent1: EventObject = makeEvent(new ObjectId('624e32a1fe8cf8822b6a95c8'), true,  'Apply',               new Date('May 18, 2021'), 'Online');
-    const airbnbEvent2: EventObject = makeEvent(new ObjectId('624e32a83f205bfc1b4ef3d6'), false, 'Phone Interview',     new Date('May 21, 2021'), 'Phone');
-    const airbnbEvent3: EventObject = makeEvent(new ObjectId('624e32ab220f1d07a5e65a48'), false, 'In Person Interview', new Date('May 30, 2021'), 'In Person');
+    const airbnbEvent2: EventObject = makeEvent(new ObjectId('624e32a83f205bfc1b4ef3d6'), false, 'Phone Interview',     new Date('May 21, 2021'), '(662)356-6747');
+    const airbnbEvent3: EventObject = makeEvent(new ObjectId('624e32ab220f1d07a5e65a48'), false, 'In Person Interview', new Date('May 30, 2021'), `15 Le Conte Ave San Francisco, California(CA), 94124`);
     
     addEventToApplication(airbnb, airbnbEvent1);
     addEventToApplication(airbnb, airbnbEvent2);
@@ -284,9 +285,9 @@ const seedDB = async () => {
 
     // Tesla events
     const teslaEvent1: EventObject = makeEvent(new ObjectId('624e32ae8aac5c8f246d6cc1'), true, 'Apply',               new Date('July 7, 2021'),  'Online');
-    const teslaEvent2: EventObject = makeEvent(new ObjectId('624e32b167b752c087805532'), true, 'Phone Interview',     new Date('July 11, 2021'), 'Phone');
+    const teslaEvent2: EventObject = makeEvent(new ObjectId('624e32b167b752c087805532'), true, 'Phone Interview',     new Date('July 11, 2021'), '(401)610-2710');
     const teslaEvent3: EventObject = makeEvent(new ObjectId('624e32b44c22cee92f738e94'), true, 'Technical Interview', new Date('July 16, 2021'), 'Online');
-    const teslaEvent4: EventObject = makeEvent(new ObjectId('624e3aaad146f4e35ad6512c'), true, 'In Person Interview', new Date('July 22, 2021'), 'In Person');
+    const teslaEvent4: EventObject = makeEvent(new ObjectId('624e3aaad146f4e35ad6512c'), true, 'In Person Interview', new Date('July 22, 2021'), `95 Harbor Master Rd South San Francisco, California(CA), 94080(650) 583-2865`);
     
     addEventToApplication(tesla, teslaEvent1);
     addEventToApplication(tesla, teslaEvent2);
@@ -295,8 +296,8 @@ const seedDB = async () => {
 
     // Oracle events
     const oracleEvent1: EventObject = makeEvent(new ObjectId('624e32b7e3c2a93080344db7'), true,  'Apply',               new Date('Febuary 3, 2022'),  'Online');
-    const oracleEvent2: EventObject = makeEvent(new ObjectId('624e32ba43263a9c18551f75'), true,  'Phone Interview',     new Date('Febuary 6, 2022'),  'Phone');
-    const oracleEvent3: EventObject = makeEvent(new ObjectId('624e32bc730509575dfdd6ed'), false, 'In Person Interview', new Date('Febuary 12, 2022'), 'In Person');
+    const oracleEvent2: EventObject = makeEvent(new ObjectId('624e32ba43263a9c18551f75'), true,  'Phone Interview',     new Date('Febuary 6, 2022'),  '(602)347-5935');
+    const oracleEvent3: EventObject = makeEvent(new ObjectId('624e32bc730509575dfdd6ed'), false, 'In Person Interview', new Date('Febuary 12, 2022'), `114 Camaritas Ave South San Francisco, California(CA), 94080(650) 583-0602`);
     
     addEventToApplication(oracle, oracleEvent1);
     addEventToApplication(oracle, oracleEvent2);
@@ -304,9 +305,9 @@ const seedDB = async () => {
 
     // Salesforce events
     const salesforceEvent1: EventObject = makeEvent(new ObjectId('624e32bfea2deb8b92ed6885'), true, 'Apply',               new Date('March 1, 2022'),  'Online');
-    const salesforceEvent2: EventObject = makeEvent(new ObjectId('624e32c297f7b96fea3c978f'), true, 'Phone Interview',     new Date('March 4, 2022'),  'Phone');
+    const salesforceEvent2: EventObject = makeEvent(new ObjectId('624e32c297f7b96fea3c978f'), true, 'Phone Interview',     new Date('March 4, 2022'),  '(339)927-1129');
     const salesforceEvent3: EventObject = makeEvent(new ObjectId('624e32c62b99b9eb7564e7b7'), true, 'Technical Interview', new Date('March 10, 2022'), 'Online');
-    const salesforceEvent4: EventObject = makeEvent(new ObjectId('624e3ba8cfa94fd794556d3a'), true, 'In Person Interview', new Date('March 16, 2022'), 'In Person');
+    const salesforceEvent4: EventObject = makeEvent(new ObjectId('624e3ba8cfa94fd794556d3a'), true, 'In Person Interview', new Date('March 16, 2022'), `436 Constitution Way South San Francisco, California(CA), 94080`);
     
     addEventToApplication(salesforce, salesforceEvent1);
     addEventToApplication(salesforce, salesforceEvent2);
@@ -315,9 +316,9 @@ const seedDB = async () => {
 
     // Bloomberg events
     const bloombergEvent1: EventObject = makeEvent(new ObjectId('624e32c9b33b9492bcc2eb33'), true,  'Apply',               new Date('September 22, 2021'), 'Online');
-    const bloombergEvent2: EventObject = makeEvent(new ObjectId('624e32d4ec4550d308eb7c4e'), false, 'Phone Interview',     new Date('September 25, 2021'), 'Phone');
+    const bloombergEvent2: EventObject = makeEvent(new ObjectId('624e32d4ec4550d308eb7c4e'), false, 'Phone Interview',     new Date('September 25, 2021'), '(234)361-3380');
     const bloombergEvent3: EventObject = makeEvent(new ObjectId('624e32d05cbbdb20b2867768'), false, 'Technical Interview', new Date('September 29, 2021'), 'Online');
-    const bloombergEvent4: EventObject = makeEvent(new ObjectId('624e3bd1b606773034ea1142'), false, 'In Person Interview', new Date('October 4, 2021'),    'In Person');
+    const bloombergEvent4: EventObject = makeEvent(new ObjectId('624e3bd1b606773034ea1142'), false, 'In Person Interview', new Date('October 4, 2021'),    `331 Main St Catskill, New York(NY), 12414`);
     
     addEventToApplication(bloomberg, bloombergEvent1);
     addEventToApplication(bloomberg, bloombergEvent2);
