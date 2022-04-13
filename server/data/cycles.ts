@@ -1,13 +1,14 @@
 import { cycles, users } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
 import { checkObjectId } from '../helpers/error';
+import { CycleObject, UserObject } from '../typings';
 
 /**
  * @description Get a cycle by id
  * @param {string} id Cycle id
- * @returns {Promise<Object>} Cycle object
+ * @returns {Promise<CycleObject>} Cycle object
  */
-export const getCycleByID = async (id: string): Promise<Object> => {
+export const getCycleByID = async (id: string): Promise<CycleObject> => {
     if(!checkObjectId(id)){
         throw new Error('Invalid id');
     }
@@ -23,21 +24,21 @@ export const getCycleByID = async (id: string): Promise<Object> => {
 /**
  * @description Get all cycles for a given user
  * @param userId User id
- * @returns List of cycles
+ * @returns {Promise<CycleObject[]>} List of cycles
  */
-export const getAllCycles = async (userId: string): Promise<Object[]> => {
+export const getAllCycles = async (userId: string): Promise<CycleObject[]> => {
     if(!checkObjectId(userId)){
         throw new Error('Invalid id');
     }
 
     const cycleCollection = await cycles();
     const userCollection = await users();
-    const user = await userCollection.findOne({
+    const user: UserObject = await userCollection.findOne({
         _id: new ObjectId(userId) });
     if(user === null)
         throw new Error("There is no user with that id.");
 
-    let userCycles: object[] = [];
+    let userCycles: CycleObject[] = [];
     for(let i = 0; i < user.cycles.length; i++) {
         userCycles.push(await cycleCollection.findOne({
             _id: new ObjectId(user.cycles[i]) }));
@@ -48,15 +49,16 @@ export const getAllCycles = async (userId: string): Promise<Object[]> => {
 /**
  * @description Create a new cycle
  * @param userId User id
- * @returns The newly created cycle object
+ * @returns {{Promise<CycleObject>}} The newly created cycle object
  */
-export const createCycle = async (userId: string): Promise<Object> => {
+export const createCycle = async (userId: string): Promise<CycleObject> => {
     if(!checkObjectId(userId)){
         throw new Error('Invalid id');
     }
 
     let currDate: Date = new Date();
-    let cycle: Object = {
+    let cycle: CycleObject = {
+        _id: new ObjectId(),
         startDate: currDate,
         endDate: null,
         applications: []
@@ -72,12 +74,15 @@ export const createCycle = async (userId: string): Promise<Object> => {
 
     // Finish previous cycle if unfinished
     const newId = insertInfo.insertedId;
-    const user = await userCollection.findOne({
+    const user: UserObject = await userCollection.findOne({
         _id: new ObjectId(userId) });
     if(user === null) {
         throw new Error("There is no user with that id.");
-    } else if(user.cycles.slice(-1)[0].endDate === null) {
-        user.cycles[user.cycles.length - 1].endDate = currDate;
+    } 
+    const currCycle: CycleObject = await cycleCollection.findOne({
+        _id: new ObjectId(user.cycles[user.cycles.length - 1]) });
+    if(currCycle.endDate === null) {
+        await finishCycle(userId);
     }
 
     // Add to user's cycles list
@@ -97,16 +102,16 @@ export const createCycle = async (userId: string): Promise<Object> => {
 /**
  * Finishes a cycle by setting its end date to the current date.
  * @param cycleId Cycle id
- * @returns The updated cycle object
+ * @returns {{Promise<CycleObject>}} The updated cycle object
  */
-export const finishCycle = async (cycleId: string): Promise<Object> => {
+export const finishCycle = async (cycleId: string): Promise<CycleObject> => {
     if(!checkObjectId(cycleId)){
         throw new Error('Invalid id');
     }
 
     // Retrieve the cycle
     const cycleCollection: any = await cycles();
-    const cycle = await cycleCollection.findOne({
+    const cycle: CycleObject = await cycleCollection.findOne({
         _id: new ObjectId(cycleId) });
     if(cycle === null) {
         throw new Error("There is no cycle with that id.");

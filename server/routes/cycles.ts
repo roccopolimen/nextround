@@ -1,6 +1,7 @@
 import express from 'express';
 import { getCycleByID, getAllCycles, createCycle, finishCycle,  } from '../data';
 import { checkObjectId } from '../helpers/error';
+import { CycleObject } from '../typings';
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     // Gets current cycle
     try {
-        let cycles: object[] = await getAllCycles(req.session.user._id);
+        let cycles: CycleObject[] = await getAllCycles(req.session.user._id);
         return res.json(cycles.slice(-1)[0]);
     } catch(e) {
         return res.status(500).json({ 
@@ -24,7 +25,7 @@ router.get('/:id', async (req, res) => {
     }
     // Gets cycle with id of :id
     try {
-        let cycle: object = await getCycleByID(req.params.id);
+        let cycle: CycleObject = await getCycleByID(req.params.id);
         return res.json(cycle);
     } catch(e) {
         return res.status(500).json({ 
@@ -40,7 +41,7 @@ router.post('/', async (req, res) => {
         return res.status(401).json({ message: 'Unauthorized' });
     }
     try {
-        let cycle: object = await createCycle(req.session.user._id);
+        let cycle: CycleObject = await createCycle(req.session.user._id);
         return res.json(cycle);
     } catch(e) {
         return res.status(500).json({ 
@@ -56,7 +57,7 @@ router.post('/', async (req, res) => {
         return res.status(401).json({ message: 'Unauthorized' });
     }
     try {
-        let cycle: object = await finishCycle(req.session.user._id);
+        let cycle: CycleObject = await finishCycle(req.session.user._id);
         return res.json(cycle);
     } catch(e) {
         return res.status(500).json({ 

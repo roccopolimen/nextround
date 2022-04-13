@@ -7,7 +7,7 @@ declare module "*.json" {
 
 interface UserObject {
     _id: ObjectId,
-    firebaseId: ObjectId,
+    firebaseId: string,
     email: string,
     name: string,
     cycles: Array<ObjectId>
