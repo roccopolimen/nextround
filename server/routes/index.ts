@@ -1,8 +1,10 @@
 import usersRoutes from './users';
+import cycleRoutes from './cycles';
 
 const constructorMethod = (app: any) => {
     
     app.use('/users', usersRoutes);
+    app.use('/cycles', cycleRoutes);
 
     // catch all bad URLs and provide a 404.
     app.use('*', (_, res) => {
