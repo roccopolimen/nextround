@@ -1,4 +1,4 @@
-import { cycles, users } from '../config/mongoCollections';
+import { cycles } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
 import { checkObjectId, checkNonEmptyString, checkPositiveNumber } from '../helpers/error';
 import colors from '../public/index';
@@ -153,18 +153,7 @@ export default {
             throw new Error("Could not update cycle with new application.");
         }
 
-        //Re-finds the newly updated cycle with cycleId
-        const upCycle: Object = cycleCollection.findOne({
-            _id: new ObjectId(cycleId)
-        });
-        
-        //Returns the newest application from cycle
-        if(upCycle === null) {
-            throw new Error("There is no cycle with this id.")
-        }
-
-        const retApp: Object = upCycle["applications"].slice(-1)[0];
-        return retApp;
+        return newApp;
 
     },
 
@@ -229,18 +218,7 @@ export default {
             throw new Error("Could not update application.");
         }
 
-        //Re-finds the newly updated cycle
-        const upCycle: Object = cycleCollection.findOne({
-            _id: new ObjectId(cycleId)
-        });
-        
-        //Returns the updated application Object
-        if(upCycle === null) {
-            throw new Error("There is no cycle with this id.")
-        }
-
-        const retApp: Object = upCycle["applications"][appPos];
-        return retApp;
+        return app;
     },
 
     /**

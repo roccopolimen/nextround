@@ -19,5 +19,3 @@ const getCollectionFn = (collection: string) => {
 export const cycles = getCollectionFn('cycles');
 export const media = getCollectionFn('media');
 export const users = getCollectionFn('users');
-
-// export default collections;
