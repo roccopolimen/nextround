@@ -1,7 +1,7 @@
 import { cycles, users } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
-import {checkObjectId, checkNonEmptyString, checkArrayOfStrings, checkPositiveNumber, checkNegativeNumber,
-    checkEmail, checkName, checkArrayObjectId, checkDate, checkTime} from '../helpers/error';
+import { checkObjectId, checkNonEmptyString, checkPositiveNumber } from '../helpers/error';
+import colors from '../public/index';
 
 export default {
     
@@ -9,10 +9,10 @@ export default {
      * @description Get an application by id
      * @param {string} cycleId Cycle id
      * @param {string} appId Application id
-     * @returns {Promise<object>} Cycle object with given id if found 
+     * @returns {Promise<Object>} Cycle Object with given id if found 
      * and throws an error otherwise
      */
-    readById: async (cycleId: string, appId: string): Promise<object> => {
+    getApplicationById: async (cycleId: string, appId: string): Promise<Object> => {
         if(!cycleId || !checkObjectId(cycleId)) {
             throw new Error("A proper cycle id must be provided.");
         }
@@ -29,30 +29,27 @@ export default {
         }
 
         //Finds application with appId inside of cycle
-        let retApp: object = null;
+        let retApp: Object = null;
         for(let app of cycle["applications"]) {
             if(appId === app["_id"].toString()) {
-                app["_id"] = app["_id"].toString();
                 retApp = app;
             }
         }
 
         if(retApp === null) {
             throw new Error("No application found with that id.")
-        } else {
-            return retApp;
         }
-
         
+        return retApp;
     },
 
     /**
      * @description Finds all applications from a given cycle
      * @param {string} cycleId The cycle id to get all applications from
-     * @returns {Promise<object[]>} Array of applications belonging to a given cycle,
+     * @returns {Promise<Object[]>} Array of applications belonging to a given cycle,
      * otherwise throws and error
      */
-    readAll: async (cycleId: string): Promise<object[]> => {
+    getAllApplications: async (cycleId: string): Promise<Object[]> => {
         if(!cycleId || !checkObjectId(cycleId)) {
             throw new Error("a proper cycle id must be provided.")
         }
@@ -62,15 +59,15 @@ export default {
         const cycle: any = await cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         });
+
         if(cycle === null) {
             throw new Error("There is no cycle with that id.");
         }
 
         //Grabs all applicatins in cycle 
-        const cycleApps: object[] = cycle["applications"];
-        let retApps: Array<object> = []; 
+        const cycleApps: Object[] = cycle["applications"];
+        let retApps: Array<Object> = []; 
         for(let app of cycleApps) {
-            app["_id"] = app["_id"].toString();
             retApps.push(app);
         }
 
@@ -87,12 +84,12 @@ export default {
      * @param {string} jobPostUrl URL the application was found at
      * @param {string} cardColor Chosen color of application card
      * @param {string} description Application description
-     * @returns {Promise<object>} Returns the created application object if successful anf throws
+     * @returns {Promise<Object>} Returns the created application Object if successful anf throws
      * and error otherwise
      */
-    create: async (cycleId: string, company: string, position: string, location: string,
-        salary: number, jobPostUrl: string, cardColor: string, description: string):
-        Promise<object> => {
+    createApplication: async (cycleId: string, company: string, position: string, location: string,
+        salary: number, jobPostUrl: string, description: string):
+        Promise<Object> => {
         if(!cycleId || !checkObjectId(cycleId)) {
             throw new Error("A proper cycle id must be provided.");
         }
@@ -116,16 +113,15 @@ export default {
             throw new Error("An application url must be provided.");
         }
 
-        if(!cardColor || !checkNonEmptyString(cardColor)) {
-            throw new Error("A card color must be selected.");
-        }
-
         if(!description || !checkNonEmptyString(description)) {
             throw new Error("A description must be provided.");
         }
+
+        const cardColor = colors[Math.floor(Math.random() * colors.length)];
         
+        //TODO - Add logo typing
         //Unsure of how the logo is getting stored if we are using that auto logo finder
-        let newApp: object = {
+        let newApp: Object = {
             _id: new ObjectId(),
             company: company,
             position: position,
@@ -143,7 +139,7 @@ export default {
 
         //Finds the cycle with cycleId
         const cycleCollection: any = await cycles();
-        const cycle: object = await cycleCollection.findOne({
+        const cycle: Object = await cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         });
         if(cycle === null) {
@@ -158,18 +154,17 @@ export default {
         }
 
         //Re-finds the newly updated cycle with cycleId
-        const upCycle: object = cycleCollection.findOne({
+        const upCycle: Object = cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         });
         
         //Returns the newest application from cycle
         if(upCycle === null) {
             throw new Error("There is no cycle with this id.")
-        } else {
-            const retApp: object = upCycle["applications"].slice(-1)[0];
-            retApp["_id"] = retApp["_id"].toString();
-            return retApp;
         }
+
+        const retApp: Object = upCycle["applications"].slice(-1)[0];
+        return retApp;
 
     },
 
@@ -177,12 +172,12 @@ export default {
      * Updates a given application with new data
      * @param {string} cycleId Cycle the application is in
      * @param {string} appId Id of application to change
-     * @param {object} appObject An application object that can contain any subset of 
+     * @param {Object} appObject An application Object that can contain any subset of 
      * application attributes to allow for PUT and POST opperations
-     * @returns {Promise<object>} Returns the updated application if successful and 
+     * @returns {Promise<Object>} Returns the updated application if successful and 
      * throws an error otherwise
      */
-    update: async (cycleId: string, appId: string, appObject: object): Promise<object> => {
+    updateApplication: async (cycleId: string, appId: string, appObject: Object): Promise<Object> => {
         if(!cycleId || !checkObjectId(cycleId)) {
             throw new Error("A proper cycle id must be provided.")
         }
@@ -192,17 +187,17 @@ export default {
         }
 
         if(!appObject) {
-            throw new Error("An object with attributes to update must be provided.");
+            throw new Error("An Object with attributes to update must be provided.");
         }
 
         //Finds the cycle with cycleId
         const cycleCollection: any = await cycles();
-        let cycle: object = cycleCollection.findOne({
+        let cycle: Object = cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         })
 
         //Finds the position of the application with appId
-        let app: object = null;
+        let app: Object = null;
         let appPos: number = null;
         for(let x=0; x<cycle["applications"].length; x++) {
             if(cycle["applications"][x]["_id"].toString() === appId) {
@@ -221,6 +216,7 @@ export default {
                 if(appObject[attribute] === null) {
                     throw new Error("Cannot update with null value");
                 }
+                app[attribute] = appObject[attribute];
             } else {
                 throw new Error("Invalid application attribute given.");
             }
@@ -234,18 +230,17 @@ export default {
         }
 
         //Re-finds the newly updated cycle
-        const upCycle: object = cycleCollection.findOne({
+        const upCycle: Object = cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         });
         
-        //Returns the updated application object
+        //Returns the updated application Object
         if(upCycle === null) {
             throw new Error("There is no cycle with this id.")
-        } else {
-            const retApp: object = upCycle["applications"][appPos];
-            retApp["_id"] = retApp["_id"].toString();
-            return retApp;
         }
+
+        const retApp: Object = upCycle["applications"][appPos];
+        return retApp;
     },
 
     /**
@@ -255,7 +250,7 @@ export default {
      * @returns {Promise<boolean>} Returns true if application was successfully deleted and 
      * throws an error otherwise
      */
-    delete: async (cycleId: string, appId: string): Promise<boolean> => {
+    deleteApplication: async (cycleId: string, appId: string): Promise<boolean> => {
         if(!cycleId || !checkObjectId(cycleId)) {
             throw new Error("a proper cycle id must be provided.")
         }
@@ -266,7 +261,7 @@ export default {
 
         //Finds the cycle with cycleId
         const cycleCollection: any = await cycles();
-        let cycle: object = cycleCollection.findOne({
+        let cycle: Object = cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         })
 
@@ -291,8 +286,4 @@ export default {
 
         return true;
     }
-
-
-
-
 }

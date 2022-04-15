@@ -1,3 +1,1 @@
-import apps from './applications';
-
-export const appData = apps;
+export * from './applications';
