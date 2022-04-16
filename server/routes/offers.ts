@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
         let offers: Array<ApplicationObject> = [];
         // For each app in current cycle, add to offers if progess is 2 (offer)
         for(let application of cycles.slice(-1)[0].applications)
-            if(application.progress === 2)
+            if(application.progress === 1)
                 offers.push(application);
         return res.json(offers);
     } catch(e) {
