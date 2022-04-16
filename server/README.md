@@ -32,6 +32,10 @@ provides the metrics data for the current cycle
 
 provides the metrics data for the cycle with given `cycleId`
 
+#### /offers
+
+provides information on all offers for the current cycle to make comparisons
+
 ### POST
 
 #### /users/signIn

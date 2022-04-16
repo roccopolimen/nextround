@@ -1,7 +1,8 @@
 import express from 'express';
-import { getCycleByID, getAllCycles, createCycle, finishCycle,  } from '../data';
+import { ObjectId } from 'mongodb';
+import { getCycleByID, getAllCycles, createCycle, finishCycle, getUserById,  } from '../data';
 import { checkObjectId } from '../helpers/error';
-import { CycleObject } from '../typings';
+import { CycleObject, UserObject } from '../typings';
 
 const router = express.Router();
 
@@ -23,8 +24,19 @@ router.get('/:id', async (req, res) => {
     if(!checkObjectId(req.params.id)){
         return res.status(400).json({ message: 'Invalid id.' });
     }
-    // Gets cycle with id of :id
-    // TODO: verify user owns cycle
+    // Verify user owns cycle
+    try {
+        let userInfo: UserObject = await getUserById(req.session.user._id);
+        if(!userInfo.cycles.includes(new ObjectId(req.params.id))) {
+            throw new Error("User does not own cycle with that id.");
+        }
+    } catch(e) {
+        return res.status(404).json({ 
+            message: 'Not Found. Cycle with that id does not exist.',
+            error: e.message });
+    }
+
+    // Get cycle
     try {
         let cycle: CycleObject = await getCycleByID(req.params.id);
         return res.json(cycle);
