@@ -14,7 +14,7 @@ export const getCycleByID = async (id: string): Promise<CycleObject> => {
     }
 
     const cycleCollection = await cycles();
-    const cycle = await cycleCollection.findOne({_id: new ObjectId(id)});
+    const cycle: CycleObject = await cycleCollection.findOne({_id: new ObjectId(id)});
     if(cycle === null)
         throw new Error("There is no cycle with that id.");
 

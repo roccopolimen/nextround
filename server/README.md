@@ -24,6 +24,14 @@ provides all the information about the current user's application from the cycle
 
 provides the list of posts (max N at a time) to be displayed. Ordered by most recent
 
+#### /metrics
+
+provides the metrics data for the current cycle
+
+#### /metrics/:cycleId
+
+provides the metrics data for the cycle with given `cycleId`
+
 ### POST
 
 #### /users/signIn
@@ -41,6 +49,10 @@ telling firebase you are logging out and to remove authtoken from request header
 #### /cycles
 
 makes a new cycle for the current user
+
+#### /cycles/finish
+
+finish the current cycle
 
 #### /application
 

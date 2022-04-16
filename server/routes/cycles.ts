@@ -21,15 +21,16 @@ router.get('/', async (req, res) => {
 // GET /cycles/:id
 router.get('/:id', async (req, res) => {
     if(!checkObjectId(req.params.id)){
-        throw new Error('Invalid id');
+        return res.status(400).json({ message: 'Invalid id.' });
     }
     // Gets cycle with id of :id
+    // TODO: verify user owns cycle
     try {
         let cycle: CycleObject = await getCycleByID(req.params.id);
         return res.json(cycle);
     } catch(e) {
-        return res.status(500).json({ 
-            message: 'Internal Server Error. Failed to get current cycle.',
+        return res.status(404).json({ 
+            message: 'Not Found. Cycle with that id does not exist.',
             error: e.message });
     }
 });
@@ -51,7 +52,7 @@ router.post('/', async (req, res) => {
 });
 
 // POST /cycles/finish
-router.post('/', async (req, res) => {
+router.post('/finish', async (req, res) => {
     // Finishes current cycle
     if(!req.session.user) {
         return res.status(401).json({ message: 'Unauthorized' });

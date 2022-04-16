@@ -33,9 +33,9 @@ interface ApplicationObject {
     company: string,
     position: string,
     location: string,
-    salary: number,
+    salary: number | null,
     cardColor: string,
-    progress: number,
+    progress: number, // 1 (IP) - 2 (Offer) - 3 (Reject) - 4 (Waitlist) - 5 (TBD)
     jobPostUrl: string,
     description: string,
     notes: Array<string>,
@@ -58,4 +58,18 @@ interface ContactObject {
     location: string,
     phone: string,
     email: string
+}
+
+interface MetricsObject {
+    // Job Funnel
+    num_saved: number,
+    num_applications: number,
+    num_interviewed: number,
+    num_offers: number,
+    // Other metrics
+    num_rejections: number,
+    num_rounds: number,
+    avg_salary: number,
+    num_connections: number,
+    application_timeline: Array<Date>
 }
