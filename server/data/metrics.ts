@@ -49,11 +49,11 @@ export const getMetricsByID = async (id: string): Promise<MetricsObject> => {
             }
         }
 
-        if(app.progress === 2) {
+        if(app.progress === 1) {
             num_offers++; // another offer
             if(app.salary !== null)
                 salaries.push(app.salary); // add to salaries
-        } else if(app.progress === 3) {
+        } else if(app.progress === 2) {
             num_rejections++; // another rejection
         }
         num_connections += app.contacts.length; // add to connections

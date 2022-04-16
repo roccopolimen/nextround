@@ -2,6 +2,7 @@ import usersRoutes from './users';
 import cyclesRoutes from './cycles';
 import metricsRoutes from './metrics';
 import offersRoutes from './offers';
+import forumRoutes from './forum';
 
 const constructorMethod = (app: any) => {
     
@@ -9,6 +10,7 @@ const constructorMethod = (app: any) => {
     app.use('/cycles', cyclesRoutes);
     app.use('/metrics', metricsRoutes);
     app.use('/offers', offersRoutes);
+    app.use('/forum', forumRoutes);
 
     // catch all bad URLs and provide a 404.
     app.use('*', (_, res) => {

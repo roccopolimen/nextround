@@ -36,6 +36,10 @@ provides the metrics data for the cycle with given `cycleId`
 
 provides information on all offers for the current cycle to make comparisons
 
+#### /forum?num_posts=n
+
+provides `n` forum posts
+
 ### POST
 
 #### /users/signIn
@@ -70,9 +74,9 @@ adds a new event to the application in the current cycle
 
 adds a new contact to the application in the current cycle
 
-#### /posts
+#### /forum
 
-Create a post to be added to the list of posts for the current user and their current cycle analytics.
+post to the forum about your new job
 
 ### PATCH
 
