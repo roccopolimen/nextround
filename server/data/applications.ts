@@ -1,7 +1,8 @@
 import { cycles } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
 import { checkObjectId, checkNonEmptyString, checkPositiveNumber } from '../helpers/error';
-import colors from '../public/index';
+import { CycleObject, ApplicationObject } from '../typings';
+import { randomColor } from '../helpers/color'
 
 export default {
     
@@ -12,7 +13,7 @@ export default {
      * @returns {Promise<Object>} Cycle Object with given id if found 
      * and throws an error otherwise
      */
-    getApplicationById: async (cycleId: string, appId: string): Promise<Object> => {
+    getApplicationById: async (cycleId: string, appId: string): Promise<ApplicationObject> => {
         if(!cycleId || !checkObjectId(cycleId)) {
             throw new Error("A proper cycle id must be provided.");
         }
@@ -29,7 +30,7 @@ export default {
         }
 
         //Finds application with appId inside of cycle
-        let retApp: Object = null;
+        let retApp: ApplicationObject = null;
         for(let app of cycle["applications"]) {
             if(appId === app["_id"].toString()) {
                 retApp = app;
@@ -46,17 +47,17 @@ export default {
     /**
      * @description Finds all applications from a given cycle
      * @param {string} cycleId The cycle id to get all applications from
-     * @returns {Promise<Object[]>} Array of applications belonging to a given cycle,
+     * @returns {Promise<ApplicationObject[]>} Array of applications belonging to a given cycle,
      * otherwise throws and error
      */
-    getAllApplications: async (cycleId: string): Promise<Object[]> => {
+    getAllApplications: async (cycleId: string): Promise<ApplicationObject[]> => {
         if(!cycleId || !checkObjectId(cycleId)) {
             throw new Error("a proper cycle id must be provided.")
         }
 
         //Find the cycle with cycleId
         const cycleCollection: any = await cycles();
-        const cycle: any = await cycleCollection.findOne({
+        const cycle: CycleObject = await cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         });
 
@@ -65,8 +66,8 @@ export default {
         }
 
         //Grabs all applicatins in cycle 
-        const cycleApps: Object[] = cycle["applications"];
-        let retApps: Array<Object> = []; 
+        const cycleApps: ApplicationObject[] = cycle["applications"];
+        let retApps: ApplicationObject[] = []; 
         for(let app of cycleApps) {
             retApps.push(app);
         }
@@ -84,12 +85,12 @@ export default {
      * @param {string} jobPostUrl URL the application was found at
      * @param {string} cardColor Chosen color of application card
      * @param {string} description Application description
-     * @returns {Promise<Object>} Returns the created application Object if successful anf throws
+     * @returns {Promise<ApplicationObject>} Returns the created application Object if successful anf throws
      * and error otherwise
      */
     createApplication: async (cycleId: string, company: string, position: string, location: string,
-        salary: number, jobPostUrl: string, description: string):
-        Promise<Object> => {
+        jobPostUrl: string, description: string):
+        Promise<ApplicationObject> => {
         if(!cycleId || !checkObjectId(cycleId)) {
             throw new Error("A proper cycle id must be provided.");
         }
@@ -106,9 +107,6 @@ export default {
             throw new Error("A location must be provided.");
         }
 
-        if(!salary || !checkPositiveNumber(salary)) {
-            throw new Error("A salary must be provided.");
-        }
         if(!jobPostUrl || !checkNonEmptyString(jobPostUrl)) {
             throw new Error("An application url must be provided.");
         }
@@ -117,17 +115,17 @@ export default {
             throw new Error("A description must be provided.");
         }
 
-        const cardColor = colors[Math.floor(Math.random() * colors.length)];
+        const cardColor = randomColor();
         
         //TODO - Add logo typing
         //Unsure of how the logo is getting stored if we are using that auto logo finder
-        let newApp: Object = {
+        let newApp: ApplicationObject = {
             _id: new ObjectId(),
             company: company,
             position: position,
             logo: null,
             location: location,
-            salary: salary, 
+            salary: null, 
             jobPostUrl: jobPostUrl,
             cardColor: cardColor,
             description: description,
@@ -139,7 +137,7 @@ export default {
 
         //Finds the cycle with cycleId
         const cycleCollection: any = await cycles();
-        const cycle: Object = await cycleCollection.findOne({
+        const cycle: CycleObject = await cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         });
         if(cycle === null) {
@@ -163,10 +161,10 @@ export default {
      * @param {string} appId Id of application to change
      * @param {Object} appObject An application Object that can contain any subset of 
      * application attributes to allow for PUT and POST opperations
-     * @returns {Promise<Object>} Returns the updated application if successful and 
+     * @returns {Promise<ApplicationObject>} Returns the updated application if successful and 
      * throws an error otherwise
      */
-    updateApplication: async (cycleId: string, appId: string, appObject: Object): Promise<Object> => {
+    updateApplication: async (cycleId: string, appId: string, appObject: Object): Promise<ApplicationObject> => {
         if(!cycleId || !checkObjectId(cycleId)) {
             throw new Error("A proper cycle id must be provided.")
         }
@@ -181,12 +179,12 @@ export default {
 
         //Finds the cycle with cycleId
         const cycleCollection: any = await cycles();
-        let cycle: Object = cycleCollection.findOne({
+        let cycle: CycleObject = cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         })
 
         //Finds the position of the application with appId
-        let app: Object = null;
+        let app: ApplicationObject = null;
         let appPos: number = null;
         for(let x=0; x<cycle["applications"].length; x++) {
             if(cycle["applications"][x]["_id"].toString() === appId) {
@@ -239,7 +237,7 @@ export default {
 
         //Finds the cycle with cycleId
         const cycleCollection: any = await cycles();
-        let cycle: Object = cycleCollection.findOne({
+        let cycle: CycleObject = cycleCollection.findOne({
             _id: new ObjectId(cycleId)
         })
 
