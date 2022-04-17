@@ -1,16 +1,27 @@
 import collections from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
+import { checkObjectId, checkNonEmptyString, checkEmail, checkName } from '../helpers';
 import { ApplicationObject, ContactObject, CycleObject, EventObject, MediaObject, UserObject } from '../typings';
 
 export default {
     /**
      * Get contact by id
-     * @param {ObjectId} cycleId
-     * @param {ObjectId} applicationId
-     * @param {ObjectId} contactId
-     * @returns {Promise<object>} The contact given the ids above
+     * @param {string} cycleId
+     * @param {string} applicationId
+     * @param {string} contactId
+     * @returns {Promise<Object>} The contact given the ids above
      */
-    readById: async (cycleId: ObjectId, applicationId: ObjectId, contactId: ObjectId):Promise<object> => {
+    getContactById: async (cycleId: string, applicationId: string, contactId: string):Promise<Object> => {
+
+        if(checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
+        if(checkObjectId(contactId)){
+            throw new Error('Invalid contactId');
+        }
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -18,7 +29,7 @@ export default {
 
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = element;
             }
         }
@@ -26,23 +37,29 @@ export default {
 
         let contact = null;
         for(let element of application.contacts){
-            if(element._id.toString() === contactId.toString()){
+            if(element._id.toString() === contactId){
                 contact = element
             }
         }
         if(contact === null) throw new Error('Could not find contact');
 
-        contact._id = contact._id.toString();
         return contact;
     },
 
     /**
      * Get all contacts
-     * @param {ObjectId} cycleId
-     * @param {ObjectId} applicationId
-     * @returns {Promise<object[]>}All the contacts of the application
+     * @param {string} cycleId
+     * @param {string} applicationId
+     * @returns {Promise<Object[]>}All the contacts of the application
      */
-    readAll: async (cycleId: ObjectId, applicationId: ObjectId): Promise<object[]> => {
+    getAllContacts: async (cycleId: string, applicationId: string): Promise<Object[]> => {
+
+        if(checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -50,27 +67,50 @@ export default {
 
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = element;
                 break;
             }
         }
         if(application === null) throw new Error('Could not find application');
         
-        let contacts = application.contacts.map((element) => element.toString());
+        let contacts = application.contacts ? application.contacts : [];
 
         return contacts
     },
 
     /**
      * Create contact
-     * @param {ObjectId} cycleId 
+     * @param {string} cycleId 
+     * @param {string} applicationId
      * @param {string} title 
      * @param {Date} date 
      * @param {String} location 
      * @returns {Promise<object>} if the contact was created, throws otherwise 
      */
-    create: async (cycleId: ObjectId, applicationId: ObjectId, name: string, pronouns: string, location: string, phone: string, email: string): Promise<object> => {
+    createContact: async (cycleId: string, applicationId: string, name: string, pronouns: string, location: string, phone: string, email: string): Promise<object> => {
+
+        if(checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
+        if(checkName(name)){
+            throw new Error('Invalid name');
+        }
+        if(checkNonEmptyString(pronouns)){
+            throw new Error('Invalid pronouns');
+        }
+        if(checkNonEmptyString(location)){
+            throw new Error('Invalid location');
+        }
+        if(checkNonEmptyString(phone)){
+            throw new Error('Invalid phone number');
+        }
+        if(checkEmail(email)){
+            throw new Error('Invalid Email');
+        }
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -87,7 +127,7 @@ export default {
 
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = 1;
                 break;
             } 
@@ -112,12 +152,22 @@ export default {
 
     /**
      * Update contact
-     * @param {ObjectId} cycleId 
-     * @param {ObjectId} applicationId 
-     * @param {ObjectId} contactId
+     * @param {string} cycleId 
+     * @param {string} applicationId 
+     * @param {string} contactId
      * @param {object} contactObject can contain: {name: string, pronouns: string, location, phone: string, email: string}
      */
-    update: async (cycleId: ObjectId, applicationId: ObjectId, contactId: ObjectId, contactObject: object): Promise<object> => {
+    updateContact: async (cycleId: string, applicationId: string, contactId: string, contactObject: object): Promise<object> => {
+
+        if(checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
+        if(checkObjectId(contactId)){
+            throw new Error('Invalid contactId');
+        }
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -126,7 +176,7 @@ export default {
         //find the application
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = element;
                 break;
             } 
@@ -136,7 +186,7 @@ export default {
         //find the contact
         let updateContact = null;
         for(let element of application.contacts){
-            if(element._id.toString() === contactId.toString()){
+            if(element._id.toString() === contactId){
                 updateContact = element
             }
         }
@@ -155,7 +205,7 @@ export default {
         //update the contacts list
         let contacts = [];
         for(let element of application.contacts){
-            if(element._id.toString() === contactId.toString()){
+            if(element._id.toString() === contactId){
                 contacts.push(updateContact);
             }
             contacts.push(element);
@@ -180,12 +230,22 @@ export default {
 
     /**
      * Delete contact
-     * @param {ObjectId} cycleId 
-     * @param {ObjectId} applicationId 
-     * @param {ObjectId} contactId 
+     * @param {string} cycleId 
+     * @param {string} applicationId 
+     * @param {string} contactId 
      * @returns true if the contact was deleted, throws otherwise
      */
-    delete: async (cycleId: ObjectId, applicationId: ObjectId, contactId: ObjectId): Promise<boolean> => {
+    deleteContact: async (cycleId: string, applicationId: string, contactId: string): Promise<boolean> => {
+
+        if(checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
+        if(checkObjectId(contactId)){
+            throw new Error('Invalid contactId');
+        }
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -193,7 +253,7 @@ export default {
 
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = element;
                 break;
             } 
@@ -202,7 +262,7 @@ export default {
 
         let contacts = [];
         for(let element of application.contacts){
-            if(element._id.toString() === contactId.toString()){
+            if(element._id.toString() === contactId){
                 continue;
             }
             contacts.push(element);
