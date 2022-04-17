@@ -1,16 +1,27 @@
 import collections from '../config/mongoCollections';
-import { ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb'; 
+import { checkObjectId, checkDate, checkNonEmptyString } from '../helpers/error';
 import { ApplicationObject, ContactObject, CycleObject, EventObject, MediaObject, UserObject } from '../typings';
 
 export default {
     /**
      * Get event by id
-     * @param {ObjectId} cycleId
-     * @param {ObjectId} applicationId
-     * @param {ObjectId} eventId
-     * @returns {Promise<object>} The event given the ids above
+     * @param {string} cycleId
+     * @param {string} applicationId
+     * @param {string} eventId
+     * @returns {Promise<Object>} The event given the ids above
      */
-    readById: async (cycleId: ObjectId, applicationId: ObjectId, eventId: ObjectId):Promise<object> => {
+    getEventById: async (cycleId: string, applicationId: string, eventId: string):Promise<Object> => {
+        
+        if(!checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(!checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
+        if(!checkObjectId(eventId)){
+            throw new Error('Invalid eventId');
+        }
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -18,7 +29,7 @@ export default {
 
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = element;
             }
         }
@@ -26,23 +37,29 @@ export default {
 
         let event = null;
         for(let element of application.events){
-            if(element._id.toString() === eventId.toString()){
+            if(element._id.toString() === eventId){
                 event = element
             }
         }
         if(event === null) throw new Error('Could not find event');
 
-        event._id = event._id.toString();
         return event;
     },
 
     /**
      * Get all events
-     * @param {ObjectId} cycleId
-     * @param {ObjectId} applicationId
-     * @returns {Promise<object[]>}All the events of the application
+     * @param {string} cycleId
+     * @param {string} applicationId
+     * @returns {Promise<Object[]>}All the events of the application
      */
-    readAll: async (cycleId: ObjectId, applicationId: ObjectId): Promise<object[]> => {
+    getAllEvents: async (cycleId: string, applicationId: string): Promise<Object[]> => {
+
+        if(!checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(!checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -50,27 +67,45 @@ export default {
 
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = element;
                 break;
             }
         }
         if(application === null) throw new Error('Could not find application');
         
-        let events = application.events.map((element) => element.toString());
+        let events = application.events ? application.events : [];
 
         return events
     },
 
     /**
      * Create event
-     * @param {ObjectId} cycleId 
+     * @param {string} cycleId
+     * @param {string} applicationId
      * @param {string} title 
      * @param {Date} date 
      * @param {String} location 
      * @returns {Promise<object>} if the event was created, throws otherwise 
      */
-    create: async (cycleId: ObjectId, applicationId: ObjectId, title: string, date: Date, location: string): Promise<object> => {
+    createEvent: async (cycleId: string, applicationId: string, title: string, date: string, location: string): Promise<object> => {
+
+        if(!checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(!checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
+        if(!checkNonEmptyString(title)){
+            throw new Error('Invalid title');
+        }
+        if(!checkDate(date)){
+            throw new Error('Invalid date');
+        }
+        if(!checkNonEmptyString(location)){
+            throw new Error('Invalid location');
+        }
+
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -80,13 +115,13 @@ export default {
             _id: new ObjectId(),
             status: false,
             title: title,
-            date: date,
+            date: new Date(date), // Potential bugs here if date is passed as '1/1/22' i know 'January 1 2022' works
             location: location
         }
 
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = 1;
                 break;
             } 
@@ -110,13 +145,22 @@ export default {
 
     /**
      * Update event
-     * @param {ObjectId} cycleId 
-     * @param {ObjectId} applicationId 
-     * @param {ObjectId} eventId
+     * @param {string} cycleId 
+     * @param {string} applicationId 
+     * @param {string} eventId
      * @param {object} eventObject can contain: {title: string, date: Date, location: string}
      */
-    update: async (cycleId: ObjectId, applicationId: ObjectId, eventId: ObjectId, eventObject: object): Promise<object> => {
+    updateEvent: async (cycleId: string, applicationId: string, eventId: string, eventObject: object): Promise<object> => {
 
+        if(!checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(!checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
+        if(!checkObjectId(eventId)){
+            throw new Error('Invalid eventId');
+        }
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -125,7 +169,7 @@ export default {
         //find the application
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = element;
                 break;
             } 
@@ -135,7 +179,7 @@ export default {
         //find the event
         let updateEvent = null;
         for(let element of application.events){
-            if(element._id.toString() === eventId.toString()){
+            if(element._id.toString() === eventId){
                 updateEvent = element
             }
         }
@@ -154,7 +198,7 @@ export default {
         //update the events list
         let events = [];
         for(let element of application.events){
-            if(element._id.toString() === eventId.toString()){
+            if(element._id.toString() === eventId){
                 events.push(updateEvent);
             }
             events.push(element);
@@ -178,12 +222,22 @@ export default {
 
     /**
      * Delete event
-     * @param {ObjectId} cycleId 
-     * @param {ObjectId} applicationId 
-     * @param {ObjectId} eventId 
+     * @param {string} cycleId 
+     * @param {string} applicationId 
+     * @param {string} eventId 
      * @returns true if the event was deleted, throws otherwise
      */
-    delete: async (cycleId: ObjectId, applicationId: ObjectId, eventId: ObjectId): Promise<boolean> => {
+    deleteEvent: async (cycleId: string, applicationId: string, eventId: string): Promise<boolean> => {
+
+        if(!checkObjectId(cycleId)){
+            throw new Error('Invalid cycleId');
+        }
+        if(!checkObjectId(applicationId)){
+            throw new Error('Invalid applicationId');
+        }
+        if(!checkObjectId(eventId)){
+            throw new Error('Invalid eventId');
+        }
 
         const cyclesCollection: any = await collections.cycles();
         const cycle = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -191,7 +245,7 @@ export default {
 
         let application = null;
         for(let element of cycle.applications){
-            if(element._id.toString() === applicationId.toString()){
+            if(element._id.toString() === applicationId){
                 application = element;
                 break;
             } 
@@ -200,7 +254,7 @@ export default {
 
         let events = [];
         for(let element of application.events){
-            if(element._id.toString() === eventId.toString()){
+            if(element._id.toString() === eventId){
                 continue;
             }
             events.push(element);
