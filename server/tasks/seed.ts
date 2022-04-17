@@ -31,7 +31,7 @@ const seedDB = async () => {
 
 
 // FUNCTIONS TO MAKE OBJECTS 
-    const makeUser = (id: ObjectId, firebaseId: ObjectId, email: string, name: string): UserObject => {
+    const makeUser = (id: ObjectId, firebaseId: string, email: string, name: string): UserObject => {
         return {
             _id: id,
             firebaseId: firebaseId,
@@ -126,11 +126,11 @@ const seedDB = async () => {
     const listOfMedia: Array<MediaObject> = [];
 
 // CREATE USERS
-    const michael: UserObject = makeUser(new ObjectId('624e16475be3fb3026fa8bb4'), new ObjectId('0337af99-6cde-462b-b49d-ec6beaa4afdf'), 'mkarsen@stevens.edu',  'Michael Karsen');
-    const rocco: UserObject   = makeUser(new ObjectId('624e169643afefcc06801ea2'), new ObjectId('07d9c107-e9a9-461e-a865-b1f1522d57aa'), 'rpolimen@stevens.edu', 'Rocco Polimeni');
-    const marco: UserObject   = makeUser(new ObjectId('624e16aa16662f0fa5a22f78'), new ObjectId('3a66aca4-526e-48fb-a3d5-9a25a38e8ffc'),'mpolimen@stevens.edu', 'Marco Polimeni');
-    const brian: UserObject   = makeUser(new ObjectId('624e16ad52210043ef57890a'), new ObjectId('ce265229-5f2f-4245-83b8-8a95f5787b8c'),'bwormser@stevens.edu', 'Brian Wormser');
-    const grace: UserObject   = makeUser(new ObjectId('624e16b16bf9399b0f8d3687'), new ObjectId('7cf14c13-6bd4-4586-83e4-b233439946af'),'gmattern@stevens.edu', 'Grace Mattern');
+    const michael: UserObject = makeUser(new ObjectId('624e16475be3fb3026fa8bb4'), '0337af99-6cde-462b-b49d-ec6beaa4afdf', 'mkarsen@stevens.edu',  'Michael Karsen');
+    const rocco: UserObject   = makeUser(new ObjectId('624e169643afefcc06801ea2'), '07d9c107-e9a9-461e-a865-b1f1522d57aa', 'rpolimen@stevens.edu', 'Rocco Polimeni');
+    const marco: UserObject   = makeUser(new ObjectId('624e16aa16662f0fa5a22f78'), '3a66aca4-526e-48fb-a3d5-9a25a38e8ffc','mpolimen@stevens.edu', 'Marco Polimeni');
+    const brian: UserObject   = makeUser(new ObjectId('624e16ad52210043ef57890a'), 'ce265229-5f2f-4245-83b8-8a95f5787b8c','bwormser@stevens.edu', 'Brian Wormser');
+    const grace: UserObject   = makeUser(new ObjectId('624e16b16bf9399b0f8d3687'), '7cf14c13-6bd4-4586-83e4-b233439946af','gmattern@stevens.edu', 'Grace Mattern');
 
 // CREATE CYCLES
     const michaelFall: CycleObject = makeCycle(new ObjectId('624e956c4c06f2509b940b1d'), new Date('September 22, 2021'), new Date('December 20, 2021'));
@@ -198,7 +198,7 @@ const seedDB = async () => {
     const appleEvent3: EventObject = makeEvent(new ObjectId('624e3984d3c0dff0ef801fd2'), false, 'Technical Interview', new Date('October 5, 2021'),    'Online');
     const appleEvent4: EventObject = makeEvent(new ObjectId('624e325d6ffcd86beaf6b99d'), false, 'In Person Interview', new Date('October 12, 2021'),   `864 Alta Loma Dr South San Francisco, California(CA), 94080`);
     
-    addEventToApplication(apple, appleEvent1);`This`
+    addEventToApplication(apple, appleEvent1);
     addEventToApplication(apple, appleEvent2);
     addEventToApplication(apple, appleEvent3);
     addEventToApplication(apple, appleEvent4);
