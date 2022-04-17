@@ -38,7 +38,7 @@ might be the same as login depending on how firebase works? We'll see when we st
 
 telling firebase you are logging out and to remove authtoken from request headers
 
-#### /cycle
+#### /cycles
 
 makes a new cycle for the current user
 
