@@ -8,7 +8,7 @@ import { ApplicationObject, CycleObject, EventObject, UserObject } from '../typi
  * @param {string} userId
  * @param {string} applicationId
  * @param {string} eventId
- * @returns {Promise<Object>} The event given the ids above
+ * @returns {Promise<EventObject>} The event given the ids above
  */
 export const getEventById = async(userId: string, applicationId: string, eventId: string):Promise<EventObject> => {
     
@@ -26,7 +26,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -55,7 +55,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  * Get all events
  * @param {string} userId
  * @param {string} applicationId
- * @returns {Promise<Object[]>}All the events of the application
+ * @returns {Promise<EventObject[]>}All the events of the application
  */
  export const getAllEvents = async (userId: string, applicationId: string): Promise<EventObject[]> => {
 
@@ -70,7 +70,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -97,7 +97,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  * @param {string} title 
  * @param {Date} date 
  * @param {String} location 
- * @returns {Promise<Object>} if the event was created, throws otherwise 
+ * @returns {Promise<EventObject>} if the event was created, throws otherwise 
  */
  export const createEvent = async (userId: string, applicationId: string, title: string, date: string, location: string): Promise<EventObject> => {
 
@@ -121,7 +121,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -157,7 +157,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     );
     if (updateInfo.WriteResult.nModified === 0) throw new Error('Could not add event');
 
-    return await getEventById(userId, applicationId, newEvent._id);
+    return await getEventById(userId, applicationId, newEvent._id.toString());
 }
 
 /**
@@ -166,6 +166,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  * @param {string} applicationId 
  * @param {string} eventId
  * @param {Object} eventObject can contain: {title: string, date: Date, location: string}
+ * @returns {Promise<EventObject>} if event  was updated 
  */
  export const updateEvent = async (userId: string, applicationId: string, eventId: string, eventObject: Object): Promise<EventObject> => {
 
@@ -183,7 +184,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -266,7 +267,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
