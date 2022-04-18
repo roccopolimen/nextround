@@ -27,7 +27,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -71,7 +71,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -128,7 +128,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -152,7 +152,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
     }
     if(application === null) throw new Error('Could not find application');
     
-    let updateInfo = await cyclesCollection.update(
+    let updateInfo = await cyclesCollection.updateOne(
         {
         _id: new ObjectId(cycleId),
         "applications._id": new ObjectId(applicationId)
@@ -162,9 +162,9 @@ export const getContactById = async (userId: string, applicationId: string, cont
             }
         }
     );
-    if (updateInfo.WriteResult.nModified === 0) throw new Error('Could not add contact');
+    if (updateInfo.modifiedCount === 0) throw new Error('Could not add contact');
 
-    return await getContactById(userId, applicationId, newContact._id);
+    return await getContactById(userId, applicationId, newContact._id.toString());
 }
 
 /**
@@ -191,7 +191,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -236,7 +236,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
     }
 
     //update mongodb with new contacts list
-    let updateInfo = await cyclesCollection.update(
+    let updateInfo = await cyclesCollection.updateOne(
         {
         _id: new ObjectId(cycleId),
         "applications._id": new ObjectId(applicationId)
@@ -246,7 +246,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
             }
         }
     );
-    if (updateInfo.WriteResult.nModified === 0) throw new Error('Could not update contact');
+    if (updateInfo.modifiedCount === 0) throw new Error('Could not update contact');
 
     return await getContactById(userId, applicationId, contactId);
 }
@@ -274,7 +274,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1];
+    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
 
     const cyclesCollection: any = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
@@ -298,7 +298,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
     }
     if(contacts.length === application.contacts.length) throw new Error('Could not find contact');
     
-    let updateInfo = await cyclesCollection.update(
+    let updateInfo = await cyclesCollection.updateOne(
         {
         _id: new ObjectId(cycleId),
         "applications._id": new ObjectId(applicationId)
@@ -308,7 +308,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
             }
         }
     );
-    if (updateInfo.WriteResult.nModified === 0) throw new Error('Could not remove contact');
+    if (updateInfo.modifiedCount === 0) throw new Error('Could not remove contact');
 
     return true;
 }
