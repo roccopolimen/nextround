@@ -156,7 +156,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     );
     if (updateInfo.WriteResult.nModified === 0) throw new Error('Could not add event');
 
-    return await getEventById(cycleId, applicationId, newEvent._id);
+    return await getEventById(userId, applicationId, newEvent._id);
 }
 
 /**
@@ -239,7 +239,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     );
     if (updateInfo.WriteResult.nModified === 0) throw new Error('Could not update event');
 
-    return await getEventById(cycleId, applicationId, eventId);
+    return await getEventById(userId, applicationId, eventId);
 }
 
 /**
