@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from 'constants';
-import { AuthProvider } from 'context';
+// import { AuthProvider } from 'context';
 import Landing from 'pages/Landing';
 import SignIn from 'pages/SignIn';
 import SignUp from 'pages/SignUp';
