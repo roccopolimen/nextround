@@ -1,7 +1,7 @@
-import { cycles } from '../config/mongoCollections';
+import { cycles, users } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
-import { checkObjectId, checkNonEmptyString, checkPositiveNumber } from '../helpers/error';
-import { CycleObject, ApplicationObject } from '../typings';
+import { checkObjectId, checkNonEmptyString } from '../helpers/error';
+import { CycleObject, ApplicationObject, UserObject } from '../typings';
 import { randomColor } from '../helpers/color'
 
 export default {
@@ -88,10 +88,10 @@ export default {
      * @returns {Promise<ApplicationObject>} Returns the created application Object if successful anf throws
      * and error otherwise
      */
-    createApplication: async (cycleId: string, company: string, position: string, location: string,
+    createApplication: async (userId: string, company: string, position: string, location: string,
         jobPostUrl: string, description: string):
         Promise<ApplicationObject> => {
-        if(!cycleId || !checkObjectId(cycleId)) {
+        if(!userId || !checkObjectId(userId)) {
             throw new Error("A proper cycle id must be provided.");
         }
 
@@ -135,18 +135,26 @@ export default {
             contacts: []
         }
 
-        //Finds the cycle with cycleId
+        const userCollection: any = await users();
         const cycleCollection: any = await cycles();
+
+        //Gets the user to find the latest user cycle
+        const user: UserObject = await userCollection.findOne({
+            _id: new ObjectId(userId) });
+        if(user === null) {
+            throw new Error("There is no user with that id.");
+        } 
+
+        //Finds the latest cycle of the user
         const cycle: CycleObject = await cycleCollection.findOne({
-            _id: new ObjectId(cycleId)
-        });
+            _id: new ObjectId(user.cycles[user.cycles.length - 1]) });
         if(cycle === null) {
-            throw new Error("There is no cycle with this id.")
+            throw new Error("User has no cycles.")
         }
 
         //Adds the newly created application to the cycle
         cycle["applications"] = cycle["applications"].push(newApp);
-        let updatedInfo = await cycleCollection.updateOne({_id: new ObjectId(cycleId)}, {$set: cycle});
+        let updatedInfo = await cycleCollection.updateOne({_id: cycle["id"]}, {$set: cycle});
         if(updatedInfo.modifiedCount === 0) {
             throw new Error("Could not update cycle with new application.");
         }
