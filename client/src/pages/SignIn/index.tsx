@@ -11,6 +11,8 @@ import Container from '@mui/material/Container';
 import { faGoogle, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import SideDrawer from '../../components/SideDrawer'
+
 export default function SignIn() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -23,6 +25,8 @@ export default function SignIn() {
     };
 
     return (
+      <>
+      <SideDrawer />
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
@@ -95,5 +99,6 @@ export default function SignIn() {
 
         </div>
       </Container>
+      </>
   );
 }

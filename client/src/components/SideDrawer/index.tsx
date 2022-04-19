@@ -122,26 +122,27 @@ export default function SideDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
+          {/* TODO change hrefs */}
           <Box textAlign='center'>
-            <Button variant="contained" color="primary" style={{width: '90%'}}onClick={() => (window.location.href = "http://localhost:3000/signup")}>Add Job Cycle</Button> {/* TODO change signup with create new cycle page */}
+            <Button variant="contained" color="primary" style={{width: '90%'}} onClick={() => (window.location.href = "http://localhost:3000")}>Add Job Cycle</Button> 
           </Box>
-          <ListItem button key="Home">
+          <ListItem button key="Home" onClick={() => (window.location.href = "http://localhost:3000/")}>
             <ListItemIcon> <HomeIcon /> </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem button key="Metics">
+          <ListItem button key="Metics" onClick={() => (window.location.href = "http://localhost:3000/")}>
               <ListItemIcon> <BarChartIcon /> </ListItemIcon>
               <ListItemText primary="Metrics" />
             </ListItem>
-            <ListItem button key="Social">
+            <ListItem button key="Social" onClick={() => (window.location.href = "http://localhost:3000/")}>
               <ListItemIcon> <PublicIcon /> </ListItemIcon>
               <ListItemText primary="Social" />
             </ListItem>
-            <ListItem button key="Archives">
+            <ListItem button key="Archives" onClick={() => (window.location.href = "http://localhost:3000/")}>
               <ListItemIcon> <InventoryIcon /> </ListItemIcon>
               <ListItemText primary="Archives" />
             </ListItem>
-            <ListItem button key="Settings">
+            <ListItem button key="Settings" onClick={() => (window.location.href = "http://localhost:3000/")}>
               <ListItemIcon> <SettingsIcon /> </ListItemIcon>
               <ListItemText primary="Settings" />
             </ListItem>
