@@ -1,4 +1,5 @@
 import express from 'express';
+import { createApplication, createEvent, deleteApplication, deleteEvent, getApplicationById, getApplicationFromCycleById, updateApplication, updateEvent } from '../data';
 import { checkDate, checkNonEmptyString, checkObjectId, checkPositiveNumber, isUsersApplication } from '../helpers';
 import { ApplicationObject, ContactObject, EventObject } from '../typings';
 
@@ -17,8 +18,7 @@ router.get('/:applicationId', async (req, res) => {
         return res.status(401).json({ message: 'requested application is not attached to the user.' });
 
     try {
-        // TODO: use the data function to get the application
-        const application: ApplicationObject = null;
+        const application: ApplicationObject = await getApplicationById(req.session.user._id, applicationId);
         res.json(application);
     } catch(e) {
         res.status(500).json({ message: 'Could not get information about the requested application from the database.', error: e.message });
@@ -40,13 +40,11 @@ router.get('/:cycleId/:applicationId', async (req, res) => {
         return res.status(401).json({ message: 'requested application is not attached to the user.' });
 
     try {
-        // TODO: use the data functions to get the application
-        const application: ApplicationObject = null;
+        const application: ApplicationObject = await getApplicationFromCycleById(cycleId, applicationId);
         res.json(application);
     } catch(e) {
         res.status(500).json({ message: 'Could not get information about the requested application from the database.', error: e.message });
     }
-
 });
 
 // POST /
@@ -75,8 +73,7 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        // TODO: use data function for create application
-        const application: ApplicationObject = null;
+        const application: ApplicationObject = await createApplication(req.session.user._id, company, position, location, jobPostUrl, description);
         res.json(application);
     } catch(e) {
         res.status(500).json({ message: 'problem creating the application.', error: e.message });
@@ -112,8 +109,7 @@ router.post('/event/:applicationId', async (req, res) => {
     }
 
     try {
-        // TODO: use data function for adding event to application
-        const event: EventObject = null;
+        const event: EventObject = await createEvent(req.session.user._id, applicationId, title, date, location);
         res.json(event);
     } catch(e) {
         res.status(500).json({ message: 'problem creating event for the given application.', error: e.message });
@@ -237,8 +233,14 @@ router.patch('/:applicationId', async (req, res) => {
         return res.status(400).json({ message: 'no fields provided to be changed.' });
 
     try {
-        // TODO: use data function to update application
-        const application: ApplicationObject = null;
+        const application: ApplicationObject = 
+                            await updateApplication(
+                                req.session.user._id, applicationId,
+                                newDataObject['company'], newDataObject['position'],
+                                newDataObject['location'], newDataObject['jobPostUrl'],
+                                newDataObject['description'], newDataObject['salary'],
+                                newDataObject['cardColor'], newDataObject['progress']
+                            );
         res.json(application);
     } catch(e) {
         res.status(500).json({ message: 'could not update application for some reason.', error: e.message });
@@ -294,11 +296,15 @@ router.patch('/event/:applicationId/:eventId', async (req, res) => {
         return res.status(400).json({ message: 'no fields provided to update.' });
     
     try {
-        // TODO: use data functions to update event
-        const event: EventObject = null;
+        const event: EventObject = 
+                    await updateEvent(
+                        req.session.user._id, applicationId, eventId,
+                        newDataObject['status'], newDataObject['title'],
+                        newDataObject['date'], newDataObject['location']
+                    );
         res.json(event);
     } catch(e) {
-        return res.status(500).json({ message: 'failed to update event.', error: e.message });
+        res.status(500).json({ message: 'failed to update event.', error: e.message });
     }
 });
 
@@ -382,7 +388,7 @@ router.delete('/:applicationId', async (req, res) => {
         return res.status(401).json({ message: 'requested application is not attached to the user.' });
 
     try {
-        // TODO: use data function to delete application.
+        await deleteApplication(req.session.user._id, applicationId);
         res.json({ message: 'deleted successfully.' });
     } catch(e) {
         res.status(500).json({ message: 'problem occurred while deleting application.', error: e.message });
@@ -404,7 +410,7 @@ router.delete('/event/:applicationId/:eventId', async (req, res) => {
         return res.status(401).json({ message: 'requested application is not attached to the user.' });
 
     try {
-        // TODO: use data function to delete event from application.
+        await deleteEvent(req.session.user._id, applicationId, eventId);
         res.json({ message: 'deleted successfully.' });
     } catch(e) {
         res.status(500).json({ message: 'problem occurred while deleting event from application.', error: e.message });
