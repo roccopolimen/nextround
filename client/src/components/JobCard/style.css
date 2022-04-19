@@ -1,0 +1,32 @@
+.card {
+    border-radius: 15px;
+    display: flex;
+}
+
+.insideCard {
+    flex: '1 0 auto'
+}
+
+.company {
+    text-decoration: none;
+    border-bottom: none;
+    box-shadow: "none";
+    font-family: "Poppins", Helvetica, Arial, sans-serif;
+    align-items: right;
+    color: #F9F8FF;
+}
+.role {
+    text-decoration: none;
+    border-bottom: none;
+    box-shadow: "none";
+    font-family: "Poppins", Helvetica, Arial, sans-serif;
+    align-items: right;
+    color: #ADA7BD;
+}
+.image {
+    height: 60px;
+    width: 60px;
+    margin-left: 8%;
+    margin-top: 18%;
+    border-radius: 100%;
+}
