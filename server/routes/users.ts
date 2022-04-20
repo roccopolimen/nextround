@@ -1,10 +1,10 @@
 import express from 'express';
 import { DecodedIdToken, getAuth } from "firebase-admin/auth";
+import { ObjectId } from 'mongodb';
 import { createUser, getUserByEmail, removeUser } from '../data';
 import { checkNonEmptyString } from '../helpers';
 
 const router = express.Router();
-
 
 // GET /signOut
 router.get('/signOut', async (req, res) => {
@@ -24,27 +24,26 @@ router.post('/signIn', async (req, res) => {
     if(!req.headers.authorization)// no auth token provided
         return res.status(403).json({ message: 'Unauthorized. Need token for login.' });
 
-    let uid: string, email: string;
+    let email: string;
     try { // authenticate with firebase
         let idToken: string = req.headers.authorization as string;
         if(!idToken || !checkNonEmptyString(idToken))
             throw new Error("[routes/users POST signIn] id token is invalid.");
         idToken = idToken.split('JWT ')[1];  
-        const decodedToken: DecodedIdToken = await getAuth().verifyIdToken(idToken);
-        uid = decodedToken.uid;
-        email = decodedToken.email;
+        ({ email } = await getAuth().verifyIdToken(idToken));
     } catch(e) {
         return res.status(403).json({ message: 'Unauthorized. Failed to verify token.', error: e.message });
     }
 
+    let id: ObjectId;
     try { // ensure user is in the database
-        await getUserByEmail(email);
+        ({ _id: id } = await getUserByEmail(email));
     } catch(e) {
         return res.status(401).json({ message: 'User does not exist in database, try sign up.', error: e.message });
     }
 
     // establish express session for current user
-    const user = { _id: uid, email: email };
+    const user = { _id: id.toString(), email: email };
     req.session.user = user;
     return res.json({ message: 'Signed in.' });
 });
@@ -76,14 +75,15 @@ router.post('/signUp', async (req, res) => {
         return res.status(401).json({ message: 'User already exists. Cannot sign up with this email' });
     } catch(e) {}
 
+    let id: ObjectId;
     try { // Add the user to the DB
-        await createUser(uid, email, name);
+        ({ _id: id} = await createUser(uid, email, name));
     } catch(e) {
         return res.status(500).json({ message: 'Issue creating user in database.', error: e.message });
     }
 
     // establish express session for current user
-    const user = { _id: uid, email: email };
+    const user = { _id: id.toString(), email: email };
     req.session.user = user;
     return res.json({ message: 'Signed up.' });
 });

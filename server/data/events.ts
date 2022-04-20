@@ -145,7 +145,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     }
     if(application === null) throw new Error('Could not find application');
     
-    let updateInfo = await cyclesCollection.update(
+    let updateInfo = await cyclesCollection.updateOne(
         {
         _id: new ObjectId(cycleId),
         "applications._id": new ObjectId(applicationId)
@@ -155,7 +155,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
             }
         }
     );
-    if (updateInfo.WriteResult.nModified === 0) throw new Error('Could not add event');
+    if (updateInfo.modifiedCount === 0) throw new Error('Could not add event');
 
     return await getEventById(userId, applicationId, newEvent._id.toString());
 }
@@ -165,81 +165,72 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  * @param {string} userId 
  * @param {string} applicationId 
  * @param {string} eventId
- * @param {Object} eventObject can contain: {title: string, date: Date, location: string}
+ * @param {boolean} status
+ * @param {string} title
+ * @param {string} date
+ * @param {string} location
  * @returns {Promise<EventObject>} if event  was updated 
  */
- export const updateEvent = async (userId: string, applicationId: string, eventId: string, eventObject: Object): Promise<EventObject> => {
-
-    if(!checkObjectId(userId)){
+ export const updateEvent = async (userId: string, applicationId: string, eventId: string, status: boolean, title: string, date: string, location: string): Promise<EventObject> => {
+    if(!checkObjectId(userId))
         throw new Error('Invalid userId');
-    }
-    if(!checkObjectId(applicationId)){
+    if(!checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    }
-    if(!checkObjectId(eventId)){
+    if(!checkObjectId(eventId))
         throw new Error('Invalid eventId');
+
+    let updateFields: [id: string], any = {};
+    if(status)
+        updateFields['status'] = status;
+    if(title) {
+        if(!checkNonEmptyString(title))
+            throw new Error('Title must be a non-empty string.');
+        else
+            updateFields['title'] = title;
+    }
+    if(date) {
+        if(!checkNonEmptyString(date))
+            throw new Error('Date must be a non-empty string.');
+        else
+            updateFields['date'] = date;
+    }
+    if(location) {
+        if(!checkNonEmptyString(location))
+            throw new Error('Location must be a non-empty string.');
+        else
+            updateFields['location'] = location;
     }
 
     const usersCollection: any = await users();
-    const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
+    const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
-
     const cyclesCollection: any = await cycles();
-    const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
+    const cycleId: ObjectId = user.cycles[user.cycles.length - 1];
+    const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
     if(cycle === null) throw new Error('Could not find cycle');
 
-    //find the application
-    let application: ApplicationObject = null;
-    for(let element of cycle.applications){
-        if(element._id.toString() === applicationId){
-            application = element;
-            break;
-        } 
-    }
-    if(application === null) throw new Error('Could not find application');
+    const appIndex: number = cycle.applications.findIndex(a => a._id.toString() === applicationId);
+    if(appIndex === -1) throw new Error("Unable to find an application with that id.");
 
-    //find the event
-    let updateEvent: EventObject = null;
-    for(let element of application.events){
-        if(element._id.toString() === eventId){
-            updateEvent = element
-        }
-    }
-    if(updateEvent === null) throw new Error('Could not find event');
+    const eventIndex: number = cycle.applications[appIndex].events.findIndex(e => e._id.toString() === eventId);
+    if(eventIndex === -1) throw new Error("Unable to find an event on the application with given id.");
 
-
-    //update the event
-    for(let attribute in eventObject){
-        if(attribute in updateEvent){
-            updateEvent[attribute] = eventObject[attribute];
-        } else {
-            throw new Error('Invalid event attribute');
-        }
-    }
-
-    //update the events list
-    let events: EventObject[] = [];
-    for(let element of application.events){
-        if(element._id.toString() === eventId){
-            events.push(updateEvent);
-        }
-        events.push(element);
-    }
+    Object.entries(updateFields).forEach(([field, newValue]) => {
+        cycle.applications[appIndex].events[eventIndex][field] = newValue;
+    });
 
     //update mongodb with new events list
-    let updateInfo = await cyclesCollection.update(
+    let updateInfo = await cyclesCollection.updateOne(
+        { _id: cycleId, "applications._id": new ObjectId(applicationId) }, 
         {
-        _id: new ObjectId(cycleId),
-        "applications._id": new ObjectId(applicationId)
-        }, 
-        {$set: {
-            "applications.$.events": events
+            $set: {
+                "applications.$.events": 
+                    cycle.applications[appIndex].events[eventIndex]
             }
         }
     );
-    if (updateInfo.WriteResult.nModified === 0) throw new Error('Could not update event');
+    if (updateInfo.modifiedCount === 0) throw new Error('Could not update event');
 
     return await getEventById(userId, applicationId, eventId);
 }
@@ -291,7 +282,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     }
     if(events.length === application.events.length) throw new Error('Could not find event');
     
-    let updateInfo = await cyclesCollection.update(
+    let updateInfo = await cyclesCollection.updateOne(
         {
         _id: new ObjectId(cycleId),
         "applications._id": new ObjectId(applicationId)
@@ -301,7 +292,7 @@ export const getEventById = async(userId: string, applicationId: string, eventId
             }
         }
     );
-    if (updateInfo.WriteResult.nModified === 0) throw new Error('Could not remove event');
+    if (updateInfo.modifiedCount === 0) throw new Error('Could not remove event');
 
     return true;
 }

@@ -1,3 +1,4 @@
+import applicationRoutes from './applications';
 import usersRoutes from './users';
 import cyclesRoutes from './cycles';
 import metricsRoutes from './metrics';
@@ -6,6 +7,7 @@ import forumRoutes from './forum';
 
 const constructorMethod = (app: any) => {
     
+    app.use('/application', applicationRoutes);
     app.use('/users', usersRoutes);
     app.use('/cycles', cyclesRoutes);
     app.use('/metrics', metricsRoutes);
