@@ -1,5 +1,5 @@
 import express from 'express';
-import { createApplication, createEvent, deleteApplication, deleteEvent, getApplicationById, getApplicationFromCycleById, updateApplication, updateEvent } from '../data';
+import { createApplication, createContact, createEvent, deleteApplication, deleteContact, deleteEvent, getApplicationById, getApplicationFromCycleById, updateApplication, updateContact, updateEvent } from '../data';
 import { checkDate, checkNonEmptyString, checkObjectId, checkPositiveNumber, isUsersApplication } from '../helpers';
 import { ApplicationObject, ContactObject, EventObject } from '../typings';
 
@@ -150,8 +150,7 @@ router.post('/contact/:applicationId', async (req, res) => {
     }
 
     try {
-        // TODO: use data functions for adding contact to application
-        const contact: ContactObject = null;
+        const contact: ContactObject = await createContact(req.session.user._id, applicationId, name, pronouns, location, phone, email);
         res.json(contact);
     } catch(e) {
         res.status(500).json({ message: 'problem creating contact for application.', error: e.message })
@@ -367,8 +366,7 @@ router.patch('/contact/:applicationId/:contactId', async (req, res) => {
         return res.status(400).json({ message: 'no fields provided to update.' });
     
     try {
-        // TODO: use data functions to update comtact
-        const contact: ContactObject = null;
+        const contact: ContactObject = await updateContact(req.session.user._id, applicationId, contactId, newDataObject['name'], newDataObject['pronouns'], newDataObject['location'], newDataObject['phone'], newDataObject['email']);
         res.json(contact);
     } catch(e) {
         return res.status(500).json({ message: 'failed to update contact.', error: e.message });
@@ -432,7 +430,7 @@ router.delete('/contact/:applicationId/:contactId', async (req, res) => {
         return res.status(401).json({ message: 'requested application is not attached to the user.' });
 
     try {
-        // TODO: use data function to delete contact from application.
+        await deleteContact(req.session.user._id, applicationId, contactId);
         res.json({ message: 'deleted successfully.' });
     } catch(e) {
         res.status(500).json({ message: 'problem occurred while deleting contact from application.', error: e.message });
