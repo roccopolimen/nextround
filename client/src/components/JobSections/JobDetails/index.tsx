@@ -1,4 +1,5 @@
-import { Grid, InputAdornment, TextField } from "@mui/material";
+import { Grid, InputAdornment, TextField, ToggleButton,
+     ToggleButtonGroup } from "@mui/material";
 import { ColorPicker, Color } from 'material-ui-color';
 import { useState, useEffect } from "react";
 import { ApplicationObject } from "typings";
@@ -14,6 +15,11 @@ export default function JobDetails(props:
     const [location, setLocation] = useState(undefined as string | undefined);
     const [salary, setSalary] = useState(undefined as number | undefined);
     const [cardColor, setCardColor] = useState(undefined as string | undefined);
+    const [description, setDescription] = useState(undefined as
+                                                     string | undefined);
+    const [progress, setProgress] = useState(undefined as number | undefined);
+    
+    // TODO: Responsive design
     
     useEffect(() => {
         if (props.data) {
@@ -24,12 +30,21 @@ export default function JobDetails(props:
             setLocation(props.data.location);
             setSalary(props.data.salary);
             setCardColor(props.data.cardColor);
+            setDescription(props.data.description);
+            setProgress(props.data.progress);
         }
     }, [data, props.data]);
 
     const handleColorChange = (color: Color) => {
         setCardColor('#' + color.hex);
     };
+
+    const handleProgressUpdate = (event: React.MouseEvent<HTMLElement>,
+        value: number | null): void => {
+        if (value !== null) {
+            setProgress(value);
+        }
+    }
 
     if(!data) {
         return <div>Loading...</div>;
@@ -67,14 +82,48 @@ export default function JobDetails(props:
                           }}
                         defaultValue={salary} /> : <div></div>}
                 </Grid>
-                {/* TODO: Make color picker larger and add label */}
                 <Grid item xs={2} sm={4} md={4}>
+                    <label htmlFor="color-picker">Card Color</label>
                     {cardColor ? <ColorPicker value={cardColor}
-                                    hideTextfield
                                     onChange={handleColorChange} /> :
                              <div></div>}
                 </Grid>
-                {/* TODO: Add description and progress picker */}
+                <Grid item xs={2} sm={4} md={4}>
+                    {description ? <TextField id="description-value"
+                        variant="outlined" label="Description" size="small"
+                        multiline
+                        rows={5}
+                        defaultValue={description} /> : <div></div>}
+                </Grid>
+                <Grid item xs={2} sm={4} md={4}>
+                    <ToggleButtonGroup
+                        value={progress}
+                        exclusive
+                        color="primary"
+                        onChange={handleProgressUpdate}
+                        aria-label="Progress Picker" >
+                        <ToggleButton value={0} aria-label="in progress"
+                            fullWidth >
+                            <p>In Progress</p>
+                        </ToggleButton>
+                        <ToggleButton value={1} aria-label="offer"
+                            fullWidth >
+                            <p>Offer</p>
+                        </ToggleButton>
+                        <ToggleButton value={2} aria-label="rejected"
+                            fullWidth >
+                            <p>Rejected</p>
+                        </ToggleButton>
+                        <ToggleButton value={3} aria-label="waitlisted"
+                            fullWidth >
+                            <p>Waitlisted</p>
+                        </ToggleButton>
+                        <ToggleButton value={4} aria-label="ghosted"
+                            fullWidth >
+                            <p>Ghosted</p>
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
             </Grid>
       );
     }

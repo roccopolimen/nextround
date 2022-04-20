@@ -61,7 +61,7 @@ export default function Job() {
             cardColor: "#efc920",
             progress: 0,
             jobPostUrl: "https://www.google.com/",
-            description: "",
+            description: "L4 engineering role at Google; no referral",
             notes: [],
             events: [],
             contacts: []
