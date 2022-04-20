@@ -1,6 +1,6 @@
 import { cycles, users } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
-import { checkObjectId, checkNonEmptyString, checkEmail, checkName } from '../helpers';
+import { checkObjectId, checkNonEmptyString, checkEmail, checkName, checkPhoneNumber } from '../helpers';
 import { ApplicationObject, ContactObject, CycleObject, UserObject } from '../typings';
 
 
@@ -117,7 +117,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
     if(!checkNonEmptyString(location)){
         throw new Error('Invalid location');
     }
-    if(!checkNonEmptyString(phone)){
+    if(!checkPhoneNumber(phone)){
         throw new Error('Invalid phone number');
     }
     if(!checkEmail(email)){
@@ -175,16 +175,47 @@ export const getContactById = async (userId: string, applicationId: string, cont
  * @param {object} contactObject can contain: {name: string, pronouns: string, location, phone: string, email: string}
  * @returns {Promise<ContactObject>} if the contact was updated
  */
- export const updateContact = async (userId: string, applicationId: string, contactId: string, contactObject: object): Promise<ContactObject> => {
+ export const updateContact = async (userId: string, applicationId: string, contactId: string, name: string, pronouns: string, location: string, phone: string, email: string): Promise<ContactObject> => {
 
-    if(!checkObjectId(userId)){
+    if(!checkObjectId(userId))
         throw new Error('Invalid userId');
-    }
-    if(!checkObjectId(applicationId)){
+
+    if(!checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    }
-    if(!checkObjectId(contactId)){
+
+    if(!checkObjectId(contactId))
         throw new Error('Invalid contactId');
+
+    let updateFields: [id: string], any = {};
+    if(name) {
+        if(!checkNonEmptyString(name))
+            throw new Error('Name must be a non-empty string.');
+        else
+            updateFields['name'] = name;
+    }
+    if(pronouns) {
+        if(!checkNonEmptyString(pronouns))
+            throw new Error('Pronouns must be a non-empty string.');
+        else
+            updateFields['pronouns'] = pronouns;
+    }
+    if(location) {
+        if(!checkNonEmptyString(location))
+            throw new Error('Location must be a non-empty string.');
+        else
+            updateFields['location'] = location;
+    }
+    if(phone){
+        if(!checkPhoneNumber(phone))
+            throw new Error('Phone must be a valid phone number string.');
+        else
+            updateFields['phone'] = phone;
+    }
+    if(email){
+        if(!checkEmail(email))
+            throw new Error('Email must be a valid phone number string.');
+        else
+            updateFields['email'] = email;
     }
 
     const usersCollection: any = await users();
@@ -197,43 +228,15 @@ export const getContactById = async (userId: string, applicationId: string, cont
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
     if(cycle === null) throw new Error('Could not find cycle');
 
-    //find the application
-    let application: ApplicationObject = null;
-    for(let element of cycle.applications){
-        if(element._id.toString() === applicationId){
-            application = element;
-            break;
-        } 
-    }
-    if(application === null) throw new Error('Could not find application');
+    const appIndex: number = cycle.applications.findIndex(a => a._id.toString() === applicationId);
+    if(appIndex === -1) throw new Error("Unable to find an application with that id.");
 
-    //find the contact
-    let updateContact: ContactObject = null;
-    for(let element of application.contacts){
-        if(element._id.toString() === contactId){
-            updateContact = element
-        }
-    }
-    if(updateContact === null) throw new Error('Could not find contact');
+    const contactIndex: number = cycle.applications[appIndex].contacts.findIndex(c => c._id.toString() === contactId);
+    if(contactIndex === -1) throw new Error("Unable to find a contact on the application with given id.");
 
-
-    //update the contact
-    for(let attribute in contactObject){
-        if(attribute in updateContact){
-            updateContact[attribute] = contactObject[attribute];
-        } else {
-            throw new Error('Invalid contact attribute');
-        }
-    }
-
-    //update the contacts list
-    let contacts: ContactObject[] = [];
-    for(let element of application.contacts){
-        if(element._id.toString() === contactId){
-            contacts.push(updateContact);
-        }
-        contacts.push(element);
-    }
+    Object.entries(updateFields).forEach(([field, newValue]) => {
+        cycle.applications[appIndex].contacts[contactIndex][field] = newValue;
+    });
 
     //update mongodb with new contacts list
     let updateInfo = await cyclesCollection.updateOne(
@@ -242,7 +245,7 @@ export const getContactById = async (userId: string, applicationId: string, cont
         "applications._id": new ObjectId(applicationId)
         }, 
         {$set: {
-            "applications.$.contacts": contacts
+            "applications.$.contacts": cycle.applications[appIndex].events[contactIndex]
             }
         }
     );
