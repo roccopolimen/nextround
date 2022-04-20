@@ -1,16 +1,35 @@
 import { Box, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Info, Event, Contacts, Description } from '@mui/icons-material';
+import JobDetails from "components/JobSections/JobDetails";
+import { ApplicationObject } from "typings";
 
 export default function Job() {
     // Constants
     const BASE_CLEARBIT_URL = 'https://logo.clearbit.com/';
 
     // State variables
+    const emptyApplication: ApplicationObject = {
+        _id: "",
+        company: "",
+        position: "",
+        location: "",
+        salary: 0,
+        cardColor: "",
+        progress: 0,
+        jobPostUrl: "",
+        description: "",
+        notes: [],
+        events: [],
+        contacts: []
+    };
     const [currTab, setCurrTab] = useState(0);
+    const [data, setData] = useState(emptyApplication);
     const [role, setRole] = useState("");
     const [company, setCompany] = useState("");
     const [url, setUrl] = useState("");
+    const [component, setComponent] = useState(undefined as
+                                     ReactElement<any, any> | undefined);
 
     // Responsive design
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
@@ -33,6 +52,20 @@ export default function Job() {
         // On mount
 
         // TODO: make api call to get job info
+        setData({
+            _id: "5e9f9f9f9f9f9f9f9f9f9f9",
+            company: "Google",
+            position: "Software Engineer",
+            location: "Mountain View, CA",
+            salary: 100000,
+            cardColor: "#efc920",
+            progress: 0,
+            jobPostUrl: "https://www.google.com/",
+            description: "",
+            notes: [],
+            events: [],
+            contacts: []
+        });
         setRole("Software Engineer");
         setCompany("Google");
         setUrl("google.com"); // maybe use clearbit api in more clever way?
@@ -40,9 +73,24 @@ export default function Job() {
 
     useEffect(() => {
         // On tab change
-
-        // TODO: change component based on tab
-    }, [currTab]);
+        const chooseComponent = () => {
+            switch (currTab) {
+                case 0:
+                    return (
+                        <JobDetails data={data}/>
+                    );
+                case 1:
+                    return <div>Events</div>;
+                case 2:
+                    return <div>Contacts</div>;
+                case 3:
+                    return <div>Notes</div>;
+                default:
+                    return <div>Error</div>;
+            }
+        };
+        setComponent(data ? chooseComponent() : undefined);
+    }, [currTab, data]);
 
     
     return (
@@ -85,6 +133,9 @@ export default function Job() {
                         label={notes}
                         sx={{ mx: tab_spacing }} />
                 </Tabs>
+            </Box>
+            <Box sx={{ width: '75%', mx: 'auto', mt: 2 }}>
+                {component}
             </Box>
         </>
     );
