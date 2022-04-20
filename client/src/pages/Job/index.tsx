@@ -8,17 +8,21 @@ export default function Job() {
 
     // State variables
     const [currTab, setCurrTab] = useState(0);
-    const [role, setRole] = useState("Software Engineer");
-    const [company, setCompany] = useState("Google");
-    const [url, setUrl] = useState("google.com");
+    const [role, setRole] = useState("");
+    const [company, setCompany] = useState("");
+    const [url, setUrl] = useState("");
 
     // Responsive design
-    const mobile = useMediaQuery('(max-width: 900px)');
-    let details = mobile ? "" : "Details";
-    let events = mobile ? "" : "Events";
-    let contacts = mobile ? "" : "Contacts";
-    let notes = mobile ? "" : "Notes";
-    let tab_spacing = mobile ? 0 : 5;
+    const mobile: boolean = useMediaQuery('(max-width: 900px)');
+    let details: string = mobile ? "" : "Details";
+    let events: string = mobile ? "" : "Events";
+    let contacts: string = mobile ? "" : "Contacts";
+    let notes: string = mobile ? "" : "Notes";
+    let tab_spacing: number = mobile ? 0 : 5;
+    let iconSize: string = mobile ? "small" : "medium";
+    let h1Size: string = mobile ? "1rem": "2.5rem";
+    let h2Size: string = mobile ? ".75rem": "2rem";
+    let imgSize: number = mobile ? 45 : 75;
 
     // Functions
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -45,34 +49,39 @@ export default function Job() {
         <>
             <Box sx={{ display: 'flex', mt: 3, mb: 1 }}>
                 <Box component="img" 
-                    sx={{ mx: 5, height: 75, width: 75, borderRadius: '50%' }} 
+                    sx={{ mx: 5, height: imgSize, width: imgSize,
+                         borderRadius: '50%' }} 
                     src={`${BASE_CLEARBIT_URL}${url}`} alt={company} />
                 <div className="job-page-typography">
                     <Typography variant="h1" id="role"
-                        sx={{ fontSize: '2.5rem' }}
+                        sx={{ fontSize: h1Size }}
                         color="#190446">{role}</Typography>
                     <Typography variant="h2" id="company"
-                        sx={{ fontSize: '2rem' }}
+                        sx={{ fontSize: h2Size }}
                         color="#ADA7BD">{company}</Typography>
                 </div>
             </Box>
-            <Box sx={{ width: '75%', mx: 'auto',
+            <Box sx={{ width: '100%', mx: 'auto',
                  borderBottom: '0.05rem solid #ADA7BD' }}>
                 <Tabs value={currTab}
                     onChange={handleChange}
-                    centered
+                    variant="fullWidth"
                     aria-label="tab navigation">
-                    <Tab icon={<Info />} iconPosition="start" 
+                    <Tab icon={<Info style={{ fontSize: iconSize }} />}
+                        iconPosition="start" 
                         label={details}
                         disableRipple
                         sx={{ mx: tab_spacing }} />
-                    <Tab icon={<Event />} iconPosition="start" 
+                    <Tab icon={<Event style={{ fontSize: iconSize }} />}
+                        iconPosition="start" 
                         label={events}
                         sx={{ mx: tab_spacing }} />
-                    <Tab icon={<Contacts />} iconPosition="start" 
+                    <Tab icon={<Contacts style={{ fontSize: iconSize }} />}
+                        iconPosition="start" 
                         label={contacts}
                         sx={{ mx: tab_spacing }} />
-                    <Tab icon={<Description />} iconPosition="start" 
+                    <Tab icon={<Description style={{ fontSize: iconSize }} />}
+                        iconPosition="start" 
                         label={notes}
                         sx={{ mx: tab_spacing }} />
                 </Tabs>
