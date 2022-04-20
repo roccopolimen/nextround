@@ -116,6 +116,14 @@ function checkTime(timeStr: string): boolean {
     return (/^([01]\d|2[0-3]):?([0-5]\d)$/.test(timeStr));
 }
 
+/**
+ * @description Checks if a given string is a valid phone number
+ * @param {string} phoneStr the string to validate
+ * @returns {boolean} true if the string is a valid phone number and false otherwise
+ */
+ function checkPhoneNumber(phoneStr: string): boolean {
+    return (/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(phoneStr));
+}
 
 export {
     checkObjectId,
@@ -127,5 +135,6 @@ export {
     checkName,
     checkArrayObjectId,
     checkDate,
-    checkTime
+    checkTime,
+    checkPhoneNumber
 }
