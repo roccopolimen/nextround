@@ -1,14 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import firebase from 'firebase/compat/app';
 
-enum StatusCode {
-    BadInput = 400,
-    Unauthorized = 401,
-    Forbidden = 403,
-    TooManyRequests = 429,
-    InternalServerError = 500,
-}
-
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: "application/json",
   "Content-Type": "application/json; charset=utf-8",
@@ -83,31 +75,6 @@ class Fetcher {
     }
 
     private handleError(error: any) {
-        const { status } = error;
-
-        switch (status) {
-            case StatusCode.BadInput: {
-                console.log(error);
-                break;
-            }
-            case StatusCode.InternalServerError: {
-                console.log(error);
-                break;
-            }
-            case StatusCode.Forbidden: {
-                console.log(error);
-                break;
-            }
-            case StatusCode.Unauthorized: {
-                console.log(error);
-                break;
-            }
-            case StatusCode.TooManyRequests: {
-                console.log(error);
-                break;
-            }
-        }
-
         return Promise.reject(error);
     }
 }
