@@ -1,25 +1,32 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Drawer from '@mui/material/Drawer';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Collapse from '@mui/material/Collapse';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import MenuIcon from '@mui/icons-material/Menu';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+
 import HomeIcon from '@mui/icons-material/Home';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import PublicIcon from '@mui/icons-material/Public';
+import ForumIcon from '@mui/icons-material/Forum';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import SettingsIcon from '@mui/icons-material/Settings';
+
+// const cycleData = require('../../../../server/data/cycles');
 
 const drawerWidth = 240;
 
@@ -72,9 +79,16 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function SideDrawer() {
+const SideDrawer = (props: any) => {
+  // props is the user id
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [ddOpen, setDdOpen] = React.useState(false);
+  const [itemsData, setItemsData] = React.useState(undefined);
+
+  const handleClick = () => {
+    setDdOpen(!ddOpen);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -83,6 +97,32 @@ export default function SideDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  // useEffect(() => {
+  //   console.log('get cycles useEffect fired');
+  //   async function fetchData() {
+  //     try {
+  //       const allCycle = await cycleData.getAllCycles(props.match.params.id);
+  //       setItemsData(allCycle);
+  //     } catch (e) {
+  //       console.log("An error occurred");
+  //     }
+  //   }
+  //   fetchData();
+  // }, [props.match.params.id]);
+
+  // const buildList = (item: any) => {
+  //   return (
+  //     <List component="div" disablePadding>
+  //       {/* TODO change href to each cycle */}
+  //       <ListItemButton sx={{ pl: 4 }} onClick={() => (window.location.href = "http://localhost:3000/")}>
+  //         <ListItemText primary={item.startDate} />
+  //       </ListItemButton>
+  //     </List>
+  //   )
+  // }
+
+  // let list = itemsData && itemsData.map((item: any) => {return buildList(item)})
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -134,20 +174,36 @@ export default function SideDrawer() {
               <ListItemIcon> <BarChartIcon /> </ListItemIcon>
               <ListItemText primary="Metrics" />
             </ListItem>
-            <ListItem button key="Social" onClick={() => (window.location.href = "http://localhost:3000/")}>
-              <ListItemIcon> <PublicIcon /> </ListItemIcon>
-              <ListItemText primary="Social" />
-            </ListItem>
-            <ListItem button key="Archives" onClick={() => (window.location.href = "http://localhost:3000/")}>
-              <ListItemIcon> <InventoryIcon /> </ListItemIcon>
-              <ListItemText primary="Archives" />
+            <ListItem button key="Forum" onClick={() => (window.location.href = "http://localhost:3000/")}>
+              <ListItemIcon> <ForumIcon /> </ListItemIcon>
+              <ListItemText primary="Forum" />
             </ListItem>
             <ListItem button key="Settings" onClick={() => (window.location.href = "http://localhost:3000/")}>
               <ListItemIcon> <SettingsIcon /> </ListItemIcon>
               <ListItemText primary="Settings" />
             </ListItem>
+            <ListItem button key="Archives" onClick={handleClick}>
+              <ListItemIcon> <InventoryIcon /> </ListItemIcon>
+              <ListItemText primary="Archives" />
+              {ddOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={ddOpen} timeout="auto" unmountOnExit>
+              {/* {list} */}
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemText primary="Archive test" />
+                </ListItemButton>
+              </List>
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 4 }} onClick={() => (window.location.href = "http://localhost:3000/")}>
+                  <ListItemText primary="Create New Cycle" />
+                </ListItemButton>
+              </List>
+            </Collapse>
         </List>
       </Drawer>
     </Box>
   );
 }
+
+export default SideDrawer;
