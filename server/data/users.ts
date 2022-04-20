@@ -1,8 +1,7 @@
 import { ObjectId } from 'mongodb';
-import mongoCollections from '../config/mongoCollections';
+import { cycles, users } from '../config/mongoCollections';
 import { checkEmail, checkNonEmptyString, checkObjectId } from '../helpers';
 import { UserObject } from '../typings';
-const { users, cycles } = mongoCollections;
 
 /**
  * Get a user with a specific firebase id.

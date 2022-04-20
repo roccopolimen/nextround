@@ -2,6 +2,7 @@ import { cycles } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
 import { checkObjectId } from '../helpers/error';
 import { CycleObject, MetricsObject } from '../typings';
+import { getCycleByID } from './cycles';
 
 /**
  * @description Gets metric data for cycle with given id
@@ -13,9 +14,7 @@ export const getMetricsByID = async (id: string): Promise<MetricsObject> => {
         throw new Error('Invalid id');
     }
 
-    const cycleCollection = await cycles();
-    const cycle: CycleObject = await cycleCollection.findOne({
-        _id: new ObjectId(id)});
+    const cycle: CycleObject = await getCycleByID(id);
     if(cycle === null)
         throw new Error("There is no cycle with that id.");
 
@@ -40,7 +39,7 @@ export const getMetricsByID = async (id: string): Promise<MetricsObject> => {
             if(event.title === "Apply" && event.status === true) {
                 num_applications++; // another application
                 application_timeline.push(event.date); // add to timeline
-            } else if(event.title !== "Saved" && event.status === true) {
+            } else if(event.status === true) {
                 if(!interview_flag) {
                     num_interviewed++; // another interviewed application
                     interview_flag = true;

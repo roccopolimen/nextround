@@ -1,8 +1,9 @@
 import { ObjectId } from 'mongodb';
-import { media, users } from '../config/mongoCollections';
+import { media } from '../config/mongoCollections';
 import { checkObjectId, checkPositiveNumber } from '../helpers';
 import { ForumPostObject, MetricsObject, UserObject } from '../typings';
 import { getMetricsByID } from './metrics';
+import { getUserById } from './users';
 
 /**
  * @description Gets all posts from the forum
@@ -33,9 +34,8 @@ export const createForumPost = async (userId: string,
     if(!checkObjectId(userId)){
         throw new Error('Invalid id');
     }
-    const userCollection = await users();
-    const poster: UserObject = await userCollection.findOne({
-        _id: new ObjectId(userId) });
+
+    const poster: UserObject = await getUserById(userId);
     if(poster === null)
         throw new Error("There is no user with that id.");
 
