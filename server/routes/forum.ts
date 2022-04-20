@@ -7,6 +7,9 @@ const router = express.Router();
 
 // GET /forum?num_posts=<number>
 router.get('/', async (req, res) => {
+    if(!req.query.num_posts) {
+        return res.status(400).send('Number of posts not provided.');
+    }
     const num_posts: number = parseInt("" + req.query.num_posts);
     if(!checkPositiveNumber(num_posts)){
         return res.status(400).send('Invalid number of posts');

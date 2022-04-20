@@ -6,7 +6,7 @@ import { getMetricsByID } from './metrics';
 
 /**
  * @description Gets all posts from the forum
- * @param num_posts Number of posts to return
+ * @param {number} num_posts Number of posts to return
  * @returns {Promise<Array<ForumPostObject>>} List of posts
  */
 export const getForumPosts = async (
@@ -23,8 +23,8 @@ export const getForumPosts = async (
 
 /**
  * @description Creates a new forum post
- * @param userId User id
- * @param content Content of the post
+ * @param {string} userId User id
+ * @param {string} content Content of the post
  * @returns {Promise<ForumPostObject>} The newly created post object
  */
 export const createForumPost = async (userId: string,

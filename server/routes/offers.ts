@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     // Gets current cycle
     try {
         let cycles: CycleObject[] = await getAllCycles(req.session.user._id);
-        let offers: Array<ApplicationObject> = [];
+        let offers: ApplicationObject[] = [];
         // For each app in current cycle, add to offers if progess is 2 (offer)
         for(let application of cycles.slice(-1)[0].applications)
             if(application.progress === 1)
