@@ -43,7 +43,7 @@ export default function Settings() {
           {/* TODO change with user pfp */}
           <div className="pfp">
           <img src={require('../../images/logo.svg').default} alt="logo" width="128" height="128"/>
-          <Fab color="primary" aria-label="edit" size="small">
+          <Fab className="FAB" color="primary" aria-label="edit" size="small">
             <EditIcon />
           </Fab>
           </div>
