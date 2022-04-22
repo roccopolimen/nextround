@@ -13,16 +13,20 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 export default function Settings() {
     const [showPassword, setShowPassword] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
     const handleClickShowPassword = () => setShowPassword(!showPassword);
+    const handleClickShowPassword2 = () => setShowPassword2(!showPassword2);
     
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO PATCH/PUT
     const data = new FormData(event.currentTarget);
+    // if (data.get)
     console.log({
       name: data.get("name"),
       email: data.get("email"),
       password: data.get("password"),
+      password2: data.get("password2"),
     });
   };
 
@@ -78,9 +82,7 @@ export default function Settings() {
             id="password"
             label="Password"
             name="password"
-            autoComplete="password"
             variant="outlined"
-            defaultValue="PASSWORD"
             // helperText="Password"
             type={showPassword ? "text" : "password"}
             InputProps={{ // toggling
@@ -91,6 +93,28 @@ export default function Settings() {
                       onClick={handleClickShowPassword}
                     >
                       {showPassword ? <Visibility /> : <VisibilityOff />}
+                     </Button>
+                   </InputAdornment>
+                )
+              }}
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            id="password2"
+            label="Password Confirmation"
+            name="password2"
+            variant="outlined"
+            // helperText="Password"
+            type={showPassword2 ? "text" : "password"}
+            InputProps={{ // toggling
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Button
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword2}
+                    >
+                      {showPassword2 ? <Visibility /> : <VisibilityOff />}
                      </Button>
                    </InputAdornment>
                 )
