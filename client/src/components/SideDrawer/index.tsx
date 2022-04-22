@@ -19,6 +19,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from "react-router-dom";
 
 import HomeIcon from '@mui/icons-material/Home';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -85,6 +86,7 @@ const SideDrawer = (props: any) => {
   const [open, setOpen] = React.useState(false);
   const [ddOpen, setDdOpen] = React.useState(false);
   const [itemsData, setItemsData] = React.useState(undefined);
+  const navigate = useNavigate();
 
   const handleClick = () => {
     setDdOpen(!ddOpen);
@@ -115,7 +117,7 @@ const SideDrawer = (props: any) => {
   //   return (
   //     <List component="div" disablePadding>
   //       {/* TODO change href to each cycle */}
-  //       <ListItemButton sx={{ pl: 4 }} onClick={() => (window.location.href = "http://localhost:3000/")}>
+  //       <ListItemButton sx={{ pl: 4 }} onClick={() => navigate('../', { replace: true })}>
   //         <ListItemText primary={item.startDate} />
   //       </ListItemButton>
   //     </List>
@@ -164,21 +166,21 @@ const SideDrawer = (props: any) => {
         <List>
           {/* TODO change hrefs */}
           <Box textAlign='center'>
-            <Button variant="contained" color="primary" style={{width: '90%'}} onClick={() => (window.location.href = "http://localhost:3000")}>Add Job Cycle</Button> 
+            <Button variant="contained" color="primary" style={{width: '90%'}} onClick={() => navigate('../', { replace: true })}>Add Job Cycle</Button> 
           </Box>
-          <ListItem button key="Home" onClick={() => (window.location.href = "http://localhost:3000/")}>
+          <ListItem button key="Home" onClick={() => navigate('../', { replace: true })}>
             <ListItemIcon> <HomeIcon /> </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem button key="Metics" onClick={() => (window.location.href = "http://localhost:3000/")}>
+          <ListItem button key="Metrics" onClick={() => navigate('../', { replace: true })}>
               <ListItemIcon> <BarChartIcon /> </ListItemIcon>
               <ListItemText primary="Metrics" />
             </ListItem>
-            <ListItem button key="Forum" onClick={() => (window.location.href = "http://localhost:3000/")}>
+            <ListItem button key="Forum" onClick={() => navigate('../', { replace: true })}>
               <ListItemIcon> <ForumIcon /> </ListItemIcon>
               <ListItemText primary="Forum" />
             </ListItem>
-            <ListItem button key="Settings" onClick={() => (window.location.href = "http://localhost:3000/")}>
+            <ListItem button key="Settings" onClick={() => navigate('../', { replace: true })}>
               <ListItemIcon> <SettingsIcon /> </ListItemIcon>
               <ListItemText primary="Settings" />
             </ListItem>
@@ -195,7 +197,7 @@ const SideDrawer = (props: any) => {
                 </ListItemButton>
               </List>
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }} onClick={() => (window.location.href = "http://localhost:3000/")}>
+                <ListItemButton sx={{ pl: 4 }} onClick={() => navigate('../', { replace: true })}>
                   <ListItemText primary="Create New Cycle" />
                 </ListItemButton>
               </List>
