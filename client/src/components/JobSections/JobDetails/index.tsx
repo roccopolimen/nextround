@@ -40,7 +40,7 @@ export default function JobDetails(props:
      * @param {React.MouseEvent<HTMLElement>} event click information
      * @param {number | null} value new progress value
      */
-    const handleProgressUpdate = (event: React.MouseEvent<HTMLElement>,
+    const handleProgressUpdate = (_event: React.MouseEvent<HTMLElement>,
         value: number | null): void => {
         if (value !== null && data) {
             setChanged(true);

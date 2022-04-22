@@ -2,7 +2,8 @@ import { Box, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Info, Event, Contacts, Description } from '@mui/icons-material';
 import JobDetails from "components/JobSections/JobDetails";
-import { ApplicationObject } from "typings";
+import { ApplicationObject, EventObject } from "typings";
+import Events from "components/JobSections/Events";
 
 export default function Job() {
     // Constants
@@ -31,6 +32,28 @@ export default function Job() {
         // On mount
 
         // TODO: make api call to get job info
+        let event1: EventObject = {
+            _id: "1",
+            title: "Apply",
+            status: true,
+            date: new Date("2020-01-01"),
+            location: "Location 1"
+        };
+        let event2: EventObject = {
+            _id: "2",
+            title: "Super long event name that is an interview wooooooooooooo jared",
+            status: false,
+            date: new Date("2020-01-15"),
+            location: "Location 2"
+        };
+        let event3: EventObject = {
+            _id: "3",
+            title: "Final round",
+            status: false,
+            date: new Date("2023-02-20"),
+            location: "Mountain View, CA"
+        };
+
         setData({
             _id: "5e9f9f9f9f9f9f9f9f9f9f9",
             company: "Google",
@@ -42,7 +65,7 @@ export default function Job() {
             jobPostUrl: "https://www.google.com/",
             description: "L4 engineering role at Google; no referral",
             notes: [],
-            events: [],
+            events: [event1, event2, event3],
             contacts: []
         });
         setUrl("google.com");
@@ -58,7 +81,8 @@ export default function Job() {
                                     update={setData} />
                     );
                 case 1:
-                    return <div>Events</div>;
+                    return (<Events data={data}
+                                    update={setData} />);
                 case 2:
                     return <div>Contacts</div>;
                 case 3:
@@ -75,7 +99,7 @@ export default function Job() {
      * @param {React.SyntheticEvent} event click information
      * @param {number} newValue new tab index
      */
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setCurrTab(newValue);
     };
 
