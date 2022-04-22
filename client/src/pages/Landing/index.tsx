@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import Slide from "@mui/material/Slide";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { useNavigate } from "react-router-dom";
 import GithubIcon from "@material-ui/icons/GitHub";
 import {
   faGoogle,
@@ -16,6 +17,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Landing() {
+  let navigate = useNavigate();
+ 
   return (
     <>
       {/* navbar */}
@@ -37,9 +40,7 @@ export default function Landing() {
                 <Button
                   color="inherit"
                   id="login"
-                  onClick={() =>
-                    (window.location.href = "http://localhost:3000/signin")
-                  }
+                  onClick={() => navigate('../signin', {replace: true})}
                 >
                   Login
                 </Button>
@@ -110,9 +111,7 @@ export default function Landing() {
                       variant="contained"
                       color="primary"
                       id="signup"
-                      onClick={() =>
-                        (window.location.href = "http://localhost:3000/signup")
-                      }
+                      onClick={() => navigate('../signup', {replace: true})}
                     >
                       Sign up
                     </Button>
@@ -120,9 +119,7 @@ export default function Landing() {
                       variant="outlined"
                       color="primary"
                       id="signin"
-                      onClick={() =>
-                        (window.location.href = "http://localhost:3000/signin")
-                      }
+                      onClick={() => navigate('../signin', {replace: true})}
                     >
                       Log in
                     </Button>
