@@ -41,7 +41,7 @@ export default function Job() {
         };
         let event2: EventObject = {
             _id: "2",
-            title: "Super long event name that is an interview wooooooooooooo jared",
+            title: "Super long event name that is an interview wooooooooooooo",
             status: false,
             date: new Date("2020-01-15"),
             location: "Location 2"

@@ -31,6 +31,11 @@ export default function Events(props:
        }
    }, [data, props.data, changed]);
 
+   /**
+    * Mark events as complete/incomplete
+    * @param event event info
+    * @param checked whether the box is now checked
+    */
    const handleToggle = (event: React.ChangeEvent<HTMLInputElement>,
                             checked: boolean) => {
          // On checkbox change
@@ -72,15 +77,20 @@ export default function Events(props:
                 {data.events && data.events.map((event) => {
                     return (
                         <Box key={event._id}>
-                            <FormControlLabel label={event.title}
+                            <FormControlLabel
+                                label={
+                                    <Typography sx={{ fontSize: '12pt' }}>
+                                        {event.title}
+                                    </Typography>
+                                }
                                 sx={{ width: "50%", mb: 2,
-                                    display: "inline-block",
                                     fontSize: font_size }}
                                 control={<Checkbox key={event._id}
                                     id={event._id}
                                     checked={event.status} color="primary"
                                     onChange={handleToggle}  />} />
                             <Chip label={event.date.toLocaleDateString()}
+                                    sx={{ml: 5}}
                                     size="small" color={event.status ?
                                          "success" : (event.date < today ?
                                          "error" : "info")} />
@@ -93,7 +103,7 @@ export default function Events(props:
                 {data.events && data.events.map((event, index) => {
                     let connect: string = (index < data.events.length - 1 &&
                         data.events[index].status &&
-                        data.events[index + 1].status) ? "#190447" : "#bdbdbd";
+                        data.events[index + 1].status) ? "#6e51ef" : "#bdbdbd";
                     return (
                         <TimelineItem key={event._id}>
                             <TimelineOppositeContent>
