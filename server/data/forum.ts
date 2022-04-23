@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { media } from '../config/mongoCollections';
-import { checkObjectId, checkPositiveNumber } from '../helpers';
+import { checkObjectId, checkNonNegativeNumber } from '../helpers';
 import { ForumPostObject, MetricsObject, UserObject } from '../typings';
 import { getMetricsByID } from './metrics';
 import { getUserById } from './users';
@@ -12,7 +12,7 @@ import { getUserById } from './users';
  */
 export const getForumPosts = async (
     num_posts: number): Promise<Array<ForumPostObject>> => {
-    if(!checkPositiveNumber(num_posts)){
+    if(!checkNonNegativeNumber(num_posts)){
         throw new Error('Invalid number of posts');
     }
 

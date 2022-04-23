@@ -1,5 +1,3 @@
-import { cycles } from '../config/mongoCollections';
-import { ObjectId } from 'mongodb';
 import { checkObjectId } from '../helpers/error';
 import { CycleObject, MetricsObject } from '../typings';
 import { getCycleByID } from './cycles';
@@ -10,9 +8,7 @@ import { getCycleByID } from './cycles';
  * @returns {Promise<MetricsObject>} Metrics object
  */
 export const getMetricsByID = async (id: string): Promise<MetricsObject> => {
-    if(!checkObjectId(id)){
-        throw new Error('Invalid id');
-    }
+    if(!checkObjectId(id)) throw new Error('Invalid id');
 
     const cycle: CycleObject = await getCycleByID(id);
     if(cycle === null)
