@@ -34,9 +34,9 @@ export default function Landing() {
       </AppBar>
     </Slide>
     {/* content */}
-      <Grid container direction='column' justify='center' alignItems='center' spacing={2}>
+      <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
         {/* top grid */}
-        <Grid container item sm={12} lg={9} justify='center' alignItems='center' spacing={3}>
+        <Grid container item sm={12} lg={9} justifyContent='center' alignItems='center' spacing={3}>
           {/* body 1 left */}
           <Grid item sm={12} lg={6}>
             <Slide direction='down' in={true} timeout={1000}>
@@ -67,7 +67,7 @@ export default function Landing() {
         </Grid>
 
         {/* bottom grid */}
-        <Grid container item sm={12} lg={9} justify='center' alignItems='center' spacing={3}>
+        <Grid container item sm={12} lg={9} justifyContent='center' alignItems='center' spacing={3}>
           {/* body 2 left */}
           <Grid item sm={12} lg={6}>
             <Slide in={true} direction='up' timeout={2000}>
