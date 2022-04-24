@@ -198,6 +198,8 @@ export default function JobDetails(props:
                         </ToggleButton>
                     </ToggleButtonGroup>
                 </Grid>
+
+                {/* Save button */}
                 {changed ?
                     <Button variant="contained" color="primary"
                     startIcon={<Save />} onClick={() => handleSave()}

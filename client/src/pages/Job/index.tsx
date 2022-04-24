@@ -107,7 +107,8 @@ export default function Job() {
         return <div>Loading...</div>;
     } else {
         return (
-            <>
+            <div>
+                {/* Header */}
                 <Box sx={{ display: 'flex', mt: 3, mb: 1 }}>
                     <Box component="img" 
                         sx={{ mx: 5, height: imgSize, width: imgSize,
@@ -123,6 +124,8 @@ export default function Job() {
                             color="#ADA7BD">{data.company}</Typography>
                     </div>
                 </Box>
+
+                {/* Navigation tabs */}
                 <Box sx={{ width: '100%', mx: 'auto',
                     borderBottom: '0.05rem solid #ADA7BD' }}>
                     <Tabs value={currTab}
@@ -149,10 +152,12 @@ export default function Job() {
                             sx={{ mx: tab_spacing }} />
                     </Tabs>
                 </Box>
+
+                {/* The component for the selected tab */}
                 <Box sx={{ width: '75%', mx: 'auto', mt: 2, mb: 1 }}>
                     {component}
                 </Box>
-            </>
+            </div>
         );
     }
 };

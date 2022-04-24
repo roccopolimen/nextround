@@ -4,12 +4,13 @@ import { Box,
         Chip,
         FormControlLabel,
         FormGroup, 
+        IconButton, 
         Modal, 
         TextField, 
         Typography,
         useMediaQuery
     } from "@mui/material";
-import { Save, Add } from '@mui/icons-material';
+import { Save, Add, Delete } from '@mui/icons-material';
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { ApplicationObject, EventObject } from "typings";
 import { Timeline,
@@ -54,6 +55,11 @@ export default function Events(props:
        }
    }, [data, props.data, changed]);
 
+   /**
+    * Create a proper date picker given the device type
+    * @param {boolean} mobile if the device is mobile
+    * @returns {JSX.Element | undefined} date picker
+    */
    const buildDatePicker = (mobile: boolean): JSX.Element => {
         return (
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -85,8 +91,8 @@ export default function Events(props:
 
    /**
     * Mark events as complete/incomplete
-    * @param event event info
-    * @param checked whether the box is now checked
+    * @param {React.ChangeEvent<HTMLInputElement>} event event info
+    * @param {boolean} checked whether the box is now checked
     */
    const handleToggle = (event: React.ChangeEvent<HTMLInputElement>,
                             checked: boolean) => {
@@ -109,6 +115,9 @@ export default function Events(props:
         }
         };
 
+    /**
+     * Adds an event with info from the form
+     */
    const handleAddEvent = () => {
         if(title === "") return;
         if (data && selectedDate) {
@@ -134,6 +143,25 @@ export default function Events(props:
         }
     };
 
+    /**
+     * Delete an event
+     * @param {string} id id of the event to delete
+     */
+    const deleteEvent = (id: string) =>  {
+        if (data) {
+            let newData: ApplicationObject = {
+                ...data,
+                events: data.events.filter((ev: EventObject) => {
+                    return ev._id.toString() !== id;
+                })
+            };
+            setChanged(true);
+            setData(newData);
+            props.update(newData);
+            setChanged(false);
+        }
+    };
+
    /**
     * Saves locally typed information
     */
@@ -150,6 +178,7 @@ export default function Events(props:
    } else {
        return (
         <Box>
+            {/* Add event button */}
             <Box sx={{ display: "flex" }}>
                 <Box sx={{ justifyContent: "flex-end",
                             alignItems: "flex-end"}}>
@@ -164,10 +193,9 @@ export default function Events(props:
                 </Box>
             </Box>
 
+            {/* Modal of the form displayed to add an event */}
             <Modal open={open} onClose={() => setOpen(false)}
-                aria-labelledby="Add event form"
-                >
-                {/* form to add new event */}
+                aria-labelledby="Add event form" >
                 <FormGroup sx={{ position: 'absolute', top: '50%', left: '50%',
                                  transform: 'translate(-50%, -50%)',
                                  width: '50%', bgcolor: 'background.paper',
@@ -193,10 +221,12 @@ export default function Events(props:
                 </FormGroup>
             </Modal>
 
+            {/* List of events */}
             <FormGroup sx={{ mt: 5 }}>
                 {data.events && data.events.map((event) => {
                     return (
                         <Box key={event._id.toString()}>
+                            {/* Checkbox with event title */}
                             <FormControlLabel
                                 label={
                                     <Typography sx={{ fontSize: '12pt' }}>
@@ -209,16 +239,26 @@ export default function Events(props:
                                     id={event._id.toString()}
                                     checked={event.status} color="primary"
                                     onChange={handleToggle}  />} />
+                            
+                            {/* Date information pill */}
                             <Chip label={event.date.toLocaleDateString()}
-                                    sx={{ml: 5}}
+                                    sx={{ml: 1}}
                                     size="small" color={event.status ?
                                          "success" : (event.date < today ?
                                          "error" : "info")} />
+                            
+                            {/* Delete button */}
+                            {event.title !== "Apply" ?
+                                <IconButton aria-label="delete" onClick={() => 
+                                        deleteEvent(event._id.toString())} >
+                                    <Delete />
+                                </IconButton> : <div></div>}
                         </Box>
                         );
                 })}
             </FormGroup>
 
+            {/* Timeline */}
             <Timeline position="left">
                 {data.events && data.events.map((event, index) => {
                     let connect: string = (index < data.events.length - 1 &&
@@ -252,6 +292,7 @@ export default function Events(props:
                 })}
             </Timeline>
 
+            {/* Save button */}
             {changed ?
                 <Button variant="contained" color="primary"
                 startIcon={<Save />} onClick={() => handleSave()}
