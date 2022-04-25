@@ -1,18 +1,18 @@
 import './style.css'
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { Grid, Box, Card, CardMedia, CardContent, Typography } from '@material-ui/core';
-import { Margin } from '@mui/icons-material';
+import { Grid, Box, Card, CardMedia, CardContent, Typography } from '@mui/material';
 
-export const JobCard = (props: any) => {
+
+const JobCard = (props: any) => {
     // Constants
     const BASE_CLEARBIT_URL = 'https://logo.clearbit.com/';
 
     // State variables
-    const [url, setUrl] = useState(props.url);
-    const [company, setCompany] = useState(props.company);
-    const [role, setRole] = useState(props.role);
-    const [color, setColor] = useState(props.color);
+    const [url, setUrl] = useState('');
+    const [company, setCompany] = useState('');
+    const [role, setRole] = useState('');
+    const [color, setColor] = useState('');
 
     useEffect(() => {
         setUrl(props.url);
@@ -55,31 +55,6 @@ export const JobCard = (props: any) => {
             </Link>
         </Grid>
       );
-
-    // return (
-    //     <Grid container>
-    //         <Grid item direction='row'> 
-    //             <Card className='card' style={{backgroundColor: color}}>
-    //                 <CardActionArea className='insideCard'>
-    //                     <Link to={'/'}>
-    //                         <CardMedia
-    //                             className='image'
-    //                             component='img'
-    //                             image={`${BASE_CLEARBIT_URL}${url}`}
-    //                             alt='company logo'
-    //                         />
-    //                         <CardContent>
-    //                             <Typography className='company' variant="h5">
-    //                                 {company}
-    //                             </Typography>
-    //                             <Typography className='role' variant="h5">
-    //                                 {role}
-    //                             </Typography>
-    //                         </CardContent>
-    //                     </Link> 
-    //                 </CardActionArea>
-    //             </Card>
-    //         </Grid>
-    //     </Grid>
-    // );
 }
+
+export default JobCard;
