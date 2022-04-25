@@ -1,41 +1,20 @@
-import { serverSignIn, serverSignOut, serverSignUp } from 'api/server';
 import firebase from 'firebase/compat/app';
+import firebaseApp from '.';
 
-export const doEmailSignUp = async (email: string, password: string, displayName: string) => {
-    await firebase.auth().createUserWithEmailAndPassword(email, password);
-    await firebase.auth().currentUser?.updateProfile({ displayName: displayName });
-    try {
-        serverSignUp();
-    } catch(e: any) {
-        console.log(e);
-        await doSignOut();
-    }
+export const doEmailSignUp = async (email: string, password: string, displayName: string): Promise<void> => {
+    await firebaseApp.auth().createUserWithEmailAndPassword(email, password);
+    await firebaseApp.auth().currentUser?.updateProfile({ displayName: displayName });
 };
 
-export const doEmailSignIn = async (email: string, password: string) => {
-    await firebase.auth().signInWithEmailAndPassword(email, password);
-    try {
-        serverSignIn();
-    } catch(e: any) {
-        console.log(e);
-        await doSignOut();
-    }
+export const doEmailSignIn = async (email: string, password: string): Promise<void> => {
+    await firebaseApp.auth().signInWithEmailAndPassword(email, password);
 };
 
-export const doGoogleSignIn = async () => {
+export const doGoogleSignIn = async (): Promise<void> => {
     const socialProvider = new firebase.auth.GoogleAuthProvider();
-    await firebase.auth().signInWithPopup(socialProvider);
-    try {
-        serverSignIn();
-    } catch(e: any) {
-        console.log(e);
-        await doSignOut();
-    }
+    await firebaseApp.auth().signInWithPopup(socialProvider);
 };
 
-export const doSignOut = async () => {
-    await firebase.auth().signOut();
-    await serverSignOut();
+export const doSignOut = async (): Promise<void> => {
+    await firebaseApp.auth().signOut();
 };
-
-// TODO: learn linkedin auth work-in since it is not native

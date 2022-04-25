@@ -106,7 +106,6 @@ export default function Landing() {
                   </Typography>
                   <br />
                   <div className="cta-button">
-                    {/* todo why buttons not purple */}
                     <Button
                       variant="contained"
                       color="primary"
