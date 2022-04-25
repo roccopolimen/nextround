@@ -11,6 +11,8 @@ import Landing from 'pages/Landing';
 import SignIn from 'pages/SignIn';
 import SignUp from 'pages/SignUp';
 import Job from 'pages/Job';
+import OfferDash from 'pages/OfferDash';
+import FirstCycle from 'pages/FirstCycle';
 
 const App = () => {
     return (
@@ -23,6 +25,8 @@ const App = () => {
             <Route path={'/signin'} element={<SignIn />} />
             <Route path={'/signup'} element={<SignUp />} />
             <Route path={'/test_job'} element={<Job />} />
+            <Route path={'/offer_dashboard'} element={<OfferDash />} />
+            <Route path={'/first_cycle'} element={<FirstCycle />} />
             </Routes>
         </Router>
         {/* </AuthProvider> */}
