@@ -24,6 +24,22 @@ provides all the information about the current user's application from the cycle
 
 provides the list of posts (max N at a time) to be displayed. Ordered by most recent
 
+#### /metrics
+
+provides the metrics data for the current cycle
+
+#### /metrics/:cycleId
+
+provides the metrics data for the cycle with given `cycleId`
+
+#### /offers
+
+provides information on all offers for the current cycle to make comparisons
+
+#### /forum?num_posts=n
+
+provides `n` forum posts
+
 ### POST
 
 #### /users/signIn
@@ -42,6 +58,10 @@ telling firebase you are logging out and to remove authtoken from request header
 
 makes a new cycle for the current user
 
+#### /cycles/finish
+
+finish the current cycle
+
 #### /application
 
 make a new application in the current cycle for the current user
@@ -54,9 +74,9 @@ adds a new event to the application in the current cycle
 
 adds a new contact to the application in the current cycle
 
-#### /posts
+#### /forum
 
-Create a post to be added to the list of posts for the current user and their current cycle analytics.
+post to the forum about your new job
 
 ### PATCH
 
