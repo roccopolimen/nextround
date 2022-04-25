@@ -1,29 +1,32 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
-import { getCycleByID, getAllCycles, createCycle, finishCycle, getUserById,  } from '../data';
+import { getAllCycles, getCycleByID, getMetricsByID, getUserById } from '../data';
 import { checkObjectId } from '../helpers/error';
-import { CycleObject, UserObject } from '../typings';
+import { CycleObject, MetricsObject, UserObject } from '../typings';
 
 const router = express.Router();
 
-// GET /cycles
+// GET /metrics
 router.get('/', async (req, res) => {
     // Gets current cycle
     try {
         let cycles: CycleObject[] = await getAllCycles(req.session.user._id);
-        return res.json(cycles.slice(-1)[0]);
+        let metrics: MetricsObject = await getMetricsByID(
+            cycles.slice(-1)[0]._id.toString());
+        return res.json(metrics);
     } catch(e) {
         return res.status(500).json({ 
-            message: 'Internal Server Error. Failed to get current cycle.',
+            message: 'Internal Server Error. Failed to get metrics.',
             error: e.message });
     }
 });
 
-// GET /cycles/:id
+// GET /metrics/:id
 router.get('/:id', async (req, res) => {
     if(!checkObjectId(req.params.id)){
         return res.status(400).json({ message: 'Invalid id.' });
     }
+
     // Verify user owns cycle
     try {
         let userInfo: UserObject = await getUserById(req.session.user._id);
@@ -36,45 +39,22 @@ router.get('/:id', async (req, res) => {
             error: e.message });
     }
 
-    // Get cycle
+    // Check cycle exists
     try {
-        let cycle: CycleObject = await getCycleByID(req.params.id);
-        return res.json(cycle);
+        await getCycleByID(req.params.id);
     } catch(e) {
         return res.status(404).json({ 
             message: 'Not Found. Cycle with that id does not exist.',
             error: e.message });
     }
-});
 
-// POST /cycles
-router.post('/', async (req, res) => {
-    // Creates a new cycle
-    if(!req.session.user) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
+    // Get metrics
     try {
-        let cycle: CycleObject = await createCycle(req.session.user._id);
-        return res.json(cycle);
+        let metrics: MetricsObject = await getMetricsByID(req.params.id);
+        return res.json(metrics);
     } catch(e) {
         return res.status(500).json({ 
-            message: 'Internal Server Error. Failed to create new cycle.',
-            error: e.message });
-    }
-});
-
-// POST /cycles/finish
-router.post('/finish', async (req, res) => {
-    // Finishes current cycle
-    if(!req.session.user) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-    try {
-        let cycle: CycleObject = await finishCycle(req.session.user._id);
-        return res.json(cycle);
-    } catch(e) {
-        return res.status(500).json({ 
-            message: 'Internal Server Error. Failed to finish current cycle.',
+            message: 'Internal Server Error. Failed to get metrics.',
             error: e.message });
     }
 });

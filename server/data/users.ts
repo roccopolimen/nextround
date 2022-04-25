@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { users, cycles } from '../config/mongoCollections';
+import { cycles, users } from '../config/mongoCollections';
 import { checkEmail, checkNonEmptyString, checkObjectId } from '../helpers';
 import { UserObject } from '../typings';
 

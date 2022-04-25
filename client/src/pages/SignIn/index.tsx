@@ -1,104 +1,125 @@
 import './style.css';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { faGoogle, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSignInWithEmail, useSignInWithGoogle } from 'api';
+import { Alert, CircularProgress, IconButton, Modal } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 
 // import SideDrawer from '../../components/SideDrawer' // for testing
 
 export default function SignIn() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [failedAuth, setFailedAuth] = useState(false);
+    const { isLoading: isLoadingEmail, refetch: refetchEmail } = useSignInWithEmail(email, password);
+    const { isLoading: isLoadingGoogle, refetch: refetchGoogle } = useSignInWithGoogle();
+    const navigate = useNavigate();
+
+    const handleGoogle = () => {
+        setFailedAuth(false);
+        (async () => {
+            try {
+                await refetchGoogle({ throwOnError: true });
+                // TODO: set context w/ user's data retrieved from refetching?
+                navigate('/dashboard');
+            } catch(e) {
+                setFailedAuth(true);
+            }
+        })();
+    };
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        // TODO verify then check db 
-        const data = new FormData(event.currentTarget);
-        console.log({
-          email: data.get('email'),
-          password: data.get('password'),
-        });
+        setFailedAuth(false);
+        (async () => {
+            try {
+                await refetchEmail({ throwOnError: true });
+                // TODO: set context w/ user's data retrieved from refetching?
+                navigate('/dashboard');
+            } catch(e) {
+                setPassword('');
+                setFailedAuth(true);
+            }
+        })();
     };
 
     return (
-      <>
-      {/* <SideDrawer /> for testing*/}
-      <Container component="main" maxWidth="xs">
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'primary' }}>
-            <PermIdentityOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign In
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+        <div>
+        {failedAuth && <Alert severity="error">email or password incorrect</Alert>}
+        <Modal open={isLoadingEmail || isLoadingGoogle} sx={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <Box bgcolor="background.paper" sx={{ top: '50%', padding: 2, border: 1 }}>
+                <CircularProgress />
+            </Box>
+        </Modal>
+        <Container component="main" maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
             >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-        <div className="logos">
-          <a href=""> {/* TODO */}
-            <FontAwesomeIcon className="google-logo" icon={faGoogle} size="3x"/>
-          </a>
-          <a href=""> {/* TODO */}
-            <FontAwesomeIcon className="linkedin-logo" icon={faLinkedin} size="3x"/>
-          </a>
-
-
-          {/* <img src={require('../../images/logo.svg').default} alt="logo" /> TODO remove just testing for landing*/}
-
-
+                <Avatar sx={{ m: 1, bgcolor: 'primary' }}>
+                    <PermIdentityOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Sign In
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        Sign In
+                    </Button>
+                    <Box display="flex" justifyContent="center">
+                        <Link to="/signup">
+                            {"Don't have an account? Sign Up"}
+                        </Link>
+                    </Box>
+                </Box>
+            </Box>
+            <div className="logos">
+                <IconButton onClick={handleGoogle}>
+                    <FontAwesomeIcon className="google-logo" icon={faGoogle} size="2x"/>
+                </IconButton>
+            </div>
+        </Container>
         </div>
-      </Container>
-      </>
-  );
+    );
 }
