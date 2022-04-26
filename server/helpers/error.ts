@@ -55,12 +55,12 @@ function checkArrayOfStrings(strs: Array<string>): boolean {
 }
 
 /**
- * @description Checks if a given number is positive
+ * @description Checks if a given number is non negative
  * @param {number} num the number to check
- * @returns {boolean} true if the number is greater than 0 and false otherwise
+ * @returns {boolean} true if the number is greater than or equal to 0 and false otherwise
  */
-function checkPositiveNumber(num: number): boolean {
-    return (num > 0); 
+function checkNonNegativeNumber(num: number): boolean {
+    return (num >= 0); 
 }
 
 /**
@@ -129,7 +129,7 @@ export {
     checkObjectId,
     checkNonEmptyString,
     checkArrayOfStrings,
-    checkPositiveNumber,
+    checkNonNegativeNumber,
     checkNegativeNumber,
     checkEmail,
     checkName,
