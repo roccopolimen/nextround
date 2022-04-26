@@ -69,7 +69,15 @@ export default function JobDetails(props:
                     new_data.location = event.target.value;
                     break;
                 case "salary-value":
-                    new_data.salary = parseInt(event.target.value);
+                    let salary_input = parseInt(event.target.value);
+                    if (event.target.value === "" ||
+                        Number.isNaN(salary_input) || salary_input < 0) {
+                        new_data.salary = 0;
+                        data.salary = 0;
+                    } else {
+                        new_data.salary = salary_input;
+                        data.salary = salary_input;
+                    }
                     break;
                 case "url-value":
                     new_data.jobPostUrl = event.target.value;
@@ -135,7 +143,7 @@ export default function JobDetails(props:
                     }
                 </Grid>
                 <Grid item >
-                    {data.salary ?
+                    {data.salary || data.salary === 0 ?
                         <TextField id="salary-value"
                         variant="outlined" label="Salary" size="small"
                         onChange={handleTextChange}
@@ -143,15 +151,7 @@ export default function JobDetails(props:
                             startAdornment: <InputAdornment position="start">$
                                             </InputAdornment>
                           }}
-                        defaultValue={data.salary} /> : <div></div>
-                    }
-                </Grid>
-                <Grid item >
-                    <label htmlFor="color-picker">Card Color</label>
-                    {data.cardColor ?
-                        <ColorPicker value={data.cardColor}
-                                    onChange={handleColorChange} /> :
-                             <div></div>
+                        value={data.salary} /> : <div></div>
                     }
                 </Grid>
                 <Grid item >
@@ -197,6 +197,14 @@ export default function JobDetails(props:
                             </Typography>
                         </ToggleButton>
                     </ToggleButtonGroup>
+                </Grid>
+                <Grid item >
+                    <label htmlFor="color-picker">Card Color</label>
+                    {data.cardColor ?
+                        <ColorPicker value={data.cardColor} hideTextfield
+                                    onChange={handleColorChange} /> :
+                             <div></div>
+                    }
                 </Grid>
 
                 {/* Save button */}
