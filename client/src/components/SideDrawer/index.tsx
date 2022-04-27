@@ -88,7 +88,7 @@ const SideDrawer = (props: any) => {
   // let list = itemsData && itemsData.map((item: any) => {return buildList(item)})
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", ml: 2 }}>
       <Box
         sx={{
           width: 30,
