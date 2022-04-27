@@ -224,6 +224,8 @@ export default function Events(props:
             {/* List of events */}
             <FormGroup sx={{ mt: 5 }}>
                 {data.events && data.events.map((event) => {
+                    let tmp_date: Date = typeof event.date === 'string' ?
+                     new Date(event.date) : event.date;
                     return (
                         <Box key={event._id.toString()}>
                             {/* Checkbox with event title */}
@@ -241,10 +243,10 @@ export default function Events(props:
                                     onChange={handleToggle}  />} />
                             
                             {/* Date information pill */}
-                            <Chip label={event.date.toLocaleDateString()}
+                            <Chip label={tmp_date.toLocaleDateString()}
                                     sx={{ml: 1}}
                                     size="small" color={event.status ?
-                                         "success" : (event.date < today ?
+                                         "success" : (tmp_date < today ?
                                          "error" : "info")} />
                             
                             {/* Delete button */}
@@ -269,7 +271,9 @@ export default function Events(props:
                             <TimelineOppositeContent>
                                 <Typography variant="body2"
                                     color="textSecondary">
-                                    {event.date.toLocaleDateString()}
+                                    {typeof event.date === 'string' ? 
+                                        event.date :
+                                        event.date.toLocaleDateString()}
                                 </Typography>
                             </TimelineOppositeContent>
                             <TimelineSeparator>
