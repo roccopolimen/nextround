@@ -20,6 +20,13 @@ interface CycleObject {
     applications: Array<ApplicationObject>
 }
 
+interface MediaObject {
+    _id: ObjectId,
+    posterId: ObjectId,
+    jobCycle: ObjectId,
+    postDate: Date,
+    content: string
+}
 
 interface ApplicationObject {
     _id: ObjectId,
