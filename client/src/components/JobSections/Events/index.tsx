@@ -11,7 +11,7 @@ import { Box,
         useMediaQuery
     } from "@mui/material";
 import { Save, Add, Delete } from '@mui/icons-material';
-import { useState, useEffect, SetStateAction, Dispatch } from "react";
+import { useState, useEffect } from "react";
 import { ApplicationObject, EventObject } from "typings";
 import { Timeline,
          TimelineConnector,
@@ -27,9 +27,10 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 export default function Events(props:
-        { data: ApplicationObject | undefined,
-          update: Dispatch<SetStateAction<ApplicationObject | undefined>>
-    }) {
+    { data: ApplicationObject | undefined,
+        update: (data: ApplicationObject) => void
+    }
+) {
    // State variables
    const [data, setData] = useState(
        undefined as ApplicationObject | undefined);

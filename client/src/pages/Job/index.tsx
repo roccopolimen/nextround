@@ -2,12 +2,15 @@ import { Box, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Info, Event, Contacts, Description } from '@mui/icons-material';
 import JobDetails from "components/JobSections/JobDetails";
-import { ApplicationObject, EventObject } from "typings";
+import { ApplicationObject } from "typings";
 import Events from "components/JobSections/Events";
+import { useGetApplication, useUpdateApplication } from "api";
+import { useParams } from "react-router-dom";
 
 export default function Job() {
     // Constants
     const BASE_CLEARBIT_URL = 'https://logo.clearbit.com/';
+    let params = useParams();
     // State variables
     const [currTab, setCurrTab] = useState(0);
     const [data, setData] = useState(
@@ -15,6 +18,7 @@ export default function Job() {
     const [url, setUrl] = useState(""); // TODO: remove when clearbit is ready
     const [component, setComponent] = useState(undefined as
                                      ReactElement<any, any> | undefined);
+    let appId: string = params.id ? params.id : "";
 
     // Responsive design
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
@@ -28,61 +32,53 @@ export default function Job() {
     let h2Size: string = mobile ? ".75rem": "2rem";
     let imgSize: number = mobile ? 45 : 75;
 
+    // Queries & Mutations
+    const { data: api_data, isLoading,
+         refetch: fetchApplication } = useGetApplication(appId);
+    const { data: updateResult, isLoading: updateLoad,
+         refetch: updateApplication } = useUpdateApplication(
+             data ? data._id : "",
+             data ? data.company : "",
+             data ? data.position : "",
+             data ? data.location : "",
+             data ? data.jobPostUrl : "",
+             data ? data.description : "",
+             data && data.salary ? data.salary : 0,
+             data ? data.cardColor : "",
+             data ? data.progress : 0
+    ); 
+         
+
     useEffect(() => {
         // On mount
-
-        // TODO: make api call to get job info
-        let event1: EventObject = {
-            _id: "1",
-            title: "Apply",
-            status: true,
-            date: new Date("2020-01-01"),
-            location: "Location 1"
-        };
-        let event2: EventObject = {
-            _id: "2",
-            title: "Super long event name that is an interview wooooooooooooo",
-            status: false,
-            date: new Date("2020-01-15"),
-            location: "Location 2"
-        };
-        let event3: EventObject = {
-            _id: "3",
-            title: "Final round",
-            status: false,
-            date: new Date("2023-02-20"),
-            location: "Mountain View, CA"
-        };
-
-        setData({
-            _id: "5e9f9f9f9f9f9f9f9f9f9f9",
-            company: "Google",
-            position: "Software Engineer",
-            location: "Mountain View, CA",
-            salary: 100000,
-            cardColor: "#efc920",
-            progress: 0,
-            jobPostUrl: "https://www.google.com/",
-            description: "L4 engineering role at Google; no referral",
-            notes: [],
-            events: [event1, event2, event3],
-            contacts: []
-        });
+        fetchApplication();
+        // TODO: clearbit logo from backend
         setUrl("google.com");
-    }, []);
+    }, [fetchApplication]);
+
+    useEffect(() => {
+        if(!isLoading && api_data) {
+            setData(api_data);
+        }
+    }, [isLoading, api_data]);
 
     useEffect(() => {
         // On tab change
+        const updateData = (data: ApplicationObject) => {
+            setData(data);
+            updateApplication();
+            fetchApplication();
+        }
         const chooseComponent = () => {
             switch (currTab) {
                 case 0:
                     return (
                         <JobDetails data={data}
-                                    update={setData} />
+                                    update={updateData} />
                     );
                 case 1:
                     return (<Events data={data}
-                                    update={setData} />);
+                                    update={updateData} />);
                 case 2:
                     return <div>Contacts</div>;
                 case 3:
@@ -92,11 +88,11 @@ export default function Job() {
             }
         };
         setComponent(data ? chooseComponent() : undefined);
-    }, [currTab, data]);
+    }, [currTab, data, fetchApplication, updateApplication]);
 
     /**
      * Changes the current tab
-     * @param {React.SyntheticEvent} event click information
+     * @param {React.SyntheticEvent} _event click information
      * @param {number} newValue new tab index
      */
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
