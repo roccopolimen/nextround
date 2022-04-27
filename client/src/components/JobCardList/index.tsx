@@ -1,11 +1,16 @@
 // import './style.css'
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 // import { Link } from 'react-router-dom';
 import { Accordion, AccordionDetails, AccordionSummary, Grid, Typography } from '@mui/material';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import JobCard from 'components/JobCard';
 
-const JobCardList = () => {
+const JobCardList = (props: any) => {
+    const [title, setTitle] = useState('');
+
+    useEffect(() => {
+        setTitle(props.title);
+    }, [props.title]);
 
     return(
         <Accordion>
@@ -13,7 +18,7 @@ const JobCardList = () => {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header">
-                <Typography>Applied</Typography> 
+                <Typography>{title}</Typography> 
             </AccordionSummary>
             <AccordionDetails>
                 <JobCard url={'google.com'} company={'Google'} role={'Software Engineer'} color={'#F6C92E'}/>
