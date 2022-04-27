@@ -88,6 +88,7 @@ router.post('/signUp', async (req, res) => {
     return res.json({ message: 'Signed up.' });
 });
 
+// TODO:
 // PATCH /settings
 router.patch('/settings', async (req, res) => {
     // TODO: change pfp??

@@ -172,7 +172,11 @@ export const getContactById = async (userId: string, applicationId: string, cont
  * @param {string} userId 
  * @param {string} applicationId 
  * @param {string} contactId
- * @param {object} contactObject can contain: {name: string, pronouns: string, location, phone: string, email: string}
+ * @param {string} name
+ * @param {string} pronouns
+ * @param {string} location
+ * @param {string} phone
+ * @param {string} email
  * @returns {Promise<ContactObject>} if the contact was updated
  */
  export const updateContact = async (userId: string, applicationId: string, contactId: string, name: string, pronouns: string, location: string, phone: string, email: string): Promise<ContactObject> => {
@@ -186,45 +190,47 @@ export const getContactById = async (userId: string, applicationId: string, cont
     if(!checkObjectId(contactId))
         throw new Error('Invalid contactId');
 
-    let updateFields: [id: string], any = {};
+    let updateFields: Partial<ContactObject> = {};
     if(name) {
         if(!checkNonEmptyString(name))
             throw new Error('Name must be a non-empty string.');
         else
-            updateFields['name'] = name;
+            updateFields.name = name;
     }
     if(pronouns) {
         if(!checkNonEmptyString(pronouns))
             throw new Error('Pronouns must be a non-empty string.');
         else
-            updateFields['pronouns'] = pronouns;
+            updateFields.pronouns = pronouns;
     }
     if(location) {
         if(!checkNonEmptyString(location))
             throw new Error('Location must be a non-empty string.');
         else
-            updateFields['location'] = location;
+            updateFields.location = location;
     }
-    if(phone){
+    if(phone) {
         if(!checkPhoneNumber(phone))
             throw new Error('Phone must be a valid phone number string.');
         else
-            updateFields['phone'] = phone;
+            updateFields.phone = phone;
     }
-    if(email){
+    if(email) {
         if(!checkEmail(email))
             throw new Error('Email must be a valid phone number string.');
         else
-            updateFields['email'] = email;
+            updateFields.email = email;
     }
+
+    if(Object.keys(updateFields).length === 0)
+        throw new Error('No fields to update in contact');
 
     const usersCollection: any = await users();
     const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
-
     const cyclesCollection: any = await cycles();
+    const cycleId: ObjectId = user.cycles[user.cycles.length - 1];
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
     if(cycle === null) throw new Error('Could not find cycle');
 
@@ -238,14 +244,12 @@ export const getContactById = async (userId: string, applicationId: string, cont
         cycle.applications[appIndex].contacts[contactIndex][field] = newValue;
     });
 
-    //update mongodb with new contacts list
+    // update mongodb with new contacts list
     let updateInfo = await cyclesCollection.updateOne(
+        { _id: cycleId, "applications._id": new ObjectId(applicationId) }, 
         {
-        _id: new ObjectId(cycleId),
-        "applications._id": new ObjectId(applicationId)
-        }, 
-        {$set: {
-            "applications.$.contacts": cycle.applications[appIndex].events[contactIndex]
+            $set: {
+                "applications.$.contacts": cycle.applications[appIndex].contacts
             }
         }
     );
