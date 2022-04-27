@@ -52,9 +52,8 @@ export const getAllCycles = async (userId: string): Promise<CycleObject[]> => {
  * @returns {{Promise<CycleObject>}} The newly created cycle object
  */
 export const createCycle = async (userId: string): Promise<CycleObject> => {
-    if(!checkObjectId(userId)){
+    if(!checkObjectId(userId))
         throw new Error('Invalid id');
-    }
 
     let currDate: Date = new Date();
     let cycle: CycleObject = {
@@ -68,65 +67,62 @@ export const createCycle = async (userId: string): Promise<CycleObject> => {
     const cycleCollection = await cycles();
     const userCollection = await users();
     const insertInfo = await cycleCollection.insertOne(cycle);
-    if(insertInfo.insertedCount === 0) {
+    if(insertInfo.insertedCount === 0)
         throw new Error("Could not add cycle.");
-    }
 
     // Finish previous cycle if unfinished
-    const newId = insertInfo.insertedId;
-    const user: UserObject = await userCollection.findOne({
-        _id: new ObjectId(userId) });
-    if(user === null) {
+    const newId: ObjectId = insertInfo.insertedId;
+    const user: UserObject = await userCollection.findOne({ _id: new ObjectId(userId) });
+    if(user === null)
         throw new Error("There is no user with that id.");
-    } 
+
     const currCycle: CycleObject = await cycleCollection.findOne({
-        _id: new ObjectId(user.cycles[user.cycles.length - 1]) });
-    if(currCycle.endDate === null) {
+        _id: new ObjectId(user.cycles[user.cycles.length - 1])
+    });
+    if(currCycle.endDate === null)
         await finishCycle(userId);
-    }
 
     // Add to user's cycles list
-    user.cycles.push(newId.toString());
-    const updateInfo = await userCollection.updateOne({
-        _id: new ObjectId(userId) }, {
-            $set: { cycles: user.cycles }
-        });
-    if(updateInfo.modifiedCount === 0) {
+    user.cycles.push(newId);
+    const updateInfo = await userCollection.updateOne(
+        { _id: new ObjectId(userId) }, 
+        { $set: { cycles: user.cycles } }
+    );
+    if(updateInfo.modifiedCount === 0)
         throw new Error("Could not add cycle to user.");
-    }
 
     // Return the new cycle object
-    return await cycleCollection.findOne({ _id: newId });
+    return await getCycleByID(newId.toString());
 }
 
 /**
  * Finishes a cycle by setting its end date to the current date.
- * @param cycleId Cycle id
+ * @param userId User id
  * @returns {{Promise<CycleObject>}} The updated cycle object
  */
-export const finishCycle = async (cycleId: string): Promise<CycleObject> => {
-    if(!checkObjectId(cycleId)){
+export const finishCycle = async (userId: string): Promise<CycleObject> => {
+    if(!checkObjectId(userId))
         throw new Error('Invalid id');
-    }
 
-    // Retrieve the cycle
-    const cycleCollection: any = await cycles();
-    const cycle: CycleObject = await cycleCollection.findOne({
-        _id: new ObjectId(cycleId) });
-    if(cycle === null) {
-        throw new Error("There is no cycle with that id.");
-    }
+    const usersCollection = await users();
+    const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    if(user === null)
+        throw new Error("There is no user with that id.");
+
+    const cycleId: ObjectId = user.cycles[user.cycles.length-1];
+    const cyclesCollection = await cycles();
+    const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
+    if(cycle === null)
+        throw new Error("User has no cycles.");
 
     // Update the end date
-    const updateInfo = await cycleCollection.updateOne({
-        _id: new ObjectId(cycleId) }, {
-            $set: { endDate: new Date() }
-    });
-    if(updateInfo.modifiedCount === 0) {
+    const updateInfo = await cyclesCollection.updateOne(
+        { _id: cycleId },
+        { $set: { endDate: new Date() } }
+    );
+    if(updateInfo.modifiedCount === 0)
         throw new Error("Could not finish cycle.");
-    }
 
     // Return the updated cycle object
-    return await cycleCollection.findOne({
-            _id: new ObjectId(cycleId) });
+    return await getCycleByID(cycleId.toString());
 }

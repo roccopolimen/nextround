@@ -18,6 +18,7 @@ const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
 const queryClient: QueryClient = new QueryClient({
     defaultOptions: {
         queries: {
+            enabled: false,
             refetchOnWindowFocus: false,
             refetchOnMount: false,
             refetchOnReconnect: false,

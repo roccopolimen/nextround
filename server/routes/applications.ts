@@ -1,6 +1,6 @@
 import express from 'express';
 import { createApplication, createContact, createEvent, deleteApplication, deleteContact, deleteEvent, getApplicationById, getApplicationFromCycleById, updateApplication, updateContact, updateEvent } from '../data';
-import { checkDate, checkNonEmptyString, checkObjectId, checkPositiveNumber, isUsersApplication } from '../helpers';
+import { checkDate, checkNonEmptyString, checkObjectId, checkNonNegativeNumber, isUsersApplication } from '../helpers';
 import { ApplicationObject, ContactObject, EventObject } from '../typings';
 
 const router = express.Router();
@@ -8,7 +8,7 @@ const router = express.Router();
 // GET /:applicationId
 router.get('/:applicationId', async (req, res) => {
     const { applicationId } = req.params;
-    if(!applicationId || checkObjectId(applicationId))
+    if(!applicationId || !checkObjectId(applicationId))
         return res.status(400).json({ message: 'application id must be a string representing a mongoDB ObjectId.' });
 
     if(!req.session.user)
@@ -36,7 +36,7 @@ router.get('/:cycleId/:applicationId', async (req, res) => {
     if(!req.session.user)
         return res.status(401).json({ message: 'User is not authorized, must be logged in.' });
 
-    if(!(await isUsersApplication(req.session.user._id, applicationId)))
+    if(!(await isUsersApplication(req.session.user._id, applicationId, cycleId)))
         return res.status(401).json({ message: 'requested application is not attached to the user.' });
 
     try {
@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
             throw new Error('Job Location must be provided.');
         if(!jobPostUrl || !checkNonEmptyString(jobPostUrl))
             throw new Error('Job Post Url must be provided.');
-        if(!description || checkNonEmptyString(description))
+        if(!description || !checkNonEmptyString(description))
             throw new Error('Description must be provided.');
     } catch(e) {
         return res.status(400).json({ message: e.message });
@@ -174,55 +174,56 @@ router.patch('/:applicationId', async (req, res) => {
         return res.status(400).json({ message: 'no body provided for contact creation.' });
 
     let company: string, position: string, location: string, jobPostUrl: string, description: string, salary: number, cardColor: string, progress: number;
-    let newDataObject: [id: string], any = {};
+    let newDataObject: Partial<ApplicationObject> = {};
     try {
+        ({ company, position, location, jobPostUrl, description, salary, cardColor, progress } = req.body);
         if(company) {
             if(!checkNonEmptyString(company))
                 throw new Error('Company must be a non-empty string.');
             else
-                newDataObject['company'] = company;
+                newDataObject.company = company;
         }
         if(position) {
             if(!checkNonEmptyString(position))
                 throw new Error('Position must be a non-empty string.');
             else
-                newDataObject['position'] = position;
+                newDataObject.position = position;
         }
         if(location) {
             if(!checkNonEmptyString(location))
                 throw new Error('Location must be a non-empty string.');
             else
-                newDataObject['location'] = location;
+                newDataObject.location = location;
         }
         if(jobPostUrl) {
             if(!checkNonEmptyString(jobPostUrl))
                 throw new Error('Job Post URL must be a non-empty string.');
             else
-                newDataObject['jobPostUrl'] = jobPostUrl;
+                newDataObject.jobPostUrl = jobPostUrl;
         }
         if(description) {
             if(!checkNonEmptyString(description))
                 throw new Error('Description must be a non-empty string.');
             else
-                newDataObject['description'] = description;
+                newDataObject.description = description;
         }
         if(salary) {
-            if(!checkPositiveNumber(salary))
+            if(!checkNonNegativeNumber(salary))
                 throw new Error('Salary must be a positive number.');
             else
-                newDataObject['salary'] = salary;
+                newDataObject.salary = salary;
         }
         if(cardColor) {
             if(!checkNonEmptyString(cardColor))
                 throw new Error('Card Color must be a non-empty string.');
             else
-                newDataObject['cardColor'] = cardColor;
+                newDataObject.cardColor = cardColor;
         }
-        if(progress) {
-            if(!checkPositiveNumber(progress))
+        if(progress !== null) {
+            if(!checkNonNegativeNumber(progress))
                 throw new Error('Progress must be a positive number.');
             else
-                newDataObject['progress'] = progress;
+                newDataObject.progress = progress;
         }
     } catch(e) {
         return res.status(400).json({ message: e.message });
@@ -235,10 +236,10 @@ router.patch('/:applicationId', async (req, res) => {
         const application: ApplicationObject = 
                             await updateApplication(
                                 req.session.user._id, applicationId,
-                                newDataObject['company'], newDataObject['position'],
-                                newDataObject['location'], newDataObject['jobPostUrl'],
-                                newDataObject['description'], newDataObject['salary'],
-                                newDataObject['cardColor'], newDataObject['progress']
+                                newDataObject.company, newDataObject.position,
+                                newDataObject.location, newDataObject.jobPostUrl,
+                                newDataObject.description, newDataObject.salary,
+                                newDataObject.cardColor, newDataObject.progress
                             );
         res.json(application);
     } catch(e) {
@@ -264,28 +265,28 @@ router.patch('/event/:applicationId/:eventId', async (req, res) => {
         return res.status(400).json({ message: 'no body provided for contact creation.' });
 
     let status: boolean, title: string, date: string, location: string;
-    let newDataObject: [id: string], any = {};
+    let newDataObject: Partial<EventObject> = {};
     try {
         ({ status, title, date, location } = req.body);
-        if(status)
-            newDataObject['status'] = status;
+        if(status !== null)
+            newDataObject.status = status;
         if(title) {
             if(!checkNonEmptyString(title))
                 throw new Error('Title must be a non-empty string.');
             else
-                newDataObject['title'] = title;
+                newDataObject.title = title;
         }
         if(date) {
-            if(!checkNonEmptyString(date))
-                throw new Error('Date must be a non-empty string.');
+            if(!checkNonEmptyString(date) || !checkDate(date))
+                throw new Error('Date must be a non-empty string representing a date.');
             else
-                newDataObject['date'] = date;
+                newDataObject.date = new Date(date);
         }
         if(location) {
             if(!checkNonEmptyString(location))
                 throw new Error('Location must be a non-empty string.');
             else
-                newDataObject['location'] = location;
+                newDataObject.location = location;
         }
     } catch(e) {
         return res.status(400).json({ message: e.message });
@@ -298,8 +299,8 @@ router.patch('/event/:applicationId/:eventId', async (req, res) => {
         const event: EventObject = 
                     await updateEvent(
                         req.session.user._id, applicationId, eventId,
-                        newDataObject['status'], newDataObject['title'],
-                        newDataObject['date'], newDataObject['location']
+                        newDataObject.status, newDataObject.title,
+                        newDataObject.date, newDataObject.location
                     );
         res.json(event);
     } catch(e) {
@@ -325,38 +326,38 @@ router.patch('/contact/:applicationId/:contactId', async (req, res) => {
         return res.status(400).json({ message: 'no body provided for contact creation.' });
 
     let name: string, pronouns: string, location: string, phone: string, email: string;
-    let newDataObject: [id: string], any = {};
+    let newDataObject: Partial<ContactObject> = {};
     try {
         ({ name, pronouns, location, phone, email } = req.body);
         if(name) {
             if(!checkNonEmptyString(name))
                 throw new Error('Name must be a non-empty string.');
             else
-                newDataObject['name'] = name;
+                newDataObject.name = name;
         }
         if(pronouns) {
             if(!checkNonEmptyString(pronouns))
                 throw new Error('Pronouns must be a non-empty string.');
             else
-                newDataObject['pronouns'] = pronouns;
+                newDataObject.pronouns = pronouns;
         }
         if(location) {
             if(!checkNonEmptyString(location))
                 throw new Error('Location must be a non-empty string.');
             else
-                newDataObject['location'] = location;
+                newDataObject.location = location;
         }
         if(phone) {
             if(!checkNonEmptyString(phone))
                 throw new Error('Phone must be a non-empty string.');
             else
-                newDataObject['phone'] = phone;
+                newDataObject.phone = phone;
         }
         if(email) {
             if(!checkNonEmptyString(email))
                 throw new Error('Email must be a non-empty string.');
             else
-                newDataObject['email'] = email;
+                newDataObject.email = email;
         }
     } catch(e) {
         return res.status(400).json({ message: e.message });
@@ -366,7 +367,13 @@ router.patch('/contact/:applicationId/:contactId', async (req, res) => {
         return res.status(400).json({ message: 'no fields provided to update.' });
     
     try {
-        const contact: ContactObject = await updateContact(req.session.user._id, applicationId, contactId, newDataObject['name'], newDataObject['pronouns'], newDataObject['location'], newDataObject['phone'], newDataObject['email']);
+        const contact: ContactObject =
+                            await updateContact(
+                                req.session.user._id, applicationId, contactId,
+                                newDataObject.name, newDataObject.pronouns,
+                                newDataObject.location, newDataObject.phone,
+                                newDataObject.email
+                            );
         res.json(contact);
     } catch(e) {
         return res.status(500).json({ message: 'failed to update contact.', error: e.message });

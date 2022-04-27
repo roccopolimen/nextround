@@ -167,11 +167,11 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  * @param {string} eventId
  * @param {boolean} status
  * @param {string} title
- * @param {string} date
+ * @param {Date} date
  * @param {string} location
  * @returns {Promise<EventObject>} if event  was updated 
  */
- export const updateEvent = async (userId: string, applicationId: string, eventId: string, status: boolean, title: string, date: string, location: string): Promise<EventObject> => {
+ export const updateEvent = async (userId: string, applicationId: string, eventId: string, status: boolean, title: string, date: Date, location: string): Promise<EventObject> => {
     if(!checkObjectId(userId))
         throw new Error('Invalid userId');
     if(!checkObjectId(applicationId))
@@ -179,27 +179,26 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     if(!checkObjectId(eventId))
         throw new Error('Invalid eventId');
 
-    let updateFields: [id: string], any = {};
-    if(status)
-        updateFields['status'] = status;
+    let updateFields: Partial<EventObject> = {};
+    if(status !== null) updateFields.status = status;
     if(title) {
         if(!checkNonEmptyString(title))
             throw new Error('Title must be a non-empty string.');
         else
-            updateFields['title'] = title;
+            updateFields.title = title;
     }
     if(date) {
-        if(!checkNonEmptyString(date))
-            throw new Error('Date must be a non-empty string.');
-        else
-            updateFields['date'] = date;
+        updateFields.date = date;
     }
     if(location) {
         if(!checkNonEmptyString(location))
             throw new Error('Location must be a non-empty string.');
         else
-            updateFields['location'] = location;
+            updateFields.location = location;
     }
+
+    if(Object.keys(updateFields).length === 0)
+        throw new Error('No fields to update in event.');
 
     const usersCollection: any = await users();
     const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
@@ -220,13 +219,12 @@ export const getEventById = async(userId: string, applicationId: string, eventId
         cycle.applications[appIndex].events[eventIndex][field] = newValue;
     });
 
-    //update mongodb with new events list
+    // update mongodb with new events list
     let updateInfo = await cyclesCollection.updateOne(
         { _id: cycleId, "applications._id": new ObjectId(applicationId) }, 
         {
             $set: {
-                "applications.$.events": 
-                    cycle.applications[appIndex].events[eventIndex]
+                "applications.$.events": cycle.applications[appIndex].events
             }
         }
     );
