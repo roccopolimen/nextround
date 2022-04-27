@@ -1,22 +1,13 @@
 import './styles.css'
-import React, { useState } from 'react';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
-import InputAdornment from '@mui/material/InputAdornment';
 import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 export default function Settings() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [showPassword2, setShowPassword2] = useState(false);
-    const handleClickShowPassword = () => setShowPassword(!showPassword);
-    const handleClickShowPassword2 = () => setShowPassword2(!showPassword2);
-    
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO PATCH/PUT
@@ -25,8 +16,6 @@ export default function Settings() {
     console.log({
       name: data.get("name"),
       email: data.get("email"),
-      password: data.get("password"),
-      password2: data.get("password2"),
     });
   };
 
@@ -75,50 +64,6 @@ export default function Settings() {
             variant="outlined"
             defaultValue="EMAIL"
             // helperText="Email"
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            id="password"
-            label="Password"
-            name="password"
-            variant="outlined"
-            // helperText="Password"
-            type={showPassword ? "text" : "password"}
-            InputProps={{ // toggling
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Button
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                     </Button>
-                   </InputAdornment>
-                )
-              }}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            id="password2"
-            label="Password Confirmation"
-            name="password2"
-            variant="outlined"
-            // helperText="Password"
-            type={showPassword2 ? "text" : "password"}
-            InputProps={{ // toggling
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Button
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword2}
-                    >
-                      {showPassword2 ? <Visibility /> : <VisibilityOff />}
-                     </Button>
-                   </InputAdornment>
-                )
-              }}
           />
           <Button 
               type="submit"
