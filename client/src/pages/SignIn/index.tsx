@@ -13,6 +13,8 @@ import { useSignInWithEmail, useSignInWithGoogle } from 'api';
 import { Alert, CircularProgress, IconButton, Modal } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
+import SideDrawer from '../../components/SideDrawer' // for testing
+
 export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -57,6 +59,7 @@ export default function SignIn() {
                 <CircularProgress />
             </Box>
         </Modal>
+        <SideDrawer /> {/* for testing */}
         <Container component="main" maxWidth="xs">
             <Box
                 sx={{
