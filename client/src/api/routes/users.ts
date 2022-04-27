@@ -90,11 +90,11 @@ export const useDeleteUser = (): UseQueryResult<boolean> => {
 };
 
 // TODO: change user settings api hook
-export const useChangeSettings = () => {
-    return useQuery('changeSettings', async () => {
-        // TODO: take in arguments to this function and then pass them to patch call
-        // TODO: add types to patch and cast variables as needed.
-        const { data, status } = await fetcher.patch('/users/settings');
-        if(status !== 200) throw new Error(`${data.message}\n\n${data.error}`);
-    });
-};
+// export const useChangeSettings = () => {
+//     return useQuery('changeSettings', async () => {
+//         // TODO: take in arguments to this function and then pass them to patch call
+//         // TODO: add types to patch and cast variables as needed.
+//         const { data, status } = await fetcher.patch('/users/settings');
+//         if(status !== 200) throw new Error(`${data.message}\n\n${data.error}`);
+//     });
+// };
