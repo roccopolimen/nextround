@@ -33,9 +33,9 @@ interface ApplicationObject {
     company: string,
     position: string,
     location: string,
-    salary: number,
+    salary: number | null,
     cardColor: string,
-    progress: number,
+    progress: number, // 0 (IP) - 1 (Offer) - 2 (Reject) - 3 (Waitlist) - 4 (TBD)
     jobPostUrl: string,
     description: string,
     notes: Array<string>,
@@ -47,7 +47,7 @@ interface EventObject {
     _id: ObjectId,
     status: boolean,
     title: string,
-    date: Date,
+    date: Date | string,
     location: string
 }
 
@@ -58,4 +58,32 @@ interface ContactObject {
     location: string,
     phone: string,
     email: string
+}
+
+interface MetricsObject {
+    // Job Funnel
+    num_saved: number,
+    num_applications: number,
+    num_interviewed: number,
+    num_offers: number,
+    // Other metrics
+    num_rejections: number,
+    num_rounds: number,
+    avg_salary: number,
+    num_connections: number,
+    application_timeline: Array<Date>
+}
+
+interface ForumPostObject {
+    _id: ObjectId,
+    poster: ObjectId,
+    jobCycle: ObjectId,
+    postDate: Date,
+    content: string,
+    metrics: MetricsObject
+}
+
+interface Failure {
+    message: string,
+    error?: string
 }

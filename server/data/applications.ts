@@ -1,8 +1,8 @@
 import { cycles, users } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
-import { checkObjectId, checkNonEmptyString, checkPositiveNumber } from '../helpers';
+import { checkObjectId, checkNonEmptyString, checkNonNegativeNumber } from '../helpers';
 import { CycleObject, ApplicationObject, UserObject } from '../typings';
-import { randomColor } from '../helpers/color'
+import { randomColor } from '../helpers';
 
 /**
  * @description Get an application by id
@@ -176,55 +176,58 @@ export const updateApplication = async (userId: string, applicationId: string, c
     if(!applicationId || !checkObjectId(applicationId))
         throw new Error("A proper application id must be provided.");
 
-    let updateFields: [id: string], any = {};
+    let updateFields: Partial<ApplicationObject> = {};
     if(company) {
         if(!checkNonEmptyString(company))
             throw new Error('Company must be a non-empty string.');
         else
-            updateFields['company'] = company;
+            updateFields.company = company;
     }
     if(position) {
         if(!checkNonEmptyString(position))
             throw new Error('Position must be a non-empty string.');
         else
-            updateFields['position'] = position;
+            updateFields.position = position;
     }
     if(location) {
         if(!checkNonEmptyString(location))
             throw new Error('Location must be a non-empty string.');
         else
-            updateFields['location'] = location;
+            updateFields.location = location;
     }
     if(jobPostUrl) {
         if(!checkNonEmptyString(jobPostUrl))
             throw new Error('Job Post URL must be a non-empty string.');
         else
-            updateFields['jobPostUrl'] = jobPostUrl;
+            updateFields.jobPostUrl = jobPostUrl;
     }
     if(description) {
         if(!checkNonEmptyString(description))
             throw new Error('Description must be a non-empty string.');
         else
-            updateFields['description'] = description;
+            updateFields.description = description;
     }
     if(salary) {
-        if(!checkPositiveNumber(salary))
+        if(!checkNonNegativeNumber(salary))
             throw new Error('Salary must be a positive number.');
         else
-            updateFields['salary'] = salary;
+            updateFields.salary = salary;
     }
     if(cardColor) {
         if(!checkNonEmptyString(cardColor))
             throw new Error('Card Color must be a non-empty string.');
         else
-            updateFields['cardColor'] = cardColor;
+            updateFields.cardColor = cardColor;
     }
-    if(progress) {
-        if(!checkPositiveNumber(progress))
+    if(progress !== null) {
+        if(!checkNonNegativeNumber(progress))
             throw new Error('Progress must be a positive number.');
         else
-            updateFields['progress'] = progress;
+            updateFields.progress = progress;
     }
+
+    if(Object.keys(updateFields).length === 0)
+        throw new Error('No fields needed updating.');
 
     const usersCollection = await users();
     const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
