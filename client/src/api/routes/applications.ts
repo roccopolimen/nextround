@@ -91,7 +91,7 @@ export const useCreateEvent = (applicationId: string, title: string, date: strin
  * @throws if fails
  */
 export const useCreateContact = (applicationId: string, name: string, pronouns: string, location: string, phone: string, email: string): UseQueryResult<ContactObject> => {
-    return useQuery('createEvent', async () => {
+    return useQuery('createContact', async () => {
         const body: Partial<ContactObject> = {
             name,
             pronouns,
