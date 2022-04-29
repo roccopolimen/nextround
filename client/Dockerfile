@@ -1,8 +1,8 @@
 FROM alpine:latest
 RUN apk add --no-cache nodejs npm
 
-WORKDIR /app
-COPY . /app
+WORKDIR /app-client
+COPY . /app-client
 
 RUN npm install
 
