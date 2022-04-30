@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/nextround/static/css/main.04803c1f.css",
+    "main.js": "/nextround/static/js/main.7307390e.js",
+    "static/media/logo.svg": "/nextround/static/media/logo.ed379c9e3afb9cfb49702001aa429bcf.svg",
+    "index.html": "/nextround/index.html",
+    "main.04803c1f.css.map": "/nextround/static/css/main.04803c1f.css.map",
+    "main.7307390e.js.map": "/nextround/static/js/main.7307390e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.04803c1f.css",
+    "static/js/main.7307390e.js"
+  ]
+}
