@@ -141,20 +141,14 @@ export const useUpdateApplication = (applicationId: string, company?: string, po
  * @description PATCH /application/event/:applicationId/:eventId
  * @param {string} applicationId 
  * @param {string} eventId 
- * @param {string} status 
- * @param {string} title 
- * @param {string} date 
- * @param {string} location 
+ * @param {string} status
  * @returns {UseQueryResult<EventObject>} the updated event
  * @throws if fails
  */
-export const useUpdateEvent = (applicationId: string, eventId: string, status?: boolean, title?: string, date?: string, location?: string): UseQueryResult<EventObject> => {
+export const useUpdateEvent = (applicationId: string, eventId: string, status?: boolean): UseQueryResult<EventObject> => {
     return useQuery('updateEvent', async () => {
         const body: Partial<EventObject> = {
-            status,
-            title,
-            date,
-            location
+            status
         };
         const { data, status:statusCode } = await fetcher.patch<Partial<EventObject>, AxiosResponse<EventObject | Failure>>(`/application/event/${applicationId}/${eventId}`, body);
         if(statusCode !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);

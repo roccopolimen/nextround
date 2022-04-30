@@ -264,30 +264,12 @@ router.patch('/event/:applicationId/:eventId', async (req, res) => {
     if(!req.body)
         return res.status(400).json({ message: 'no body provided for contact creation.' });
 
-    let status: boolean, title: string, date: string, location: string;
+    let status: boolean;
     let newDataObject: Partial<EventObject> = {};
     try {
-        ({ status, title, date, location } = req.body);
+        ({ status } = req.body);
         if(status !== null)
             newDataObject.status = status;
-        if(title) {
-            if(!checkNonEmptyString(title))
-                throw new Error('Title must be a non-empty string.');
-            else
-                newDataObject.title = title;
-        }
-        if(date) {
-            if(!checkNonEmptyString(date) || !checkDate(date))
-                throw new Error('Date must be a non-empty string representing a date.');
-            else
-                newDataObject.date = new Date(date);
-        }
-        if(location) {
-            if(!checkNonEmptyString(location))
-                throw new Error('Location must be a non-empty string.');
-            else
-                newDataObject.location = location;
-        }
     } catch(e) {
         return res.status(400).json({ message: e.message });
     }
@@ -299,8 +281,7 @@ router.patch('/event/:applicationId/:eventId', async (req, res) => {
         const event: EventObject = 
                     await updateEvent(
                         req.session.user._id, applicationId, eventId,
-                        newDataObject.status, newDataObject.title,
-                        newDataObject.date, newDataObject.location
+                        newDataObject.status
                     );
         res.json(event);
     } catch(e) {
