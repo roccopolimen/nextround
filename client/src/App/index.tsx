@@ -25,8 +25,8 @@ const App = () => {
             <Route path={'/signin'} element={<SignIn />} />
             <Route path={'/signup'} element={<SignUp />} />
             <Route path={'/test_job'} element={<Job />} />
-            <Route path={'/offer_dashboard'} element={<OfferDash />} />
-            <Route path={'/first_cycle'} element={<FirstCycle />} />
+            <Route path={'/offers'} element={<OfferDash />} />
+            <Route path={'/create'} element={<FirstCycle />} />
             </Routes>
         </Router>
         {/* </AuthProvider> */}
