@@ -132,15 +132,11 @@ router.post('/contact/:applicationId', async (req, res) => {
     if(!req.body)
         return res.status(400).json({ message: 'no body provided for contact creation.' });
 
-    let name: string, pronouns: string, location: string, phone: string, email: string;
+    let name: string, phone: string, email: string;
     try {
-        ({ name, pronouns, location, phone, email } = req.body);
+        ({ name, phone, email } = req.body);
         if(!name || !checkNonEmptyString(name))
             throw new Error('Contact Name must be provided.');
-        if(!pronouns || !checkNonEmptyString(pronouns))
-            throw new Error('Contact Pronouns must be provided.');
-        if(!location || !checkNonEmptyString(location))
-            throw new Error('Contact Location must be provided.');
         if(!phone || !checkNonEmptyString(phone))
             throw new Error('Contact Phone must be provided.');
         if(!email || !checkNonEmptyString(email))
@@ -150,7 +146,7 @@ router.post('/contact/:applicationId', async (req, res) => {
     }
 
     try {
-        const contact: ContactObject = await createContact(req.session.user._id, applicationId, name, pronouns, location, phone, email);
+        const contact: ContactObject = await createContact(req.session.user._id, applicationId, name, phone, email);
         res.json(contact);
     } catch(e) {
         res.status(500).json({ message: 'problem creating contact for application.', error: e.message })
@@ -306,27 +302,15 @@ router.patch('/contact/:applicationId/:contactId', async (req, res) => {
     if(!req.body)
         return res.status(400).json({ message: 'no body provided for contact creation.' });
 
-    let name: string, pronouns: string, location: string, phone: string, email: string;
+    let name: string, phone: string, email: string;
     let newDataObject: Partial<ContactObject> = {};
     try {
-        ({ name, pronouns, location, phone, email } = req.body);
+        ({ name, location, phone, email } = req.body);
         if(name) {
             if(!checkNonEmptyString(name))
                 throw new Error('Name must be a non-empty string.');
             else
                 newDataObject.name = name;
-        }
-        if(pronouns) {
-            if(!checkNonEmptyString(pronouns))
-                throw new Error('Pronouns must be a non-empty string.');
-            else
-                newDataObject.pronouns = pronouns;
-        }
-        if(location) {
-            if(!checkNonEmptyString(location))
-                throw new Error('Location must be a non-empty string.');
-            else
-                newDataObject.location = location;
         }
         if(phone) {
             if(!checkNonEmptyString(phone))
@@ -351,8 +335,7 @@ router.patch('/contact/:applicationId/:contactId', async (req, res) => {
         const contact: ContactObject =
                             await updateContact(
                                 req.session.user._id, applicationId, contactId,
-                                newDataObject.name, newDataObject.pronouns,
-                                newDataObject.location, newDataObject.phone,
+                                newDataObject.name, newDataObject.phone,
                                 newDataObject.email
                             );
         res.json(contact);

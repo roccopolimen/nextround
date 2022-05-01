@@ -4,8 +4,9 @@ import { Info, Event, Contacts, Description } from '@mui/icons-material';
 import JobDetails from "components/JobSections/JobDetails";
 import { ApplicationObject } from "typings";
 import Events from "components/JobSections/Events";
-import { useCreateEvent, useDeleteEvent, useGetApplication, useUpdateApplication, useUpdateEvent } from "api";
+import { useCreateContact, useCreateEvent, useDeleteEvent, useGetApplication, useUpdateApplication, useUpdateEvent } from "api";
 import { useParams } from "react-router-dom";
+import MyContacts from "components/JobSections/MyContacts";
 
 export default function Job() {
     // Constants
@@ -20,6 +21,7 @@ export default function Job() {
     const [shouldCreateEvent, setShouldCreateEvent] = useState(false);
     const [shouldDeleteEvent, setShouldDeleteEvent] = useState(false);
     const [shouldPatchEvent, setShouldPatchEvent] = useState(false);
+    const [shouldCreateContact, setShouldCreateContact] = useState(false);
     const [hasNewData, setHasNewData] = useState(false);
     const [component, setComponent] = useState(undefined as
                                      ReactElement<any, any> | undefined);
@@ -43,6 +45,10 @@ export default function Job() {
 
     const [eventStatus, setEventStatus] = useState(false);
     const [eventIdUpdate, setEventIdUpdate] = useState("");
+
+    const [contactName, setContactName] = useState("");
+    const [contactPhone, setContactPhone] = useState("");
+    const [contactEmail, setContactEmail] = useState("");
 
 
     let appId: string = params.id ? params.id : "";
@@ -70,6 +76,8 @@ export default function Job() {
     const { refetch: deleteEvent } = useDeleteEvent(appId, eventId);
     const { refetch: updateEvent } = useUpdateEvent(appId,
         eventIdUpdate, eventStatus);
+    const { refetch: createContact } = useCreateContact(appId, contactName,
+         contactPhone, contactEmail);
          
     // TODO: Delete application button
 
@@ -150,6 +158,19 @@ export default function Job() {
          updateEvent]);
 
     useEffect(() => {
+        const callApi = async () => {
+            await createContact();
+            await fetchApplication();
+        }
+
+        if(shouldCreateContact) {
+            callApi();
+            setShouldCreateContact(false);
+        }
+    }, [contactName, contactPhone, contactEmail, shouldCreateContact,
+            fetchApplication, createContact]);
+
+    useEffect(() => {
         // On tab change
         const updateApp = (data: ApplicationObject) => {
             setHasNewData(false);
@@ -176,6 +197,13 @@ export default function Job() {
             setEventId(eventId);
             setShouldDeleteEvent(true);
         }
+
+        const addContact = (name: string, phone: string, email: string) => {
+            setContactName(name);
+            setContactPhone(phone);
+            setContactEmail(email);
+            setShouldCreateContact(true);
+        }
         const chooseComponent = () => {
             switch (currTab) {
                 case 0:
@@ -189,7 +217,8 @@ export default function Job() {
                                     addEvent={addEvent}
                                     deleteEvent={deleteEvent} />);
                 case 2:
-                    return <div>Contacts</div>;
+                    return (<MyContacts data={data}
+                                        addContact={addContact} />);
                 case 3:
                     return <div>Notes</div>;
                 default:

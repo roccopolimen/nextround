@@ -83,19 +83,15 @@ export const useCreateEvent = (applicationId: string, title: string, date: strin
  * @description POST /application/contact/:applicationId
  * @param {string} applicationId 
  * @param {string} name 
- * @param {string} pronouns 
- * @param {string} location 
  * @param {string} phone 
  * @param {string} email 
  * @returns {UseQueryResult<ContactObject>} the newly created contact
  * @throws if fails
  */
-export const useCreateContact = (applicationId: string, name: string, pronouns: string, location: string, phone: string, email: string): UseQueryResult<ContactObject> => {
+export const useCreateContact = (applicationId: string, name: string, phone: string, email: string): UseQueryResult<ContactObject> => {
     return useQuery('createContact', async () => {
         const body: Partial<ContactObject> = {
             name,
-            pronouns,
-            location,
             phone,
             email
         };
@@ -161,19 +157,15 @@ export const useUpdateEvent = (applicationId: string, eventId: string, status?: 
  * @param {string} applicationId 
  * @param {string} contactId 
  * @param {string} name 
- * @param {string} pronouns 
- * @param {string} location 
  * @param {string} phone 
  * @param {string} email 
  * @returns {UseQueryResult<ContactObject>} the updated contact
  * @throws if fails
  */
-export const useUpdateContact = (applicationId: string, contactId: string, name?: string, pronouns?: string, location?: string, phone?: string, email?: string): UseQueryResult<ContactObject> => {
+export const useUpdateContact = (applicationId: string, contactId: string, name?: string, phone?: string, email?: string): UseQueryResult<ContactObject> => {
     return useQuery('updateContact', async () => {
         const body: Partial<ContactObject> = {
             name,
-            pronouns,
-            location,
             phone,
             email
         };
