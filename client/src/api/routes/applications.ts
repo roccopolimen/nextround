@@ -133,6 +133,17 @@ export const useUpdateApplication = (applicationId: string, company?: string, po
     });
 };
 
+export const useCreateNote = (applicationId: string, note?: string): UseQueryResult<ApplicationObject> => {
+    return useQuery('createNote', async () => {
+        const body: Object = {
+            note
+        };
+        const { data, status } = await fetcher.post<Object, AxiosResponse<ApplicationObject | Failure>>(`/application/note/${applicationId}`, body);
+        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
+        return (data as ApplicationObject);
+    });
+};
+
 /**
  * @description PATCH /application/event/:applicationId/:eventId
  * @param {string} applicationId 

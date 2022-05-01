@@ -1,5 +1,5 @@
 import express from 'express';
-import { createApplication, createContact, createEvent, deleteApplication, deleteContact, deleteEvent, getApplicationById, getApplicationFromCycleById, updateApplication, updateContact, updateEvent } from '../data';
+import { createApplication, createContact, createEvent, createNote, deleteApplication, deleteContact, deleteEvent, getApplicationById, getApplicationFromCycleById, updateApplication, updateContact, updateEvent } from '../data';
 import { checkDate, checkNonEmptyString, checkObjectId, checkNonNegativeNumber, isUsersApplication } from '../helpers';
 import { ApplicationObject, ContactObject, EventObject } from '../typings';
 
@@ -79,6 +79,37 @@ router.post('/', async (req, res) => {
         res.status(500).json({ message: 'problem creating the application.', error: e.message });
     }
 });
+
+// POST /note/:applicationId
+router.post('/note/:applicationId', async (req, res) => {
+    console.log(req.body); // TODO: remove
+    const { applicationId } = req.params;
+    if(!applicationId || !checkObjectId(applicationId))
+        return res.status(400).json({ message: 'application id must be a string representing a mongoDB ObjectId.' });
+    if(!req.session.user)
+        return res.status(401).json({ message: 'User is not authorized, must be logged in.' });
+    if(!(await isUsersApplication(req.session.user._id, applicationId)))
+        return res.status(401).json({ message: 'requested application is not attached to the user.' });
+    if(!req.body)
+        return res.status(400).json({ message: 'no body provided for application note creation.' });
+    let note: string;
+
+    try {
+        ({ note } = req.body);
+        if(!note || !checkNonEmptyString(note))
+            throw new Error('Note must be provided.');
+    } catch(e) {
+        return res.status(400).json({ message: e.message });
+    }
+
+    try {
+        const retObj: ApplicationObject = await createNote(req.session.user._id, applicationId, note);
+        res.json(retObj);
+    } catch(e) {
+        res.status(500).json({ message: 'problem creating the note.', error: e.message });
+    }
+});
+
 
 // POST /event/:applicationId
 router.post('/event/:applicationId', async (req, res) => {

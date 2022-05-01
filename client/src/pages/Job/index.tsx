@@ -4,9 +4,10 @@ import { Info, Event, Contacts, Description } from '@mui/icons-material';
 import JobDetails from "components/JobSections/JobDetails";
 import { ApplicationObject } from "typings";
 import Events from "components/JobSections/Events";
-import { useCreateContact, useCreateEvent, useDeleteEvent, useGetApplication, useUpdateApplication, useUpdateEvent } from "api";
+import { useCreateContact, useCreateEvent, useCreateNote, useDeleteContact, useDeleteEvent, useGetApplication, useUpdateApplication, useUpdateEvent } from "api";
 import { useParams } from "react-router-dom";
 import MyContacts from "components/JobSections/MyContacts";
+import MyNotes from "components/JobSections/MyNotes";
 
 export default function Job() {
     // Constants
@@ -22,6 +23,8 @@ export default function Job() {
     const [shouldDeleteEvent, setShouldDeleteEvent] = useState(false);
     const [shouldPatchEvent, setShouldPatchEvent] = useState(false);
     const [shouldCreateContact, setShouldCreateContact] = useState(false);
+    const [shouldDeleteContact, setShouldDeleteContact] = useState(false);
+    const [shouldCreateNote, setShouldCreateNote] = useState(false);
     const [hasNewData, setHasNewData] = useState(false);
     const [component, setComponent] = useState(undefined as
                                      ReactElement<any, any> | undefined);
@@ -49,6 +52,10 @@ export default function Job() {
     const [contactName, setContactName] = useState("");
     const [contactPhone, setContactPhone] = useState("");
     const [contactEmail, setContactEmail] = useState("");
+
+    const [contactId, setContactId] = useState("");
+
+    const [note, setNote] = useState("");
 
 
     let appId: string = params.id ? params.id : "";
@@ -78,8 +85,10 @@ export default function Job() {
         eventIdUpdate, eventStatus);
     const { refetch: createContact } = useCreateContact(appId, contactName,
          contactPhone, contactEmail);
+    const { refetch: deleteContact } = useDeleteContact(appId, contactId);
+    const { refetch: createNote } = useCreateNote(appId, note);
          
-    // TODO: Delete application button
+    // TODO: Delete whole application button
 
     useEffect(() => {
         // On mount
@@ -121,6 +130,7 @@ export default function Job() {
     }, [patchApp, hasNewData, updateApplication, fetchApplication]);
 
     useEffect(() => {
+        // Make the create event call
         const callApi = async () => {
             await createEvent();
             await fetchApplication();
@@ -134,6 +144,7 @@ export default function Job() {
          fetchApplication, createEvent]);
 
     useEffect(() => {
+        // Make the delete event call
         const callApi = async () => {
             await deleteEvent();
             await fetchApplication();
@@ -146,6 +157,7 @@ export default function Job() {
     }, [eventId, shouldDeleteEvent, fetchApplication, deleteEvent]);
 
     useEffect(() => {
+        // Make the update event call
         const callApi = async () => {
             await updateEvent();
             await fetchApplication();
@@ -158,6 +170,7 @@ export default function Job() {
          updateEvent]);
 
     useEffect(() => {
+        // Make the create contact call
         const callApi = async () => {
             await createContact();
             await fetchApplication();
@@ -171,7 +184,35 @@ export default function Job() {
             fetchApplication, createContact]);
 
     useEffect(() => {
+        // Make the delete contact call
+        const callApi = async () => {
+            await deleteContact();
+            await fetchApplication();
+        }
+
+        if(shouldDeleteContact) {
+            callApi();
+            setShouldDeleteContact(false);
+        }
+    } , [contactId, shouldDeleteContact, fetchApplication, deleteContact]);
+
+    useEffect(() => {
+        // Make the create note call
+        const callApi = async () => {
+            await createNote();
+            await fetchApplication();
+        }
+
+        if(shouldCreateNote) {
+            callApi();
+            setShouldCreateNote(false);
+        }
+    } , [note, shouldCreateNote, fetchApplication, createNote]);
+
+    useEffect(() => {
         // On tab change
+
+        // Props functions
         const updateApp = (data: ApplicationObject) => {
             setHasNewData(false);
             setData(data);
@@ -204,7 +245,22 @@ export default function Job() {
             setContactEmail(email);
             setShouldCreateContact(true);
         }
-        const chooseComponent = () => {
+
+        const deleteContact = (id: string) => {
+            setContactId(id);
+            setShouldDeleteContact(true);
+        }
+
+        const addNote = (note: string) => {
+            setNote(note);
+            setShouldCreateNote(true);
+        }
+
+        /**
+         * Chooses the component to be rendered based on the tab
+         * @returns {JSX.Element} The component to be rendered
+         */
+        const chooseComponent = (): JSX.Element => {
             switch (currTab) {
                 case 0:
                     return (
@@ -218,9 +274,11 @@ export default function Job() {
                                     deleteEvent={deleteEvent} />);
                 case 2:
                     return (<MyContacts data={data}
-                                        addContact={addContact} />);
+                                        addContact={addContact}
+                                        deleteContact={deleteContact} />);
                 case 3:
-                    return <div>Notes</div>;
+                    return (<MyNotes data={data}
+                                     addNote={addNote} />);
                 default:
                     return <div>Error</div>;
             }
