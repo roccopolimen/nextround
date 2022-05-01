@@ -82,7 +82,6 @@ router.post('/', async (req, res) => {
 
 // POST /note/:applicationId
 router.post('/note/:applicationId', async (req, res) => {
-    console.log(req.body); // TODO: remove
     const { applicationId } = req.params;
     if(!applicationId || !checkObjectId(applicationId))
         return res.status(400).json({ message: 'application id must be a string representing a mongoDB ObjectId.' });

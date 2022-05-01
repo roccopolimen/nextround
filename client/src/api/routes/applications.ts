@@ -133,7 +133,7 @@ export const useUpdateApplication = (applicationId: string, company?: string, po
     });
 };
 
-export const useCreateNote = (applicationId: string, note?: string): UseQueryResult<ApplicationObject> => {
+export const useCreateNote = (applicationId: string, note: string): UseQueryResult<ApplicationObject> => {
     return useQuery('createNote', async () => {
         const body: Object = {
             note

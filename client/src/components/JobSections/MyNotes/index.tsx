@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ApplicationObject } from "typings";
 
 
-export default function MyContacts(props: {
+export default function MyNotes(props: {
     data: ApplicationObject | undefined,
     addNote: (content: string) => void }) {
 
