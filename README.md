@@ -20,6 +20,15 @@ With COVID-19 and job recruitment transitioning over to the Internet, managing j
 
 [Prototype (view only)](https://www.figma.com/proto/3kAio2BKwoY79aeBQjWEtm/NextRound-Wireframe?page-id=0%3A1&node-id=2%3A2&viewport=261%2C48%2C0.33&scaling=scale-down&starting-point-node-id=2%3A2)
 
+## Docker Setup
+
+Make sure Docker is already installed and ready to run on your device.
+
+```
+# builds and runs the container w/ the front-end, back-end, and database images
+docker-compose up
+```
+
 ## Git Workflow
 
 Only changes made within src/ will require working in branches. Documents can be pushed directly to main when needed.
