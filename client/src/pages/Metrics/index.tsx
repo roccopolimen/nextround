@@ -3,6 +3,13 @@ import {
     Card,
     CardContent,
     Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
     Typography,
     useMediaQuery
 } from "@mui/material";
@@ -67,6 +74,20 @@ export default function Metrics() {
             ]
         };
         setData(dummyData);
+        setApplications([{
+            _id: 1,
+            position: "Software Engineer",
+            company: "Google",
+            location: "Mountain View, CA",
+            salary: 120000,
+            cardColor: "#00bcd4",
+            progress: 1,
+            jobPostUrl: "https://www.google.com",
+            description: "Blah blah blah",
+            notes: [],
+            events: [],
+            contacts: []
+        }]);
     }, []);
 
     useEffect(() => {
@@ -119,7 +140,7 @@ export default function Metrics() {
         return <div>Loading...</div>;
     } else {
         return (
-            <Box sx={{ bgcolor: '#F9F8FF', mb: 3}}>
+            <Box sx={{ bgcolor: '#F9F8FF', pb: 3}}>
                 <Typography variant="h1"
                     sx={{ mb: 5, ml: 5, mt: 2, fontSize: '36pt' }}>
                     Metrics
@@ -133,7 +154,8 @@ export default function Metrics() {
                         <Card sx={{ ml: 3 }}>
                             <CardContent>
                                 <Typography variant="h2"
-                                    sx={{ mb: 2, fontSize: '24pt' }}>
+                                    sx={{ mb: 2, fontSize: '24pt',
+                                    borderBottom: 'solid #ADA7BD 0.5px' }}>
                                     Application Funnel
                                 </Typography>
                                 <FunnelChart width={550} height={150}>
@@ -143,8 +165,9 @@ export default function Metrics() {
                                         data={funnelData}
                                         isAnimationActive
                                     >
-                                        <LabelList position="centerBottom" fill="#000"
-                                             stroke="none" dataKey="value" />
+                                        <LabelList position="centerBottom"
+                                            fill="#000" stroke="none"
+                                            dataKey="value" />
                                         <LabelList position="right" fill="#000"
                                              stroke="none" dataKey="name" />
                                     </Funnel>
@@ -153,14 +176,77 @@ export default function Metrics() {
                         </Card>
                     </Grid>
 
-                    {/* TODO: Fun Stats Card */}
+                    {/* Fun Stats Card */}
+                    <Grid item>
+                        <Card sx={{ ml: 3 }}>
+                            <CardContent>
+                                <Typography variant="h2"
+                                    sx={{ mb: 2, fontSize: '24pt',
+                                    borderBottom: 'solid #ADA7BD 0.5px' }}>
+                                    Fun Stats
+                                </Typography>
+                                <Grid container spacing={{ xs: 2, md: 3 }} 
+                                    columns={{ xs: 1, sm: 2, md: 2 }} >
+                                    <Grid item>
+                                        <Card>
+                                            <CardContent>
+                                                <Typography variant="h3"
+                                                    display="inline"
+                                                    sx={{ fontSize: '18pt',
+                                                    fontWeight: 'bold' }}>
+                                                    {data.num_rounds}
+                                                </Typography>
+                                                <Typography variant="h4"
+                                                    sx={{ fontSize: '14pt' }}>
+                                                    interview rounds
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                    <Grid item>
+                                        <Card>
+                                            <CardContent>
+                                                <Typography variant="h3"
+                                                    display="inline"
+                                                    sx={{ fontSize: '18pt',
+                                                    fontWeight: 'bold' }}>
+                                                    {data.num_connections}
+                                                </Typography>
+                                                <Typography variant="h4"
+                                                    sx={{ fontSize: '14pt' }}>
+                                                    connections
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                    <Grid item>
+                                        <Card>
+                                            <CardContent>
+                                                <Typography variant="h3"
+                                                    display="inline"
+                                                    sx={{ fontSize: '18pt',
+                                                    fontWeight: 'bold' }}>
+                                                    ${data.avg_salary}
+                                                </Typography>
+                                                <Typography variant="h4"
+                                                    sx={{ fontSize: '14pt' }}>
+                                                    average salary
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                </Grid>
+                                </CardContent>
+                        </Card>
+                    </Grid>
 
                     {/* Application Timeline */}
                     <Grid item>
                         <Card sx={{ ml: 3 }}>
                             <CardContent>
                                 <Typography variant="h2"
-                                    sx={{ mb: 2, fontSize: '24pt' }}>
+                                    sx={{ mb: 2, fontSize: '24pt',
+                                    borderBottom: 'solid #ADA7BD 0.5px' }}>
                                     Application Timeline
                                 </Typography>
                                 <LineChart width={750} height={250}
@@ -168,7 +254,7 @@ export default function Metrics() {
                                     margin={{ top: 5, right: 30, left: 20,
                                      bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
+                                    <XAxis dataKey="name" minTickGap={10} />
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
@@ -180,6 +266,38 @@ export default function Metrics() {
                     </Grid>
 
                     {/* TODO: Table of applications */}
+                    <TableContainer component={Paper}
+                        sx={{ width: '75%', margin: 'auto', mt: 5, mb: 3 }}>
+                        <Table aria-label="job table">
+                            <TableHead>
+                            <TableRow>
+                                <TableCell>Role</TableCell>
+                                <TableCell align="right">Company</TableCell>
+                                <TableCell align="right">Status</TableCell>
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {applications.map((app) => (
+                                <TableRow
+                                    key={app._id}
+                                    sx={{ '&:last-child td, &:last-child th': {
+                                         border: 0 } }} >
+                                <TableCell component="th" scope="row">
+                                    {app.position}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {app.company}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {app.progress === 1 ? "Accepted" : 
+                                    (app.progress === 2 ? "Rejected" :
+                                     "Pending")}
+                                </TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
                 </Grid>
             </Box>
         );
