@@ -12,7 +12,7 @@ initializeApp({
 });
 
 const app = express();
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({ credentials: true, origin: process.env.ORIGIN_URL }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, _, next) => {
@@ -40,6 +40,6 @@ app.use('*', (req, _, next) => {
 });
 configRoutes(app);
 
-app.listen(4000, () => {
+app.listen(process.env.PORT || 4000, () => {
     console.log('** server running on http://localhost:4000 **');
 });
