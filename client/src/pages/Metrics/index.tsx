@@ -10,10 +10,11 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Typography,
-    useMediaQuery
+    Typography
 } from "@mui/material";
+import { useGetCurrentCycle, useGetCycle, useGetCycleMetrics, useGetMetrics } from "api";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { 
     CartesianGrid,
     Funnel,
@@ -29,51 +30,36 @@ import {
 import { ApplicationObject, MetricsObject } from "typings";
 
 export default function Metrics() {
+    const params = useParams();
+    const cycleId = params.cycleId;
     // State variables
     const [applications, setApplications] = useState([] as ApplicationObject[]);
     const [data, setData] = useState(undefined as MetricsObject | undefined);
     const [funnelData, setFunnelData] = useState([] as any[]);
     const [lineData, setLineData] = useState([] as any[]);
 
-    // Responsive design
-    const mobile: boolean = useMediaQuery('(max-width: 900px)');
+    // Queries
+    const { data: cMetricsData, isLoading: cIsLoading, isError: cIsError,
+         refetch: fetchCurrentMetrics } = useGetMetrics();
+    const { data: metricsData, isLoading, isError,
+         refetch: fetchMetrics } = useGetCycleMetrics(cycleId ? cycleId : "");
+    const {data: cCycleData, isLoading: cCycleIsLoading, isError: cCycleIsError,
+         refetch: fetchCurrentCycle} = useGetCurrentCycle();
+    const {data: cycleData, isLoading: cycleIsLoading, isError: cycleIsError,
+         refetch: fetchCycle} = useGetCycle(cycleId ? cycleId : "");
 
     useEffect(() => {
         // Fetch data
-        const dummyData: MetricsObject = {
-            num_saved: 20,
-            num_applications: 17,
-            num_interviewed: 13,
-            num_offers: 4,
-            // Other metrics
-            num_rejections: 4,
-            num_rounds: 32,
-            avg_salary: 120000,
-            num_connections: 8,
-            application_timeline: [
-                new Date("2021/08/05"),
-                new Date("2021/08/11"),
-                new Date("2021/08/11"),
-                new Date("2021/08/12"),
-                new Date("2021/08/12"),
-                new Date("2021/08/19"),
-                new Date("2021/08/20"),
-                new Date("2021/08/20"),
-                new Date("2021/08/20"),
-                new Date("2021/08/20"),
-                new Date("2021/08/20"),
-                new Date("2021/08/26"),
-                new Date("2021/08/29"),
-                new Date("2021/09/01"),
-                new Date("2021/09/02"),
-                new Date("2021/09/03"),
-                new Date("2021/09/04"),
-                new Date("2021/09/04"),
-                new Date("2021/09/05"),
-                new Date("2021/09/09")
-            ]
+        const fetchData = async () => {
+            if (cycleId) {
+                await fetchMetrics();
+                await fetchCycle();
+            } else {
+                await fetchCurrentMetrics();
+                await fetchCurrentCycle();
+            }
         };
-        setData(dummyData);
+        fetchData();
         setApplications([{
             _id: 1,
             position: "Software Engineer",
@@ -91,42 +77,63 @@ export default function Metrics() {
     }, []);
 
     useEffect(() => {
+        if (metricsData) {
+            setData(metricsData);
+        } else if(cMetricsData) {
+            setData(cMetricsData);
+        }
+
+        if (cycleData) {
+            setApplications(cycleData.applications);
+        } else if (cCycleData) {
+            setApplications(cCycleData.applications);
+        }
+    }, [cMetricsData, metricsData, cCycleData, cycleData]);
+
+    useEffect(() => {
         // Create funnel data
         if (data) {
-            const funnelData: any[] = [
-                {
+            const funnelData: any[] = [];
+            if(data.num_saved > 0) {
+                funnelData.push({
                     name: "Saved",
                     value: data.num_saved,
-                    fill: "#6c50ed",
-                },
-                {
-                    name: "Applied",
-                    value: data.num_applications,
-                    fill: "#614eba",
-                },
-                {
-                    name: "Interviewed",
-                    value: data.num_interviewed,
-                    fill: "#6e5eba",
-                },
-                {
-                    name: "Offers",
-                    value: data.num_offers,
-                    fill: "#8377ba",
+                    fill: "#6c50ed"
+                });
+                if(data.num_applications > 0) {
+                    funnelData.push({
+                        name: "Applied",
+                        value: data.num_applications,
+                        fill: "#765fde"
+                    });
+                    if(data.num_interviewed > 0) {
+                        funnelData.push({
+                            name: "Interviewed",
+                            value: data.num_interviewed,
+                            fill: "#7d6ccc"
+                        });
+                        if(data.num_offers > 0) {
+                            funnelData.push({
+                                name: "Offers",
+                                value: data.num_offers,
+                                fill: "#8377ba"
+                            });
+                        }
+                    }
                 }
-            ];
+            }
             setFunnelData(funnelData);
 
             // Create line chart data
             let lineData: any[] = [];
-            let count: number = 1;
+            let count: number = 0;
             let n: number = data.application_timeline.length;
-            for(let d: Date = data.application_timeline[0];
-                d <= data.application_timeline[n-1];
+            for(let d: Date = new Date(data.application_timeline[0]);
+                d <= new Date(data.application_timeline[n-1]);
                 d.setDate(d.getDate() + 1)) {
                 let dt: Date = new Date(d);
                 count += data.application_timeline.filter(
-                    x => x.getTime() === dt.getTime()).length-1;
+                    x => new Date(x).getTime() === dt.getTime()).length;
                 lineData.push({
                     name: dt.toLocaleDateString(),
                     apps: count
@@ -136,11 +143,13 @@ export default function Metrics() {
         }
     }, [data]);
 
-    if(!data) {
+    if(!data || isLoading || cIsLoading) {
         return <div>Loading...</div>;
+    } else if(isError || cIsError) {
+        return <div>Error...</div>;
     } else {
         return (
-            <Box sx={{ bgcolor: '#F9F8FF', pb: 3}}>
+            <Box sx={{ mb: 3}}>
                 <Typography variant="h1"
                     sx={{ mb: 5, ml: 5, mt: 2, fontSize: '36pt' }}>
                     Metrics
@@ -165,11 +174,11 @@ export default function Metrics() {
                                         data={funnelData}
                                         isAnimationActive
                                     >
-                                        <LabelList position="centerBottom"
+                                        <LabelList position="inside"
                                             fill="#000" stroke="none"
-                                            dataKey="value" />
+                                            dataKey="name" />
                                         <LabelList position="right" fill="#000"
-                                             stroke="none" dataKey="name" />
+                                             stroke="none" dataKey="value" />
                                     </Funnel>
                                 </FunnelChart>
                             </CardContent>
@@ -265,7 +274,7 @@ export default function Metrics() {
                         </Card>
                     </Grid>
 
-                    {/* TODO: Table of applications */}
+                    {/* Table of applications */}
                     <TableContainer component={Paper}
                         sx={{ width: '75%', margin: 'auto', mt: 5, mb: 3 }}>
                         <Table aria-label="job table">
@@ -289,7 +298,7 @@ export default function Metrics() {
                                     {app.company}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {app.progress === 1 ? "Accepted" : 
+                                    {app.progress === 1 ? "Offered" : 
                                     (app.progress === 2 ? "Rejected" :
                                      "Pending")}
                                 </TableCell>

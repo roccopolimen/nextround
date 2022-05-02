@@ -30,6 +30,7 @@ const queryClient: QueryClient = new QueryClient({
 });
 
 const App = () => {
+    document.body.style.backgroundColor = "#F9F8FF";
     return (
         <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
@@ -42,7 +43,8 @@ const App = () => {
             <Route path={'/signup'} element={<SignUp />} />
             <Route path={'/test_job'} element={<Job />} />
             <Route path={'/settings'} element={<Settings />} />
-            <Route path={'/test_metrics'} element={<Metrics />} />
+            <Route path={'/metrics/:cycleId'} element={<Metrics />} />
+            <Route path={'/metrics/'} element={<Metrics />} />
             </Routes>
         </Router>
         {/* </AuthProvider> */}
