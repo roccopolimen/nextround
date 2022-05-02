@@ -21,6 +21,8 @@ const Upcoming = () => {
                 </Slide>
                 <Slide direction='left' in={true} timeout={800}>
                     <Grid item xs={12} sm={8} md={6} lg={4} xl={4} justifyContent="center" alignItems="center">
+                        <br/>
+                        <br/>
                         <JobCardList title={'To Apply'} />
                         <JobCardList title={'Applied'} />
                     </Grid>
