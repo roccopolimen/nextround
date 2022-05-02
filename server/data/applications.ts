@@ -4,9 +4,22 @@ import { checkObjectId, checkNonEmptyString, checkNonNegativeNumber } from '../h
 import { CycleObject, ApplicationObject, UserObject } from '../typings';
 import { randomColor } from '../helpers';
 import axios from 'axios';
-// This wont work but i need to do this for authentication somehow
-// var clearbit = require('clearbit')('sk_db62884ced11b25efde87b40131fe4da');
-import clearbit from 'clearbit';
+
+/**
+ * @description Uses Clearbit API to get the company's logo
+ * @param {string} company name of the company
+ * @returns {Promise<string>} the link to company logo
+ */
+const searchLogo = async (company: string): Promise<string> => {
+    try {
+        const { data } = await axios.get(`https://company.clearbit.com/v1/domains/find?name=${company}`, { auth: { username: process.env.CLEARBIT_API_KEY, password: '' } });
+        return data.logo;
+    } catch(e) {
+        console.log('Clearbit API call failed.');
+        console.log(e.message);
+        return '';
+    }
+};
 
 /**
  * @description Get an application by id
@@ -123,13 +136,12 @@ export const createApplication = async (userId: string, company: string, positio
         throw new Error("A description must be provided.");
     
 
-    const companyLogo = (await axios.get(`https://company.clearbit.com/v1/domains/find?name=${company}`))['logo'];
-    // TODO: discuss if we are storing logo image url here
+    const logo = await searchLogo(company);
     const cardColor: string = randomColor();
     let newApp: ApplicationObject = {
         _id: new ObjectId(),
         company: company,
-        companyLogo: companyLogo,
+        companyLogo: logo,
         position: position,
         location: location,
         salary: null, 
@@ -187,9 +199,10 @@ export const updateApplication = async (userId: string, applicationId: string, c
     if(company) {
         if(!checkNonEmptyString(company))
             throw new Error('Company must be a non-empty string.');
-        else
+        else {
             updateFields.company = company;
-            updateFields.companyLogo = (await axios.get(`https://company.clearbit.com/v1/domains/find?name=${company}`))['logo'];
+            updateFields.companyLogo = await searchLogo(company);
+        }
     }
     if(position) {
         if(!checkNonEmptyString(position))
