@@ -37,30 +37,44 @@ const UpcomingBox = (props: any) => {
 
      // NOTE: I dont know a way to use one Link tag and keep the styling the same
      return (
-        <Grid item xs={12}>
+        <Grid item xs={12} margin='10px'>
             <Link to={'/'} style={{textDecoration: 'none'}}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', margin: '10px', borderBottom: 1}}>
-                    <CardMedia
-                        sx={{borderRadius:'100%', maxHeight: '50px', maxWidth: '50px'}}
-                        component='img'
-                        image={`${BASE_CLEARBIT_URL}${url}`}
-                        alt='company logo'
-                    /> 
-                
-                <CardContent className='insideCard'>
-                    <Typography>
-                        {title}
-                    </Typography>
-                    <Typography>
-                        {company}
-                    </Typography>
-                    <Typography>
-                        {role}
-                    </Typography>
-                    <Typography>
-                        {date}
-                    </Typography>
-                </CardContent>
+                <Box sx={{ display: 'flex', flexDirection: 'column', margin: '10px', borderBottom: 1}}>                
+                    <CardContent className='insideCard'>
+                        <Grid container>
+                            <Grid item xs={1}>
+                                <CardMedia
+                                    sx={{borderRadius:'100%', maxHeight: '50px', maxWidth: '50px'}}
+                                    component='img'
+                                    image={`${BASE_CLEARBIT_URL}${url}`}
+                                    alt='company logo'
+                                /> 
+                            </Grid>
+                            <Grid item xs={7} textAlign='left'>
+                                <Typography id='title' variant='h4'>
+                                    {title}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4} textAlign='right'>
+                                <Typography id='company' variant='h6'>
+                                    {company}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={1}>
+                                
+                            </Grid>
+                            <Grid item xs={7} textAlign='left'>
+                                <Typography id='role'>
+                                    {role}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4} textAlign='right'>
+                                <Typography id='date'>
+                                    {date}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </CardContent>
                 </Box>
             </Link>
         </Grid>

@@ -1,3 +1,23 @@
 .image {
     border-radius: 100%;
 }
+
+#title {
+    font-family: "Poppins", Helvetica, Arial, sans-serif;
+    color: #190446;
+}
+
+#company {
+    font-family: "Poppins", Helvetica, Arial, sans-serif;
+    color: #190446;
+}
+
+#role {
+    font-family: "Poppins", Helvetica, Arial, sans-serif;
+    color: #ADA7BD;
+}
+
+#date {
+    font-family: "Poppins", Helvetica, Arial, sans-serif;
+    color: #190446;
+}

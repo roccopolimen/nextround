@@ -26,11 +26,6 @@ const JobCardList = (props: any) => {
                 <JobCard url={'netflix.com'} company={'Netflix'} role={'Software Engineer'} color={'#ED717D'}/> 
             </AccordionDetails>
         </Accordion>
-        // <Grid container spacing={2} direction='column' justifyContent='center' alignItems='stretch' style={{ margin: '20px', width: '20%', border: '2px solid black'}}> Applied 
-        //     <JobCard url={'google.com'} company={'Google'} role={'Software Engineer'} color={'#F6C92E'}/>
-        //     <JobCard url={'spotify.com'} company={'Spotify'} role={'Data Scientist'} color={'#76D27C'}/> 
-        //     <JobCard url={'netflix.com'} company={'Netflix'} role={'Software Engineer'} color={'#ED717D'}/> 
-        // </Grid>
     );
 }
 
