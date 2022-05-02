@@ -1,0 +1,10 @@
+.pfp {
+  padding-left: 25px;
+  position: relative;
+}
+
+.pfp .FAB {
+  position: absolute;
+  top: 75%;
+  left: 75%;
+}

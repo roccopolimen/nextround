@@ -1,6 +1,6 @@
 import connect from '../config/mongoConnection';
 import { Collection, Db, ObjectId } from 'mongodb'
-import { ApplicationObject, ContactObject, CycleObject, EventObject, MediaObject, UserObject } from '../typings';
+import { ApplicationObject, ContactObject, CycleObject, EventObject, ForumPostObject, MetricsObject, UserObject } from '../typings';
 
 const seedDB = async () => {
 
@@ -41,13 +41,28 @@ const seedDB = async () => {
         };
     };
 
-    const makeMedia = (id: ObjectId, posterId: ObjectId, jobCycle: ObjectId, postDate: Date, content: string): MediaObject => {
+    const makeMedia = (id: ObjectId, posterId: ObjectId, jobCycle: ObjectId, postDate: Date, content: string, metrics: MetricsObject): ForumPostObject => {
         return {
             _id: id,
-            posterId: posterId,
+            poster: posterId,
             jobCycle: jobCycle,
             postDate: postDate,
-            content: content
+            content: content,
+            metrics: metrics
+        };
+    };
+
+    const makeMetrics = (num_saved: number, num_applications: number, num_interviewed: number, num_offers: number, num_rejections: number, num_rounds: number, avg_salary: number, num_connections: number, application_timeline: Array<Date>): MetricsObject => {
+        return {
+            num_saved: num_saved,
+            num_applications: num_applications,
+            num_interviewed: num_interviewed,
+            num_offers: num_offers,
+            num_rejections: num_rejections,
+            num_rounds: num_rounds,
+            avg_salary: avg_salary,
+            num_connections: num_connections,
+            application_timeline: application_timeline
         };
     };
 
@@ -123,7 +138,7 @@ const seedDB = async () => {
 // DATA LISTS
     const listOfUsers: Array<UserObject> = [];
     const listOfCycles: Array<CycleObject> = [];
-    const listOfMedia: Array<MediaObject> = [];
+    const listOfMedia: Array<ForumPostObject> = [];
 
 // CREATE USERS
     const michael: UserObject = makeUser(new ObjectId('624e16475be3fb3026fa8bb4'), '0337af99-6cde-462b-b49d-ec6beaa4afdf', 'mkarsen@stevens.edu',  'Michael Karsen');
@@ -402,21 +417,26 @@ const seedDB = async () => {
 
     
 //CREATE MEDIA
-    
+
     // Post 1
-    const michaelPost: MediaObject = makeMedia(new ObjectId('624e7432b9bd8ffe79422272'), michael._id, michaelFall._id, new Date('December 19, 2021'), 'I absolutely killt it you already know!');
+    const michaelMetrics: MetricsObject = makeMetrics(3, 3, 3, 2, 1, 7, 170000, 3, [new Date('2021-09-22'), new Date('2021-09-24'), new Date('2021-10-05')]);
+    const michaelPost: ForumPostObject = makeMedia(new ObjectId('624e7432b9bd8ffe79422272'), michael._id, michaelFall._id, new Date('December 19, 2021'), 'I absolutely killt it you already know!', michaelMetrics);
 
     // Post 2
-    const roccoPost: MediaObject = makeMedia(new ObjectId('624e743cd787b4472fbe1dc6'), rocco._id, roccoSpring._id, new Date('June 18, 2021'), 'I\'m a straight clown no cap, gonna have to hit myself with a chop on foenem ( 。ヘ °)');
+    const roccoMetrics: MetricsObject = makeMetrics(2, 2, 2, 0, 1, 7, 0, 2, [new Date('2021-03-26'), new Date('2021-11-05')]);
+    const roccoPost: ForumPostObject = makeMedia(new ObjectId('624e743cd787b4472fbe1dc6'), rocco._id, roccoSpring._id, new Date('June 18, 2021'), 'I\'m a straight clown no cap, gonna have to hit myself with a chop on foenem ( 。ヘ °)', roccoMetrics);
 
     // Post 3
-    const marcoPost: MediaObject = makeMedia(new ObjectId('624e743fce646315d8c99d4b'), marco._id, marcoFall._id, new Date('December 19, 2021'), 'Hopefully this job is able to purchase my dad that beach house he always wanted :D');
+    const marcoMetrics: MetricsObject = makeMetrics(1, 1, 1, 0, 1, 3, 0, 1, [new Date('2021-11-05')]);
+    const marcoPost: ForumPostObject = makeMedia(new ObjectId('624e743fce646315d8c99d4b'), marco._id, marcoFall._id, new Date('December 19, 2021'), 'Hopefully this job is able to purchase my dad that beach house he always wanted :D', marcoMetrics);
     
     // Post 4
-    const brianPost: MediaObject = makeMedia(new ObjectId('624e7446030bb2f1a8a9d3b6'), brian._id, brianSpring._id, new Date('June 17, 2021'), 'Brian more like brain');
+    const brianMetrics: MetricsObject = makeMetrics(2, 2, 2, 2, 0, 4, 85000, 2, [new Date('2021-05-18'), new Date('2021-08-10')]);
+    const brianPost: ForumPostObject = makeMedia(new ObjectId('624e7446030bb2f1a8a9d3b6'), brian._id, brianSpring._id, new Date('June 17, 2021'), 'Brian more like brain', brianMetrics);
 
     // Post 5
-    const gracePost: MediaObject = makeMedia(new ObjectId('624e744a074e859c77121e2e'), grace._id, graceWinter._id, new Date('March 19, 2022'), 'I GOT THE JOB WOOT WOOT');
+    const graceMetrics: MetricsObject = makeMetrics(3, 3, 3, 0, 1, 7, 0, 3, [new Date('2021-01-04'), new Date('2022-02-03'), new Date('2022-03-01')]);
+    const gracePost: ForumPostObject = makeMedia(new ObjectId('624e744a074e859c77121e2e'), grace._id, graceWinter._id, new Date('March 19, 2022'), 'I GOT THE JOB WOOT WOOT', graceMetrics);
 
 
 // INSERT DATA INTO DATABASE

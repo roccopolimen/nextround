@@ -1,25 +1,26 @@
 import { cycles, users } from '../config/mongoCollections';
-import { ObjectId } from 'mongodb'; 
-import { checkObjectId, checkDate, checkNonEmptyString } from '../helpers/error';
-import { ApplicationObject, CycleObject, EventObject, UserObject } from '../typings';
+import { ObjectId } from 'mongodb';
+import { checkObjectId, checkNonEmptyString, checkEmail, checkName, checkPhoneNumber } from '../helpers';
+import { ApplicationObject, ContactObject, CycleObject, UserObject } from '../typings';
+
 
 /**
- * Get event by id
+ * Get contact by id
  * @param {string} userId
  * @param {string} applicationId
- * @param {string} eventId
- * @returns {Promise<EventObject>} The event given the ids above
+ * @param {string} contactId
+ * @returns {Promise<ContactObject>} The contact given the ids above
  */
-export const getEventById = async(userId: string, applicationId: string, eventId: string):Promise<EventObject> => {
-    
+export const getContactById = async (userId: string, applicationId: string, contactId: string):Promise<ContactObject> => {
+
     if(!checkObjectId(userId)){
         throw new Error('Invalid userId');
     }
     if(!checkObjectId(applicationId)){
         throw new Error('Invalid applicationId');
     }
-    if(!checkObjectId(eventId)){
-        throw new Error('Invalid eventId');
+    if(!checkObjectId(contactId)){
+        throw new Error('Invalid contactId');
     }
 
     const usersCollection: any = await users();
@@ -40,24 +41,24 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     }
     if(application === null) throw new Error('Could not find application');
 
-    let event: EventObject = null;
-    for(let element of application.events){
-        if(element._id.toString() === eventId){
-            event = element
+    let contact: ContactObject = null;
+    for(let element of application.contacts){
+        if(element._id.toString() === contactId){
+            contact = element
         }
     }
-    if(event === null) throw new Error('Could not find event');
+    if(contact === null) throw new Error('Could not find contact');
 
-    return event;
+    return contact;
 }
 
 /**
- * Get all events
+ * Get all contacts
  * @param {string} userId
  * @param {string} applicationId
- * @returns {Promise<EventObject[]>}All the events of the application
+ * @returns {Promise<ContactObject[]>}All the contacts of the application
  */
- export const getAllEvents = async (userId: string, applicationId: string): Promise<EventObject[]> => {
+ export const getAllContacts = async (userId: string, applicationId: string): Promise<ContactObject[]> => {
 
     if(!checkObjectId(userId)){
         throw new Error('Invalid userId');
@@ -85,21 +86,21 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     }
     if(application === null) throw new Error('Could not find application');
     
-    let events: EventObject[] = application.events ? application.events : [];
+    let contacts: ContactObject[] = application.contacts ? application.contacts : [];
 
-    return events
+    return contacts
 }
 
 /**
- * Create event
- * @param {string} userId
+ * Create contact
+ * @param {string} userId 
  * @param {string} applicationId
  * @param {string} title 
  * @param {Date} date 
  * @param {String} location 
- * @returns {Promise<EventObject>} if the event was created, throws otherwise 
+ * @returns {Promise<ContactObject>} if the contact was created, throws otherwise 
  */
- export const createEvent = async (userId: string, applicationId: string, title: string, date: string, location: string): Promise<EventObject> => {
+ export const createContact = async (userId: string, applicationId: string, name: string, pronouns: string, location: string, phone: string, email: string): Promise<ContactObject> => {
 
     if(!checkObjectId(userId)){
         throw new Error('Invalid userId');
@@ -107,14 +108,20 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     if(!checkObjectId(applicationId)){
         throw new Error('Invalid applicationId');
     }
-    if(!checkNonEmptyString(title)){
-        throw new Error('Invalid title');
+    if(!checkName(name)){
+        throw new Error('Invalid name');
     }
-    if(!checkDate(date)){
-        throw new Error('Invalid date');
+    if(!checkNonEmptyString(pronouns)){
+        throw new Error('Invalid pronouns');
     }
     if(!checkNonEmptyString(location)){
         throw new Error('Invalid location');
+    }
+    if(!checkPhoneNumber(phone)){
+        throw new Error('Invalid phone number');
+    }
+    if(!checkEmail(email)){
+        throw new Error('Invalid Email');
     }
 
     const usersCollection: any = await users();
@@ -127,15 +134,15 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
     if(cycle === null) throw new Error('Could not find cycle');
 
-    const newEvent: EventObject = {
+    const newContact: ContactObject = {
         _id: new ObjectId(),
-        status: false,
-        title: title,
-        date: new Date(date), // Potential bugs here if date is passed as '1/1/22' i know 'January 1 2022' works
-        location: location
+        name: name,
+        pronouns: pronouns,
+        location: location,
+        phone: phone,
+        email: email
     }
 
-    // Used to check if application exists 
     let application: number = null;
     for(let element of cycle.applications){
         if(element._id.toString() === applicationId){
@@ -151,44 +158,50 @@ export const getEventById = async(userId: string, applicationId: string, eventId
         "applications._id": new ObjectId(applicationId)
         }, 
         {$push: {
-            "applications.$.events": newEvent
+            "applications.$.contacts": newContact
             }
         }
     );
-    if (updateInfo.modifiedCount === 0) throw new Error('Could not add event');
+    if (updateInfo.modifiedCount === 0) throw new Error('Could not add contact');
 
-    return await getEventById(userId, applicationId, newEvent._id.toString());
+    return await getContactById(userId, applicationId, newContact._id.toString());
 }
 
 /**
- * Update event
+ * Update contact
  * @param {string} userId 
  * @param {string} applicationId 
- * @param {string} eventId
- * @param {boolean} status
- * @param {string} title
- * @param {Date} date
+ * @param {string} contactId
+ * @param {string} name
+ * @param {string} pronouns
  * @param {string} location
- * @returns {Promise<EventObject>} if event  was updated 
+ * @param {string} phone
+ * @param {string} email
+ * @returns {Promise<ContactObject>} if the contact was updated
  */
- export const updateEvent = async (userId: string, applicationId: string, eventId: string, status: boolean, title: string, date: Date, location: string): Promise<EventObject> => {
+ export const updateContact = async (userId: string, applicationId: string, contactId: string, name: string, pronouns: string, location: string, phone: string, email: string): Promise<ContactObject> => {
+
     if(!checkObjectId(userId))
         throw new Error('Invalid userId');
+
     if(!checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    if(!checkObjectId(eventId))
-        throw new Error('Invalid eventId');
 
-    let updateFields: Partial<EventObject> = {};
-    if(status !== null) updateFields.status = status;
-    if(title) {
-        if(!checkNonEmptyString(title))
-            throw new Error('Title must be a non-empty string.');
+    if(!checkObjectId(contactId))
+        throw new Error('Invalid contactId');
+
+    let updateFields: Partial<ContactObject> = {};
+    if(name) {
+        if(!checkNonEmptyString(name))
+            throw new Error('Name must be a non-empty string.');
         else
-            updateFields.title = title;
+            updateFields.name = name;
     }
-    if(date) {
-        updateFields.date = date;
+    if(pronouns) {
+        if(!checkNonEmptyString(pronouns))
+            throw new Error('Pronouns must be a non-empty string.');
+        else
+            updateFields.pronouns = pronouns;
     }
     if(location) {
         if(!checkNonEmptyString(location))
@@ -196,51 +209,63 @@ export const getEventById = async(userId: string, applicationId: string, eventId
         else
             updateFields.location = location;
     }
+    if(phone) {
+        if(!checkPhoneNumber(phone))
+            throw new Error('Phone must be a valid phone number string.');
+        else
+            updateFields.phone = phone;
+    }
+    if(email) {
+        if(!checkEmail(email))
+            throw new Error('Email must be a valid phone number string.');
+        else
+            updateFields.email = email;
+    }
 
     if(Object.keys(updateFields).length === 0)
-        throw new Error('No fields to update in event.');
+        throw new Error('No fields to update in contact');
 
     const usersCollection: any = await users();
-    const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
     if(user === null) throw new Error('Could not find user');
 
     const cyclesCollection: any = await cycles();
     const cycleId: ObjectId = user.cycles[user.cycles.length - 1];
-    const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
+    const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
     if(cycle === null) throw new Error('Could not find cycle');
 
     const appIndex: number = cycle.applications.findIndex(a => a._id.toString() === applicationId);
     if(appIndex === -1) throw new Error("Unable to find an application with that id.");
 
-    const eventIndex: number = cycle.applications[appIndex].events.findIndex(e => e._id.toString() === eventId);
-    if(eventIndex === -1) throw new Error("Unable to find an event on the application with given id.");
+    const contactIndex: number = cycle.applications[appIndex].contacts.findIndex(c => c._id.toString() === contactId);
+    if(contactIndex === -1) throw new Error("Unable to find a contact on the application with given id.");
 
     Object.entries(updateFields).forEach(([field, newValue]) => {
-        cycle.applications[appIndex].events[eventIndex][field] = newValue;
+        cycle.applications[appIndex].contacts[contactIndex][field] = newValue;
     });
 
-    // update mongodb with new events list
+    // update mongodb with new contacts list
     let updateInfo = await cyclesCollection.updateOne(
         { _id: cycleId, "applications._id": new ObjectId(applicationId) }, 
         {
             $set: {
-                "applications.$.events": cycle.applications[appIndex].events
+                "applications.$.contacts": cycle.applications[appIndex].contacts
             }
         }
     );
-    if (updateInfo.modifiedCount === 0) throw new Error('Could not update event');
+    if (updateInfo.modifiedCount === 0) throw new Error('Could not update contact');
 
-    return await getEventById(userId, applicationId, eventId);
+    return await getContactById(userId, applicationId, contactId);
 }
 
 /**
- * Delete event
+ * Delete contact
  * @param {string} userId 
  * @param {string} applicationId 
- * @param {string} eventId 
- * @returns true if the event was deleted, throws otherwise
+ * @param {string} contactId 
+ * @returns {boolean} true if the contact was deleted, throws otherwise
  */
- export const deleteEvent = async (userId: string, applicationId: string, eventId: string): Promise<boolean> => {
+ export const deleteContact = async (userId: string, applicationId: string, contactId: string): Promise<boolean> => {
 
     if(!checkObjectId(userId)){
         throw new Error('Invalid userId');
@@ -248,8 +273,8 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     if(!checkObjectId(applicationId)){
         throw new Error('Invalid applicationId');
     }
-    if(!checkObjectId(eventId)){
-        throw new Error('Invalid eventId');
+    if(!checkObjectId(contactId)){
+        throw new Error('Invalid contactId');
     }
 
     const usersCollection: any = await users();
@@ -271,14 +296,14 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     }
     if(application === null) throw new Error('Could not find application');
 
-    let events: EventObject[] = [];
-    for(let element of application.events){
-        if(element._id.toString() === eventId){
+    let contacts: ContactObject[] = [];
+    for(let element of application.contacts){
+        if(element._id.toString() === contactId){
             continue;
         }
-        events.push(element);
+        contacts.push(element);
     }
-    if(events.length === application.events.length) throw new Error('Could not find event');
+    if(contacts.length === application.contacts.length) throw new Error('Could not find contact');
     
     let updateInfo = await cyclesCollection.updateOne(
         {
@@ -286,11 +311,12 @@ export const getEventById = async(userId: string, applicationId: string, eventId
         "applications._id": new ObjectId(applicationId)
         }, 
         {$set: {
-            "applications.$.events": events
+            "applications.$.contacts": contacts
             }
         }
     );
-    if (updateInfo.modifiedCount === 0) throw new Error('Could not remove event');
+    if (updateInfo.modifiedCount === 0) throw new Error('Could not remove contact');
 
     return true;
 }
+

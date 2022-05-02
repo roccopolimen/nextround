@@ -1,14 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import firebase from 'firebase/compat/app';
 
-enum StatusCode {
-    BadInput = 400,
-    Unauthorized = 401,
-    Forbidden = 403,
-    TooManyRequests = 429,
-    InternalServerError = 500,
-}
-
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: "application/json",
   "Content-Type": "application/json; charset=utf-8",
@@ -62,7 +54,7 @@ class Fetcher {
         return this.http.get<T, R>(url, config);
     }
 
-    post<T = any, R = AxiosResponse<T>>(
+    post<T = never, R = AxiosResponse<T>>(
         url: string,
         data?: T,
         config?: AxiosRequestConfig
@@ -70,12 +62,12 @@ class Fetcher {
         return this.http.post<T, R>(url, data, config);
     }
 
-    put<T = any, R = AxiosResponse<T>>(
+    patch<T = never, R = AxiosResponse<T>>(
         url: string,
         data?: T,
         config?: AxiosRequestConfig
     ): Promise<R> {
-        return this.http.put<T, R>(url, data, config);
+        return this.http.patch<T, R>(url, data, config);
     }
 
     delete<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
@@ -83,31 +75,6 @@ class Fetcher {
     }
 
     private handleError(error: any) {
-        const { status } = error;
-
-        switch (status) {
-            case StatusCode.BadInput: {
-                console.log(error);
-                break;
-            }
-            case StatusCode.InternalServerError: {
-                console.log(error);
-                break;
-            }
-            case StatusCode.Forbidden: {
-                console.log(error);
-                break;
-            }
-            case StatusCode.Unauthorized: {
-                console.log(error);
-                break;
-            }
-            case StatusCode.TooManyRequests: {
-                console.log(error);
-                break;
-            }
-        }
-
         return Promise.reject(error);
     }
 }
