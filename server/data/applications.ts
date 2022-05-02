@@ -3,6 +3,10 @@ import { ObjectId } from 'mongodb';
 import { checkObjectId, checkNonEmptyString, checkNonNegativeNumber } from '../helpers';
 import { CycleObject, ApplicationObject, UserObject } from '../typings';
 import { randomColor } from '../helpers';
+import axios from 'axios';
+// This wont work but i need to do this for authentication somehow
+// var clearbit = require('clearbit')('sk_db62884ced11b25efde87b40131fe4da');
+import clearbit from 'clearbit';
 
 /**
  * @description Get an application by id
@@ -118,11 +122,14 @@ export const createApplication = async (userId: string, company: string, positio
     if(!description || !checkNonEmptyString(description))
         throw new Error("A description must be provided.");
     
+
+    const companyLogo = (await axios.get(`https://company.clearbit.com/v1/domains/find?name=${company}`))['logo'];
     // TODO: discuss if we are storing logo image url here
     const cardColor: string = randomColor();
     let newApp: ApplicationObject = {
         _id: new ObjectId(),
         company: company,
+        companyLogo: companyLogo,
         position: position,
         location: location,
         salary: null, 
@@ -182,6 +189,7 @@ export const updateApplication = async (userId: string, applicationId: string, c
             throw new Error('Company must be a non-empty string.');
         else
             updateFields.company = company;
+            updateFields.companyLogo = (await axios.get(`https://company.clearbit.com/v1/domains/find?name=${company}`))['logo'];
     }
     if(position) {
         if(!checkNonEmptyString(position))

@@ -31,6 +31,7 @@ interface MediaObject {
 interface ApplicationObject {
     _id: ObjectId,
     company: string,
+    companyLogo: string,
     position: string,
     location: string,
     salary: number | null,
