@@ -55,12 +55,12 @@ function checkArrayOfStrings(strs: Array<string>): boolean {
 }
 
 /**
- * @description Checks if a given number is positive
+ * @description Checks if a given number is non negative
  * @param {number} num the number to check
- * @returns {boolean} true if the number is greater than 0 and false otherwise
+ * @returns {boolean} true if the number is greater than or equal to 0 and false otherwise
  */
-function checkPositiveNumber(num: number): boolean {
-    return (num > 0); 
+function checkNonNegativeNumber(num: number): boolean {
+    return (num >= 0); 
 }
 
 /**
@@ -116,16 +116,25 @@ function checkTime(timeStr: string): boolean {
     return (/^([01]\d|2[0-3]):?([0-5]\d)$/.test(timeStr));
 }
 
+/**
+ * @description Checks if a given string is a valid phone number
+ * @param {string} phoneStr the string to validate
+ * @returns {boolean} true if the string is a valid phone number and false otherwise
+ */
+ function checkPhoneNumber(phoneStr: string): boolean {
+    return (/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(phoneStr));
+}
 
 export {
     checkObjectId,
     checkNonEmptyString,
     checkArrayOfStrings,
-    checkPositiveNumber,
+    checkNonNegativeNumber,
     checkNegativeNumber,
     checkEmail,
     checkName,
     checkArrayObjectId,
     checkDate,
-    checkTime
+    checkTime,
+    checkPhoneNumber
 }

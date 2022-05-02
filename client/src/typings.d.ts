@@ -20,6 +20,13 @@ interface CycleObject {
     applications: Array<ApplicationObject>
 }
 
+interface MediaObject {
+    _id: ObjectId,
+    posterId: ObjectId,
+    jobCycle: ObjectId,
+    postDate: Date,
+    content: string
+}
 
 interface ApplicationObject {
     _id: ObjectId,
@@ -40,7 +47,7 @@ interface EventObject {
     _id: ObjectId,
     status: boolean,
     title: string,
-    date: Date,
+    date: Date | string,
     location: string
 }
 
@@ -74,4 +81,9 @@ interface ForumPostObject {
     postDate: Date,
     content: string,
     metrics: MetricsObject
+}
+
+interface Failure {
+    message: string,
+    error?: string
 }

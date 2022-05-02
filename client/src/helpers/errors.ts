@@ -28,7 +28,7 @@ function checkArrayOfStrings(strs: Array<string>): boolean {
  * @param {number} num the number to check
  * @returns {boolean} true if the number is greater than 0 and false otherwise
  */
-function checkPositiveNumber(num: number): boolean {
+function checkNonNegativeNumber(num: number): boolean {
     return (num > 0); 
 }
 
@@ -89,7 +89,7 @@ function checkTime(timeStr: string): boolean {
 export {
     checkNonEmptyString,
     checkArrayOfStrings,
-    checkPositiveNumber,
+    checkNonNegativeNumber,
     checkNegativeNumber,
     checkEmail,
     checkName,
