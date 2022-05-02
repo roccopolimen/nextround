@@ -15,7 +15,7 @@ services:
       - mongo
     build: ./server
     environment:
-      - DB_HOST=mongo
+      - MONGODB_URI=mongodb://mongo:27017/
     ports:
       - "4000:4000"
     volumes:
