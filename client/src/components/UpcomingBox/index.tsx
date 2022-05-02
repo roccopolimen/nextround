@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { Grid, Box, Card, CardMedia, CardContent, Typography } from '@mui/material';
 
-const UpcomingBox = (props: any) => {
+const UpcomingBox = (props: {url: string, title: string, company: string, role: string, date: string}) => {
     // Constants
     const BASE_CLEARBIT_URL = 'https://logo.clearbit.com/';
 

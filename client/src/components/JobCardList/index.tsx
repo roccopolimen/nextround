@@ -5,7 +5,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Grid, Typography } from 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import JobCard from 'components/JobCard';
 
-const JobCardList = (props: any) => {
+const JobCardList = (props: {title: string}) => {
     const [title, setTitle] = useState('');
 
     useEffect(() => {

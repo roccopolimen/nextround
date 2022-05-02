@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Grid, Box, Card, CardMedia, CardContent, Typography } from '@mui/material';
 
 
-const JobCard = (props: any) => {
+const JobCard = (props: {url: string, company: string, role: string, color: string}) => {
     // Constants
     const BASE_CLEARBIT_URL = 'https://logo.clearbit.com/';
 
