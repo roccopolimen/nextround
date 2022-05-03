@@ -9,85 +9,57 @@ import { Card,
     Button,
     Modal,
     TextField,
-    FormGroup } from "@mui/material";
-import { ApplicationObject, CycleObject} from "typings";
+    FormGroup,
+    CircularProgress,
+    Box } from "@mui/material";
+import { ApplicationObject } from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
 import SideDrawer from 'components/SideDrawer';
 import { useNavigate } from 'react-router-dom';
 
 export default function OfferDash () {
-    //const { data: userCycle, status: getStatus, isLoading: isLoadingCycle, refetch: refetchCycle } = useGetCurrentCycle();
-    const navigate = useNavigate();
+    const emptyApps: ApplicationObject[] = [];
 
-    const tempCycle: CycleObject = {
-        _id: '624e956c4c06f2509b940b1d',
-        startDate: new Date('September 22, 2021'),
-        endDate: new Date('December 20, 2021'),
-        applications: [
-            {
-                _id: '624e1b08284261a838b3b96a',
-                company: 'Google',
-                position: 'Software Engineer',
-                location: 'Mountain View, CA, USA',
-                salary: 200000,
-                cardColor: '#4285F4',
-                progress: 1,
-                jobPostUrl: 'https://careers.google.com/jobs/results/128310308272775878-software-engineer-iii/',
-                description: `Google's software engineers develop the next-generation technologies that change how billions of users connect, explore, and interact with information and one another. Our products need to handle information at massive scale, and extend well beyond web search. We're looking for engineers who bring fresh ideas from all areas, including information retrieval, distributed computing, large-scale system design, networking and data storage, security, artificial intelligence, natural language processing, UI design and mobile; the list goes on and is growing every day. As a software engineer, you will work on a specific project critical to Google's needs with opportunities to switch teams and projects as you and our fast-paced business grow and evolve. We need our engineers to be versatile, display leadership qualities and be enthusiastic to take on new problems across the full-stack as we continue to push technology forward.`,
-                notes: [],
-                events: [],
-                contacts: []
-            }
-        ]
-    };
-
-    // const emptyApps: ApplicationObject[] = [];
-
-    const [offerData, setOfferData] = useState(tempCycle["applications"]);
+    const [offerData, setOfferData] = useState(emptyApps);
     const [acceptId, setAcceptId] = useState('');
     const [accept, setAccept] = useState(false);
     const [open, setOpen] = useState(false);
-    const [finishCycle, setFinishCycle] = useState(false);
-    const [makePost, setMakePost] = useState(false);
     const [postText, setPostText] = useState('');
+    const [loading, setLaoding] = useState(true);
+    const navigate = useNavigate();
     const BASE_CLEARBIT_URL: string = 'https://logo.clearbit.com/';
 
-    // useEffect(() => {
-    //     // On mount
-    //     (async () => {
-    //         try {
-    //             await refetchCycle({ throwOnError: true });
-                
-    //             let offerApplications: ApplicationObject[] = [];
-    //             if(userCycle && userCycle["applications"]) {
-    //                 let cycleApp: ApplicationObject;
-    //                 for(cycleApp of userCycle["applications"]) {
-    //                     if(cycleApp["progress"] === 1) {
-    //                         offerApplications.push(cycleApp);
-    //                     }
-    //                 }
-    //             }
-                
-    //             setOfferData(offerApplications);
-    //         } catch(e) {
-    //             let emptyApplications: ApplicationObject[] = [];
-    //             setOfferData(emptyApplications);
-    //         }
-    //     })();
-    // }, []);
+    
 
+    //Queries
+    const { data: userCycle, status: getStatus, isLoading: isLoadingCycle,
+        refetch: refetchCycle } = useGetCurrentCycle();
+    const { refetch: refetchPost } = useCreatePost();
+    const { refetch: refetchFinishCycle } = useFinishCycles();
+    
     useEffect(() => {
-        if(finishCycle) {
-            if(makePost) {
-                // useCreatePost();
-                console.log("Make Post");
-                // navigate('/forum');
+        (async () => { 
+            try {
+                await refetchCycle();
+                console.log(isLoadingCycle);
+                let offerApplications: ApplicationObject[] = [];
+                if(userCycle && userCycle["applications"]) {
+                    let cycleApp: ApplicationObject;
+                    for(cycleApp of userCycle["applications"]) {
+                        if(cycleApp["progress"] === 1) {
+                            offerApplications.push(cycleApp);
+                        }
+                    }
+                }
+                
+                setOfferData(offerApplications);
+                setLaoding(false);
+            } catch(e) {
+                let emptyApplications: ApplicationObject[] = [];
+                setOfferData(emptyApplications);
             }
-            // useFinishCycles();
-            console.log("Finish Cycle");
-            // navigate('/create');
-        }
-    });
+        })();
+    }, []);
 
     const acceptOffer: Function = (offer: ApplicationObject) => {
         setAcceptId(offer["_id"]);
@@ -97,13 +69,19 @@ export default function OfferDash () {
 
     const postOffer: Function = (offer: ApplicationObject) => {
         console.log("Offer posted");
-        setMakePost(true);
-        setFinishCycle(true);
+        refetchPost();
+        console.log("Make Post");
+        refetchFinishCycle(); 
+        console.log("Finish Cycle");
+        //TODO: navigate to forum page when finished
+        // navigate('/forum');
     };
 
     const noPostOffer: Function = () => {
         console.log("Offer not posted");
-        setFinishCycle(true);
+        refetchFinishCycle(); 
+        console.log("Finish Cycle");
+        navigate('/create');
     };
 
     const makeButton: Function = (offer: ApplicationObject, accept: boolean ) => {
@@ -114,6 +92,18 @@ export default function OfferDash () {
                 </Button>);
         } else {
             return (<Button disabled sx={{marginLeft: 'auto'}} variant="contained">Accept</Button>);
+        }
+    };
+
+    const emptyOffers: Function = (offerData: ApplicationObject[]) => {
+        if(offerData && offerData.length === 0) {
+            return (
+                <Typography sx={{ml: 7, mt: 7, color:'grey'}}>
+                    Your offers will appear here when you update your applications
+                </Typography>
+            );
+        } else {
+            return (<></>); 
         }
     };
 
@@ -131,6 +121,11 @@ export default function OfferDash () {
 
     return (
         <>  
+            <Modal open={loading} sx={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <Box sx={{ top: '50%', padding: 2 }}>
+                    <CircularProgress />
+                </Box>
+            </Modal>
             <SideDrawer />
             <Typography sx={{ fontWeight: 'bold', fontSize: h1Size, ml: 7, mt: 7 }} component="h1" variant="h4">
                 Offer Dashboard
@@ -161,6 +156,7 @@ export default function OfferDash () {
                         </CardContent>
                     </Card>
             </Modal>
+            {emptyOffers(offerData)}
             <Grid container sx={{ display: 'flex', ml: 7, mt: 7 }}>
                 {offerData.map(offer => {
                         return (

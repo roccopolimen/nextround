@@ -14,7 +14,7 @@ import SignUp from 'pages/SignUp';
 import Job from 'pages/Job';
 import Settings from 'pages/Settings';
 import OfferDash from 'pages/OfferDash';
-import FirstCycle from 'pages/FirstCycle';
+import AddCycle from 'pages/AddCycle';
 
 const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
 const queryClient: QueryClient = new QueryClient({
@@ -43,7 +43,7 @@ const App = () => {
             <Route path={'/signup'} element={<SignUp />} />
             <Route path={'/test_job'} element={<Job />} />
             <Route path={'/offers'} element={<OfferDash />} />
-            <Route path={'/create'} element={<FirstCycle />} />
+            <Route path={'/create'} element={<AddCycle />} />
             <Route path={'/settings'} element={<Settings />} />
             </Routes>
         </Router>
