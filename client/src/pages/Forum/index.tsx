@@ -1,65 +1,87 @@
-// import './style.css';
 import { Box, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Grid, Typography, useMediaQuery } from "@mui/material";
-import { Card, Avatar, CardHeader, CardContent, CardActions, Button } from "@mui/material";
-import { ApplicationObject, CycleObject} from "typings";
+import { Card, CardHeader, CardContent, Button, Modal } from "@mui/material";
 import { useGetForum } from 'api';
 import { ForumPostObject } from 'typings';
+import { useSearchParams } from 'react-router-dom';
 import SideDrawer from 'components/SideDrawer';
 
 export default function Forum() {
     let startPosts: ForumPostObject[] = [];
-    // const { data: postData, isLoading: isLoadingPosts, refetch: refetchPosts } = useGetForum(10);
-    
-    let tempPost: ForumPostObject[] = [{
-        _id: '624e7432b9bd8ffe79422272',
-        poster: '624e7432b9bd8ffe79422272',
-        jobCycle: '624e7432b9bd8ffe79422272',
-        postDate: new Date('December 19, 2021'),
-        content: "Wow what a wild ride this cycle has been!",
-        metrics: {
-            // Job Funnel
-            num_saved: 3,
-            num_applications: 3,
-            num_interviewed: 3,
-            num_offers: 2,
-            // Other metrics
-            num_rejections: 5,
-            num_rounds: 5,
-            avg_salary: 30000,
-            num_connections: 6,
-            application_timeline: [new Date('2021-09-22'), new Date('2021-09-24'), new Date('2021-10-05')]
-        }
-    }];
 
-    const [posts, setPosts] = useState(tempPost);
-    const [posterData, setPosterData] = useState('Brian')
-    // console.log(useGetForum(10));
-    // setPosts(tempPost);
-    // useEffect(() => {
-    //     // setPosts(tempPost);
-    //     console.log(posts);
-    //     // setPosts(posts);
-    // });
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [posts, setPosts] = useState(startPosts);
+    // const [posterId, setPosterId] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [refresh, setRefresh] = useState(true);
+    const [numPosts, setNumPosts] = useState(3);
+
+    //Queries
+    const { data: postData, isLoading: isLoadingPosts, refetch: refetchPosts } = useGetForum(numPosts);
+
+    useEffect(() => {
+        async function fetchData() {
+			try {
+                let userNumPosts = await searchParams.get("num_posts");
+                if(userNumPosts) {
+                    setNumPosts(parseInt(userNumPosts));
+                    console.log(numPosts);
+                }
+                setLoading(true);
+                await refetchPosts({throwOnError: true});
+                if(postData) {
+                    setPosts(postData);
+                }
+                setLoading(false);
+            } catch(e) {
+                let emptyPosts: ForumPostObject[] = [];
+                setPosts(emptyPosts);
+                setLoading(false);
+            }
+		}
+        if(refresh) {
+            console.log("Refresh");
+            fetchData();
+            setRefresh(false);
+        }
+    }, [refresh,numPosts, postData, refetchPosts, searchParams]); 
+
+    const getDateString: Function = (post: ForumPostObject) => {
+        if(post && post.postDate) {
+            let tempDate: Date = new Date(post.postDate);
+            return (tempDate.getFullYear()+'-'+(tempDate.getMonth()+1)+'-'+tempDate.getDate());
+        } else {
+            return "";
+        }
+    };
 
     //Responsive Design
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
     let h1Size: string = mobile ? "1.75rem": "2.5rem";
-    let cardWidth: number = mobile ? 225: 275;
+    let cardWidth: number = mobile ? 275: 550;
+    let leftMargins: number = mobile ? 3: 7;
 
     return (
         <>
             <SideDrawer />
-            <Typography sx={{ fontWeight: 'bold', fontSize: h1Size, ml: 7, mt: 7 }} component="h1" variant="h4">
+            <Modal open={loading || isLoadingPosts} sx={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <Box sx={{ top: '50%', padding: 2 }}>
+                    <CircularProgress />
+                </Box>
+            </Modal>
+            <Typography sx={{ fontWeight: 'bold', fontSize: h1Size, ml: leftMargins, mt: 7 }} component="h1" variant="h4">
                 Forum
             </Typography>
-            <Grid container sx={{ display: 'flex',  ml: 7, mr: 7, mt: 7 }}>
+            <Button onClick={() => {setRefresh(true)}} sx={{ml:leftMargins, mt: 2}} variant="contained">
+                Refresh Posts
+            </Button>
+            <Grid container sx={{ display: 'flex',  ml: leftMargins, mr: 7, mt: 5, mb: 5 }}>
                 {posts.map(post => {
                     return (
-                        <Grid key={post['_id']} sx={{mr: 'auto', ml: 'auto'}}>
-                            <Card sx={{width: 500}}>
-                                <CardHeader title={posterData} subheader={post.postDate.getFullYear()+'-'+(post.postDate.getMonth()+1)+'-'+post.postDate.getDate()}/>
+                        <Grid key={post['_id']} sx={{mt: 2, mr: 'auto', ml: 'auto'}}>
+                            <Card sx={{width: cardWidth}}>
+                                <CardHeader title={'Poster'} subheader={getDateString(post)}/>
                                 <CardContent>
                                     <p>Metrics go here</p>
                                 <Typography variant='body2' color='text.secondary'>
