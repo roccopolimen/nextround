@@ -12,7 +12,6 @@ export default function Forum() {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [posts, setPosts] = useState(startPosts);
-    // const [posterId, setPosterId] = useState('');
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
     const [numPosts, setNumPosts] = useState(3);
@@ -26,7 +25,6 @@ export default function Forum() {
                 let userNumPosts = await searchParams.get("num_posts");
                 if(userNumPosts) {
                     setNumPosts(parseInt(userNumPosts));
-                    console.log(numPosts);
                 }
                 setLoading(true);
                 await refetchPosts({throwOnError: true});
@@ -41,7 +39,6 @@ export default function Forum() {
             }
 		}
         if(refresh) {
-            console.log("Refresh");
             fetchData();
             setRefresh(false);
         }
@@ -81,12 +78,12 @@ export default function Forum() {
                     return (
                         <Grid key={post['_id']} sx={{mt: 2, mr: 'auto', ml: 'auto'}}>
                             <Card sx={{width: cardWidth}}>
-                                <CardHeader title={'Poster'} subheader={getDateString(post)}/>
+                                <CardHeader subheader={getDateString(post)}/>
                                 <CardContent>
+                                    <Typography variant='body1'>
+                                        {post.content ? post.content : ''}
+                                    </Typography>
                                     <p>Metrics go here</p>
-                                <Typography variant='body2' color='text.secondary'>
-                                    {post.content ? post.content : ''}
-                                </Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
