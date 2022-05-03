@@ -1,7 +1,15 @@
 import './style.css';
 import { useEffect, useState } from "react";
 import { Grid, Typography, useMediaQuery } from "@mui/material";
-import { Card, Avatar, CardHeader, CardContent, CardActions, Button, Modal } from "@mui/material";
+import { Card,
+    Avatar,
+    CardHeader,
+    CardContent,
+    CardActions,
+    Button,
+    Modal,
+    TextField,
+    FormGroup } from "@mui/material";
 import { ApplicationObject, CycleObject} from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
 import SideDrawer from 'components/SideDrawer';
@@ -41,6 +49,7 @@ export default function OfferDash () {
     const [open, setOpen] = useState(false);
     const [finishCycle, setFinishCycle] = useState(false);
     const [makePost, setMakePost] = useState(false);
+    const [postText, setPostText] = useState('');
     const BASE_CLEARBIT_URL: string = 'https://logo.clearbit.com/';
 
     // useEffect(() => {
@@ -118,7 +127,7 @@ export default function OfferDash () {
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
     let h1Size: string = mobile ? "1.75rem": "2.5rem";
     let cardWidth: number = mobile ? 225: 275;
-
+    let formWidth: number = mobile ? 175: 225;
 
     return (
         <>  
@@ -134,6 +143,15 @@ export default function OfferDash () {
                                 Would you like to make a post?
                             </Typography>
                             <br />
+                            <FormGroup sx={{width: formWidth, bgcolor: 'background.paper',
+                                 padding: 1}}>
+                                <Typography sx={{mb: 1}}>
+                                    Post Text:
+                                </Typography>
+                                <TextField id="post-text" variant="outlined"
+                                    label="Post Text" size="small" value={postText}
+                                    onChange={(e) => setPostText(e.target.value)} />
+                            </FormGroup>
                             <Button onClick={() => postOffer()} sx={{marginLeft: 'auto', marginRight: 2, mt: 1}} variant="contained">
                                 Post
                             </Button>
