@@ -55,8 +55,6 @@ interface EventObject {
 interface ContactObject {
     _id: ObjectId,
     name: string,
-    pronouns: string,
-    location: string,
     phone: string,
     email: string
 }

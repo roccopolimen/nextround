@@ -105,12 +105,10 @@ const seedDB = async () => {
         };
     };
 
-    const makeContact = (id: ObjectId, name: string, pronouns: string, location: string, phone: string, email: string): ContactObject => {
+    const makeContact = (id: ObjectId, name: string, phone: string, email: string): ContactObject => {
         return {
             _id: id,
             name: name,
-            pronouns: pronouns,
-            location: location,
             phone: phone,
             email: email
         };
@@ -344,59 +342,59 @@ const seedDB = async () => {
 // CREATE CONTACTS
 
     // Google contacts
-    const googleContact1: ContactObject = makeContact(new ObjectId('624e6c2caa6fa6d3b4e69e72'), 'Peter	Jackson', 'he/him', 'location', '(987) 011-3615', 'pjackson@google.net');
+    const googleContact1: ContactObject = makeContact(new ObjectId('624e6c2caa6fa6d3b4e69e72'), 'Peter	Jackson', '(987) 011-3615', 'pjackson@google.net');
     addContactToApplication(google, googleContact1);
 
     // Apple contacts
-    const appleContact1: ContactObject = makeContact(new ObjectId('624e6c32731515cd2758d4ef'), 'Victor	Mills', 'he/him', 'location', '(297) 334-0517', 'vmills@apple.net');
+    const appleContact1: ContactObject = makeContact(new ObjectId('624e6c32731515cd2758d4ef'), 'Victor	Mills', '(297) 334-0517', 'vmills@apple.net');
     addContactToApplication(apple, appleContact1);
 
     // Meta contacts
-    const metaContact1: ContactObject = makeContact(new ObjectId('624e6c351b0d313ec7849d23'), 'Matt Miller', 'he/him', 'location', '(985) 714-1627', 'mmiller@meta.net');
+    const metaContact1: ContactObject = makeContact(new ObjectId('624e6c351b0d313ec7849d23'), 'Matt Miller', '(985) 714-1627', 'mmiller@meta.net');
     addContactToApplication(meta, metaContact1);
 
     // Amazon contacts
-    const amazonContact1: ContactObject = makeContact(new ObjectId('624e6c38f4786e42217ed8ad'), 'Peter Burgess', 'he/him', 'location', '(233) 275-9568', 'pburgess@amazon.net');
+    const amazonContact1: ContactObject = makeContact(new ObjectId('624e6c38f4786e42217ed8ad'), 'Peter Burgess', '(233) 275-9568', 'pburgess@amazon.net');
     addContactToApplication(amazon, amazonContact1);
 
     // Microsoft contacts
-    const microsoftContact1: ContactObject = makeContact(new ObjectId('624e6c3c2ae281da0ba6c12a'), 'Dylan Bond', 'he/him', 'location', '(447) 660-9680', 'dbond@microsoft.com');
+    const microsoftContact1: ContactObject = makeContact(new ObjectId('624e6c3c2ae281da0ba6c12a'), 'Dylan Bond', '(447) 660-9680', 'dbond@microsoft.com');
     addContactToApplication(microsoft, microsoftContact1);
 
     // HRT contacts
-    const hrtContact1: ContactObject = makeContact(new ObjectId('624e6c40f697ee33f2bf5686'), 'Megan Payne', 'she/her', 'location', '(159) 735-9568', 'mpayne@hrt.net');
+    const hrtContact1: ContactObject = makeContact(new ObjectId('624e6c40f697ee33f2bf5686'), 'Megan Payne', '(159) 735-9568', 'mpayne@hrt.net');
     addContactToApplication(hrt, hrtContact1);
 
     // JPMorgan contacts
-    const jpmContact1: ContactObject = makeContact(new ObjectId('624e6c43bda4f0b6a52636ff'), 'Emily Sutherland', 'she/her', 'location', '(259) 609-5747', 'esuther@jpmorgan.com');
+    const jpmContact1: ContactObject = makeContact(new ObjectId('624e6c43bda4f0b6a52636ff'), 'Emily Sutherland', '(259) 609-5747', 'esuther@jpmorgan.com');
     addContactToApplication(jpmorgan, jpmContact1);
 
     // Bank of America contacts
-    const boaContact1: ContactObject = makeContact(new ObjectId('624e6c466c8d16579ab273dc'), 'Connor Paige', 'he/him', 'location', '(521) 476-4591', 'cpaige@bofa.com');
+    const boaContact1: ContactObject = makeContact(new ObjectId('624e6c466c8d16579ab273dc'), 'Connor Paige', '(521) 476-4591', 'cpaige@bofa.com');
     addContactToApplication(boa, boaContact1);
 
     // Netflix contacts
-    const netflixContact1: ContactObject = makeContact(new ObjectId('624e6c49ae8e2e1911e19a65'), 'Mary	Dyer', 'she/her', 'location', '(106) 634-8114', 'mdyer@netflix.com');
+    const netflixContact1: ContactObject = makeContact(new ObjectId('624e6c49ae8e2e1911e19a65'), 'Mary	Dyer', '(106) 634-8114', 'mdyer@netflix.com');
     addContactToApplication(netflix, netflixContact1);
 
     // Airbnb contacts
-    const airbnbContact1: ContactObject = makeContact(new ObjectId('624e6c4c0e49b28d57248fe0'), 'Owen Cameron', 'he/him', 'location', '(543) 295-4084', 'ocameron@airbnb.net');
+    const airbnbContact1: ContactObject = makeContact(new ObjectId('624e6c4c0e49b28d57248fe0'), 'Owen Cameron', '(543) 295-4084', 'ocameron@airbnb.net');
     addContactToApplication(airbnb, airbnbContact1);
 
     // Tesla contacts
-    const teslaContact1: ContactObject = makeContact(new ObjectId('624e6c507d3e7468c8bc7655'), 'Austin	Bower', 'he/him', 'location', '(926) 412-3368', 'abower@tesla.net');
+    const teslaContact1: ContactObject = makeContact(new ObjectId('624e6c507d3e7468c8bc7655'), 'Austin	Bower', '(926) 412-3368', 'abower@tesla.net');
     addContactToApplication(tesla, teslaContact1);
 
     // Oracle contacts
-    const oracleContact1: ContactObject = makeContact(new ObjectId('624e6c52893bb7397e3e1768'), 'Joanne Allan', 'she/her', 'location', '(967) 824-6026', 'jallan@oracle.net');
+    const oracleContact1: ContactObject = makeContact(new ObjectId('624e6c52893bb7397e3e1768'), 'Joanne Allan', '(967) 824-6026', 'jallan@oracle.net');
     addContactToApplication(oracle, oracleContact1);
 
     // Salesforce contacts
-    const salesforceContact1: ContactObject = makeContact(new ObjectId('624e6c562fa1e9a4691ed62a'), 'Joshua Lewis', 'he/him', 'location', '(207) 965-8964', 'jlewis@salesforce.com');
+    const salesforceContact1: ContactObject = makeContact(new ObjectId('624e6c562fa1e9a4691ed62a'), 'Joshua Lewis', '(207) 965-8964', 'jlewis@salesforce.com');
     addContactToApplication(salesforce, salesforceContact1);
 
     // Bloomberg contacts
-    const bloombergContact1: ContactObject = makeContact(new ObjectId('624e6c59b9a243097f967952'), 'Joseph Glover', 'he/him', 'location', '(976) 813-9168', 'jglover@bloomberg.net');
+    const bloombergContact1: ContactObject = makeContact(new ObjectId('624e6c59b9a243097f967952'), 'Joseph Glover', '(976) 813-9168', 'jglover@bloomberg.net');
     addContactToApplication(bloomberg, bloombergContact1);
 
 // CREATE NOTES

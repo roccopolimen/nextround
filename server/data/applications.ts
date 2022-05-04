@@ -275,6 +275,38 @@ export const updateApplication = async (userId: string, applicationId: string, c
     return await getApplicationFromCycleById(cycleId.toString(), applicationId);
 };
 
+export const createNote = async (userId: string, applicationId: string, note: string): Promise<ApplicationObject> => {
+    if(!userId || !checkObjectId(userId))
+        throw new Error("A proper user id must be provided.")
+    if(!applicationId || !checkObjectId(applicationId))
+        throw new Error("A proper application id must be provided.");
+    if(!note || !checkNonEmptyString(note))
+        throw new Error("A note must be provided.");
+    
+    const usersCollection = await users();
+    const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    if(user === null)
+        throw new Error("There is no user with that id.");
+
+    const cycleId: ObjectId = user.cycles[user.cycles.length-1];
+    const cyclesCollection = await cycles();
+    const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
+    if(cycle === null)
+        throw new Error("User has no cycles.");
+    
+    const appIndex: number = cycle.applications.findIndex(a => a._id.toString() === applicationId);
+    if(appIndex === -1) throw new Error("Unable to find an application with that id.");
+
+    // Add note to application
+    cycle.applications[appIndex].notes.push(note);
+    // Update mongo db
+    const updatedInfo = await cyclesCollection.updateOne({ _id: cycleId }, { $set: cycle });
+    if(updatedInfo.modifiedCount === 0)
+        throw new Error("Could not update application.");
+
+    return await getApplicationById(userId, applicationId);
+};
+
 /**
  * Deletes an application from a given cycle
  * @param {string} userId
