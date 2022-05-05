@@ -14,8 +14,8 @@ import { Card,
     Box } from "@mui/material";
 import { ApplicationObject } from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
+import { useNavigate } from 'react-router-dom';
 import SideDrawer from 'components/SideDrawer';
-import { useNavigate } from 'react-router-dom'; 
 
 export default function OfferDash () {
     const emptyApps: ApplicationObject[] = [];
