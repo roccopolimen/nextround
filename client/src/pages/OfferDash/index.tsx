@@ -21,30 +21,25 @@ export default function OfferDash () {
     const emptyApps: ApplicationObject[] = [];
 
     const [offerData, setOfferData] = useState(emptyApps);
-    const [acceptId, setAcceptId] = useState('');
     const [accept, setAccept] = useState(false);
     const [open, setOpen] = useState(false);
     const [postText, setPostText] = useState('');
-    const [loading, setLaoding] = useState(true);
     const navigate = useNavigate();
     const BASE_CLEARBIT_URL: string = 'https://logo.clearbit.com/';
 
     
 
     //Queries
-    const { data: userCycle, status: getStatus, isLoading: isLoadingCycle,
+    const { data: userCycle, isLoading: isLoadingCycle,
         refetch: refetchCycle } = useGetCurrentCycle();
     const { data: newPost, refetch: refetchPost } = useCreatePost(postText);
     const { refetch: refetchFinishCycle } = useFinishCycles();
 
-    // console.log(useCreatePost(postText));
 
     useEffect(() => {
         (async () => { 
             try {
-                console.log('Hit');
                 await refetchCycle();
-                console.log(isLoadingCycle);
                 let offerApplications: ApplicationObject[] = [];
                 if(userCycle && userCycle["applications"]) {
                     let cycleApp: ApplicationObject; 
@@ -52,21 +47,17 @@ export default function OfferDash () {
                         if(cycleApp["progress"] === 1) {
                             offerApplications.push(cycleApp);
                         }
-                        console.log(cycleApp);
                     }
                 }
-                
                 setOfferData(offerApplications);
-                setLaoding(false);
             } catch(e) {
                 let emptyApplications: ApplicationObject[] = [];
                 setOfferData(emptyApplications);
             }
         })();
-    }, []);
+    }, [refetchCycle, userCycle]);
 
     const acceptOffer: Function = (offer: ApplicationObject) => {
-        setAcceptId(offer["_id"]);
         setAccept(true);
         setOpen(true);
     };
@@ -119,7 +110,6 @@ export default function OfferDash () {
 
     const closeModal: Function = () => {
         setOpen(false);
-        setAcceptId('');
         setAccept(false); 
     };
 
@@ -128,21 +118,22 @@ export default function OfferDash () {
     let h1Size: string = mobile ? "1.75rem": "2.5rem";
     let cardWidth: number = mobile ? 225: 275;
     let formWidth: number = mobile ? 175: 225;
+    let margins: number = mobile ? 2 : 7;
 
     return (
         <>  
-            <Modal open={loading} sx={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <Modal open={isLoadingCycle} sx={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
                 <Box sx={{ top: '50%', padding: 2 }}>
                     <CircularProgress />
                 </Box>
             </Modal>
             <SideDrawer />
-            <Typography sx={{ fontWeight: 'bold', fontSize: h1Size, ml: 7, mt: 7 }} component="h1" variant="h4">
+            <Typography sx={{ fontWeight: 'bold', fontSize: h1Size, ml: margins, mt: margins }} component="h1" variant="h4">
                 Offer Dashboard
             </Typography>
             <Modal open={open} onClose={() => closeModal()}
                 aria-labelledby="Add event form" >
-                    <Card sx={{mr: 'auto', ml: 'auto', mt: 5, width: cardWidth }}>
+                    <Card sx={{mr: 'auto', ml: 'auto', mt: margins, width: cardWidth }}>
                         <CardContent>
                             <Typography>
                                 Would you like to make a post about your cycle?
@@ -167,7 +158,7 @@ export default function OfferDash () {
                     </Card>
             </Modal>
             {emptyOffers(offerData)}
-            <Grid container sx={{ display: 'flex', ml: 7, mt: 7 }}>
+            <Grid container sx={{ display: 'flex', ml: margins, mt: margins }}>
                 {offerData.map(offer => {
                         return (
                             <Grid key={offer["_id"]}> 
@@ -177,7 +168,7 @@ export default function OfferDash () {
                                                 avatar={
                                                     <Avatar
                                                     alt={offer["company"]}
-                                                    src={`${BASE_CLEARBIT_URL}${'google.com'}`}
+                                                    src={`${BASE_CLEARBIT_URL}${offer["company"]}.com`}
                                                     />
                                                 }
                                                 titleTypographyProps={{variant: "h5"}}

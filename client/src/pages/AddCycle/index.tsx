@@ -11,19 +11,22 @@ export default function FirstCycle () {
     let h1Size: string = mobile ? "1.75rem": "2.5rem";
     let bodySize: string = mobile ? "1rem": "1.5rem";
     let imagePad: number = mobile ? 7 : 15;
-    let margins: number = mobile ? 4 : 7;
+    let margins: number = mobile ? 2 : 7;
     let fabSize: string = mobile ? "medium" : "large";
     const navigate = useNavigate();
 
     //Queries
     const { data: cycleData, refetch: refetchNewCycle } = useCreateCycle();
     
-    const onAdd: Function = () => {
-        console.log("Make a cycle");
-        refetchNewCycle();
-        console.log(cycleData);
-        //TODO: Add navigation to main cycle page once it is finished
-        // navigate('/main_cycle_page')
+    const addCycle: Function = async () => {
+        try {
+            console.log("Make a cycle");
+            await refetchNewCycle();
+            console.log(cycleData);
+            navigate('/upcoming');
+        } catch(e) {
+            navigate('/error');
+        }
     }
 
     return (
@@ -35,7 +38,7 @@ export default function FirstCycle () {
                     <Typography sx={{ display: 'flex', fontSize: bodySize, mt: 2}} variant="h2">Landing the job of your dreams is just a click away...</Typography>
                 </div>
             </Box>
-            <Fab onClick={() => {onAdd()}} sx={{size: fabSize, display: 'flex', mt: imagePad, mb: 1, ml: 'auto', mr: 'auto'}} aria-label="create">
+            <Fab onClick={() => {addCycle()}} sx={{size: fabSize, display: 'flex', mt: imagePad, mb: 1, ml: 'auto', mr: 'auto'}} aria-label="create">
                 <AddIcon />
             </Fab>
         </>
