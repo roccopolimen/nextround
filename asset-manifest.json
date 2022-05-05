@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/nextround/static/css/main.3699d13b.css",
-    "main.js": "/nextround/static/js/main.ace12098.js",
+    "main.js": "/nextround/static/js/main.8becf799.js",
     "static/media/logo.svg": "/nextround/static/media/logo.ed379c9e3afb9cfb49702001aa429bcf.svg",
     "index.html": "/nextround/index.html",
     "main.3699d13b.css.map": "/nextround/static/css/main.3699d13b.css.map",
-    "main.ace12098.js.map": "/nextround/static/js/main.ace12098.js.map"
+    "main.8becf799.js.map": "/nextround/static/js/main.8becf799.js.map"
   },
   "entrypoints": [
     "static/css/main.3699d13b.css",
-    "static/js/main.ace12098.js"
+    "static/js/main.8becf799.js"
   ]
 }
