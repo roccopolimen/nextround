@@ -83,19 +83,15 @@ export const useCreateEvent = (applicationId: string, title: string, date: strin
  * @description POST /application/contact/:applicationId
  * @param {string} applicationId 
  * @param {string} name 
- * @param {string} pronouns 
- * @param {string} location 
  * @param {string} phone 
  * @param {string} email 
  * @returns {UseQueryResult<ContactObject>} the newly created contact
  * @throws if fails
  */
-export const useCreateContact = (applicationId: string, name: string, pronouns: string, location: string, phone: string, email: string): UseQueryResult<ContactObject> => {
+export const useCreateContact = (applicationId: string, name: string, phone: string, email: string): UseQueryResult<ContactObject> => {
     return useQuery('createContact', async () => {
         const body: Partial<ContactObject> = {
             name,
-            pronouns,
-            location,
             phone,
             email
         };
@@ -137,24 +133,29 @@ export const useUpdateApplication = (applicationId: string, company?: string, po
     });
 };
 
+export const useCreateNote = (applicationId: string, note: string): UseQueryResult<ApplicationObject> => {
+    return useQuery('createNote', async () => {
+        const body: Object = {
+            note
+        };
+        const { data, status } = await fetcher.post<Object, AxiosResponse<ApplicationObject | Failure>>(`/application/note/${applicationId}`, body);
+        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
+        return (data as ApplicationObject);
+    });
+};
+
 /**
  * @description PATCH /application/event/:applicationId/:eventId
  * @param {string} applicationId 
  * @param {string} eventId 
- * @param {string} status 
- * @param {string} title 
- * @param {string} date 
- * @param {string} location 
+ * @param {string} status
  * @returns {UseQueryResult<EventObject>} the updated event
  * @throws if fails
  */
-export const useUpdateEvent = (applicationId: string, eventId: string, status?: boolean, title?: string, date?: string, location?: string): UseQueryResult<EventObject> => {
+export const useUpdateEvent = (applicationId: string, eventId: string, status?: boolean): UseQueryResult<EventObject> => {
     return useQuery('updateEvent', async () => {
         const body: Partial<EventObject> = {
-            status,
-            title,
-            date,
-            location
+            status
         };
         const { data, status:statusCode } = await fetcher.patch<Partial<EventObject>, AxiosResponse<EventObject | Failure>>(`/application/event/${applicationId}/${eventId}`, body);
         if(statusCode !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
@@ -167,19 +168,15 @@ export const useUpdateEvent = (applicationId: string, eventId: string, status?: 
  * @param {string} applicationId 
  * @param {string} contactId 
  * @param {string} name 
- * @param {string} pronouns 
- * @param {string} location 
  * @param {string} phone 
  * @param {string} email 
  * @returns {UseQueryResult<ContactObject>} the updated contact
  * @throws if fails
  */
-export const useUpdateContact = (applicationId: string, contactId: string, name?: string, pronouns?: string, location?: string, phone?: string, email?: string): UseQueryResult<ContactObject> => {
+export const useUpdateContact = (applicationId: string, contactId: string, name?: string, phone?: string, email?: string): UseQueryResult<ContactObject> => {
     return useQuery('updateContact', async () => {
         const body: Partial<ContactObject> = {
             name,
-            pronouns,
-            location,
             phone,
             email
         };

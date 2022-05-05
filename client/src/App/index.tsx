@@ -41,7 +41,7 @@ const App = () => {
             <Route path={'*'} element={<Landing />} />
             <Route path={'/signin'} element={<SignIn />} />
             <Route path={'/signup'} element={<SignUp />} />
-            <Route path={'/test_job'} element={<Job />} />
+            <Route path={'/application/:id'} element={<Job />} />
             <Route path={'/settings'} element={<Settings />} />
             <Route path={'/metrics/:cycleId'} element={<Metrics />} />
             <Route path={'/metrics/'} element={<Metrics />} />

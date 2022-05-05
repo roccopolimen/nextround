@@ -24,6 +24,7 @@ interface CycleObject {
 interface ApplicationObject {
     _id: ObjectId,
     company: string,
+    companyLogo: string,
     position: string,
     location: string,
     salary: number | null,
@@ -47,8 +48,6 @@ interface EventObject {
 interface ContactObject {
     _id: ObjectId,
     name: string,
-    pronouns: string,
-    location: string,
     phone: string,
     email: string
 }

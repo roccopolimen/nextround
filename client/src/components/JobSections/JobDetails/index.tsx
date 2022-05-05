@@ -3,12 +3,14 @@ import { Button, Grid, InputAdornment, TextField, ToggleButton,
      Typography} from "@mui/material";
 import { Save } from '@mui/icons-material';
 import { ColorPicker, Color } from 'material-ui-color';
-import { useState, useEffect, SetStateAction, Dispatch } from "react";
+import { useState, useEffect } from "react";
 import { ApplicationObject } from "typings";
 
 export default function JobDetails(props:
     { data: ApplicationObject | undefined,
-         update: Dispatch<SetStateAction<ApplicationObject | undefined>> }) {
+         update: (data: ApplicationObject) => void
+    }
+) {
     // State variables
     const [data, setData] = useState(
         undefined as ApplicationObject | undefined);

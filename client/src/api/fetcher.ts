@@ -28,7 +28,7 @@ class Fetcher {
 
     initFetcher() {
         const http = axios.create({
-            baseURL: "http://localhost:4000",
+            baseURL: process.env.REACT_APP_SERVER_URL,
             headers,
             withCredentials: true,
         });
