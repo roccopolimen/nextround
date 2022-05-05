@@ -13,6 +13,7 @@ import {
     Typography
 } from "@mui/material";
 import { useGetCurrentCycle, useGetCycle, useGetCycleMetrics, useGetMetrics } from "api";
+import StatCard from "components/StatCard";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { 
@@ -49,7 +50,7 @@ export default function Metrics() {
          refetch: fetchCycle} = useGetCycle(cycleId ? cycleId : "");
 
     useEffect(() => {
-        // Fetch data
+        // Fetch data on mount
         const fetchData = async () => {
             if (cycleId) {
                 await fetchMetrics();
@@ -60,23 +61,11 @@ export default function Metrics() {
             }
         };
         fetchData();
-        setApplications([{
-            _id: 1,
-            position: "Software Engineer",
-            company: "Google",
-            location: "Mountain View, CA",
-            salary: 120000,
-            cardColor: "#00bcd4",
-            progress: 1,
-            jobPostUrl: "https://www.google.com",
-            description: "Blah blah blah",
-            notes: [],
-            events: [],
-            contacts: []
-        }]);
-    }, []);
+    }, [cycleId, fetchCurrentCycle, fetchCycle, fetchMetrics,
+         fetchCurrentMetrics]);
 
     useEffect(() => {
+        // Set data when successfully retrieved
         if (metricsData) {
             setData(metricsData);
         } else if(cMetricsData) {
@@ -143,9 +132,9 @@ export default function Metrics() {
         }
     }, [data]);
 
-    if(!data || isLoading || cIsLoading) {
+    if(!data || isLoading || cIsLoading || cycleIsLoading || cCycleIsLoading) {
         return <div>Loading...</div>;
-    } else if(isError || cIsError) {
+    } else if(isError || cIsError || cycleIsError || cCycleIsError) {
         return <div>Error...</div>;
     } else {
         return (
@@ -187,66 +176,7 @@ export default function Metrics() {
 
                     {/* Fun Stats Card */}
                     <Grid item>
-                        <Card sx={{ ml: 3 }}>
-                            <CardContent>
-                                <Typography variant="h2"
-                                    sx={{ mb: 2, fontSize: '24pt',
-                                    borderBottom: 'solid #ADA7BD 0.5px' }}>
-                                    Fun Stats
-                                </Typography>
-                                <Grid container spacing={{ xs: 2, md: 3 }} 
-                                    columns={{ xs: 1, sm: 2, md: 2 }} >
-                                    <Grid item>
-                                        <Card>
-                                            <CardContent>
-                                                <Typography variant="h3"
-                                                    display="inline"
-                                                    sx={{ fontSize: '18pt',
-                                                    fontWeight: 'bold' }}>
-                                                    {data.num_rounds}
-                                                </Typography>
-                                                <Typography variant="h4"
-                                                    sx={{ fontSize: '14pt' }}>
-                                                    interview rounds
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                    <Grid item>
-                                        <Card>
-                                            <CardContent>
-                                                <Typography variant="h3"
-                                                    display="inline"
-                                                    sx={{ fontSize: '18pt',
-                                                    fontWeight: 'bold' }}>
-                                                    {data.num_connections}
-                                                </Typography>
-                                                <Typography variant="h4"
-                                                    sx={{ fontSize: '14pt' }}>
-                                                    connections
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                    <Grid item>
-                                        <Card>
-                                            <CardContent>
-                                                <Typography variant="h3"
-                                                    display="inline"
-                                                    sx={{ fontSize: '18pt',
-                                                    fontWeight: 'bold' }}>
-                                                    ${data.avg_salary}
-                                                </Typography>
-                                                <Typography variant="h4"
-                                                    sx={{ fontSize: '14pt' }}>
-                                                    average salary
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                </Grid>
-                                </CardContent>
-                        </Card>
+                        <StatCard data={data} />
                     </Grid>
 
                     {/* Application Timeline */}
