@@ -10,9 +10,10 @@ import Container from '@mui/material/Container';
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSignInWithEmail, useSignInWithGoogle } from 'api';
-import { Alert, CircularProgress, IconButton, Modal } from '@mui/material';
+import { Alert, IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from 'components/NavBar';
+import Loading from 'components/Loading';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
@@ -55,11 +56,7 @@ export default function SignIn() {
             <NavBar />
             <div>
                 {failedAuth && <Alert severity="error">email or password incorrect</Alert>}
-                <Modal open={isLoadingEmail || isLoadingGoogle} sx={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
-                    <Box sx={{ top: '50%', padding: 2 }}>
-                        <CircularProgress />
-                    </Box>
-                </Modal>
+                <Loading open={isLoadingEmail || isLoadingGoogle} />
                 <Container component="main" maxWidth="xs">
                     <Box
                         sx={{
