@@ -35,15 +35,15 @@ const App = () => {
         <ThemeProvider theme={theme}>
         {/* <AuthProvider> */}
         <CssBaseline />
-        <Router>
+        <Router basename={process.env.REACT_APP_PATH || ""}>
             <Routes>
-            <Route path={'*'} element={<Landing />} />
-            <Route path={'/signin'} element={<SignIn />} />
-            <Route path={'/signup'} element={<SignUp />} />
-            <Route path={'/application/:id'} element={<Job />} />
-            <Route path={'/settings'} element={<Settings />} />
-            <Route path={'/metrics/:cycleId'} element={<Metrics />} />
-            <Route path={'/metrics/'} element={<Metrics />} />
+                <Route path="" element={<Landing />} />
+                <Route path="signin" element={<SignIn />} />
+                <Route path="signup" element={<SignUp />} />
+                <Route path="application/:id" element={<Job />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="metrics/:cycleId" element={<Metrics />} />
+                <Route path="metrics" element={<Metrics />} />
             </Routes>
         </Router>
         {/* </AuthProvider> */}
