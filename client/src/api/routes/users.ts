@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from "react-query";
 import { fetcher } from "api/fetcher";
 import { doEmailSignIn, doEmailSignUp, doGoogleSignIn, doSignOut } from "api/firebase/functions";
-import { Failure } from "typings";
+import { Failure, UserObject } from "typings";
 
 /**
  * @description POST /users/signIn with email & password
@@ -86,6 +86,20 @@ export const useDeleteUser = (): UseQueryResult<boolean> => {
         const { data, status } = await fetcher.delete<Failure>('/users');
         if(status !== 200) throw new Error(`${data.message}\n\n${data.error}`);
         return true;
+    });
+};
+
+/**
+ * @description GET /users/:userId
+ * @param {string} userId 
+ * @returns {UseQueryResult<UserObject>} the requested user
+ * @throws if fails
+ */
+ export const useGetUser = (userId: string): UseQueryResult<UserObject> => {
+    return useQuery('getUser', async () => {
+        const { data, status } = await fetcher.get<UserObject | Failure>(`/users/${userId}`);
+        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
+        return (data as UserObject);
     });
 };
 

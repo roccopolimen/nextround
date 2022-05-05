@@ -1,8 +1,9 @@
 import express from 'express';
 import { DecodedIdToken, getAuth } from "firebase-admin/auth";
 import { ObjectId } from 'mongodb';
-import { createUser, getUserByEmail, removeUser } from '../data';
-import { checkNonEmptyString } from '../helpers';
+import { createUser, getUserByEmail, getUserById, removeUser } from '../data';
+import { checkNonEmptyString, checkObjectId } from '../helpers';
+import { UserObject } from '../typings';
 
 const router = express.Router();
 
@@ -106,6 +107,21 @@ router.delete('/', async (req, res) => {
         return res.json({ message: 'User deleted.' });
     } catch(e) {
         return res.status(500).json({ message: 'Removing user failed.', error: e.message });
+    }
+});
+
+//GET /:id
+router.get('/:userId', async (req, res) => {
+    const { userId } = req.params;
+
+    if(!userId || !checkObjectId(userId))
+        return res.status(400).json({ message: 'user id must be a string representing a mongoDB ObjectId.' });
+    
+    try {
+        const user: UserObject = await getUserById(userId);
+        res.json(user);
+    } catch(e) {
+        res.status(500).json({ message: 'Could not get information about the requested user from the database.', error: e.message });
     }
 });
 
