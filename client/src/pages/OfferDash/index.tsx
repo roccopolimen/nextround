@@ -16,6 +16,7 @@ import { ApplicationObject } from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
 import { useNavigate } from 'react-router-dom';
 import SideDrawer from 'components/SideDrawer';
+import Loading from 'components/Loading';
 
 export default function OfferDash () {
     const emptyApps: ApplicationObject[] = [];
@@ -122,11 +123,7 @@ export default function OfferDash () {
 
     return (
         <>  
-            <Modal open={isLoadingCycle} sx={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
-                <Box sx={{ top: '50%', padding: 2 }}>
-                    <CircularProgress />
-                </Box>
-            </Modal>
+            <Loading open={isLoadingCycle} />
             <SideDrawer />
             <Typography sx={{ fontWeight: 'bold', fontSize: h1Size, ml: margins, mt: margins }} component="h1" variant="h4">
                 Offer Dashboard
