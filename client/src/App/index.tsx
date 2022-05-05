@@ -30,7 +30,6 @@ const queryClient: QueryClient = new QueryClient({
 });
 
 const App = () => {
-    document.body.style.backgroundColor = "#F9F8FF";
     return (
         <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
