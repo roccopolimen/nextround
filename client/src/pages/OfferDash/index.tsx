@@ -15,7 +15,7 @@ import { Card,
 import { ApplicationObject } from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
 import SideDrawer from 'components/SideDrawer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
 
 export default function OfferDash () {
     const emptyApps: ApplicationObject[] = [];
@@ -34,21 +34,25 @@ export default function OfferDash () {
     //Queries
     const { data: userCycle, status: getStatus, isLoading: isLoadingCycle,
         refetch: refetchCycle } = useGetCurrentCycle();
-    const { refetch: refetchPost } = useCreatePost();
+    const { data: newPost, refetch: refetchPost } = useCreatePost(postText);
     const { refetch: refetchFinishCycle } = useFinishCycles();
-    
+
+    // console.log(useCreatePost(postText));
+
     useEffect(() => {
         (async () => { 
             try {
+                console.log('Hit');
                 await refetchCycle();
                 console.log(isLoadingCycle);
                 let offerApplications: ApplicationObject[] = [];
                 if(userCycle && userCycle["applications"]) {
-                    let cycleApp: ApplicationObject;
+                    let cycleApp: ApplicationObject; 
                     for(cycleApp of userCycle["applications"]) {
                         if(cycleApp["progress"] === 1) {
                             offerApplications.push(cycleApp);
                         }
+                        console.log(cycleApp);
                     }
                 }
                 
@@ -67,21 +71,29 @@ export default function OfferDash () {
         setOpen(true);
     };
 
-    const postOffer: Function = (offer: ApplicationObject) => {
-        console.log("Offer posted");
-        refetchPost();
-        console.log("Make Post");
-        refetchFinishCycle(); 
-        console.log("Finish Cycle");
-        //TODO: navigate to forum page when finished
-        // navigate('/forum');
+    const postOffer: Function = async (offer: ApplicationObject) => {
+        try {
+            console.log("Offer posted");
+            await refetchPost();
+            console.log("Make Post");
+            console.log(newPost);
+            await refetchFinishCycle(); 
+            console.log("Finish Cycle");
+            navigate('/forum');
+        } catch(e) {
+            navigate('/error');
+        }
     };
 
-    const noPostOffer: Function = () => {
-        console.log("Offer not posted");
-        refetchFinishCycle(); 
-        console.log("Finish Cycle");
-        navigate('/create');
+    const noPostOffer: Function = async () => {
+        try {
+            console.log("Offer not posted");
+            await refetchFinishCycle(); 
+            console.log("Finish Cycle");
+            navigate('/create');
+        } catch(e) {
+            navigate('/error');
+        }
     };
 
     const makeButton: Function = (offer: ApplicationObject, accept: boolean ) => {
@@ -102,15 +114,13 @@ export default function OfferDash () {
                     Your offers will appear here when you update your applications
                 </Typography>
             );
-        } else {
-            return (<></>); 
         }
     };
 
     const closeModal: Function = () => {
         setOpen(false);
         setAcceptId('');
-        setAccept(false);
+        setAccept(false); 
     };
 
     //Responsive Design
@@ -135,7 +145,7 @@ export default function OfferDash () {
                     <Card sx={{mr: 'auto', ml: 'auto', mt: 5, width: cardWidth }}>
                         <CardContent>
                             <Typography>
-                                Would you like to make a post?
+                                Would you like to make a post about your cycle?
                             </Typography>
                             <br />
                             <FormGroup sx={{width: formWidth, bgcolor: 'background.paper',
@@ -144,7 +154,7 @@ export default function OfferDash () {
                                     Post Text:
                                 </Typography>
                                 <TextField id="post-text" variant="outlined"
-                                    label="Post Text" size="small" value={postText}
+                                    label="Comment" size="small" value={postText}
                                     onChange={(e) => setPostText(e.target.value)} />
                             </FormGroup>
                             <Button onClick={() => postOffer()} sx={{marginLeft: 'auto', marginRight: 2, mt: 1}} variant="contained">

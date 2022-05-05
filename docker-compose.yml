@@ -1,21 +1,8 @@
 version: '3'
 services:
-  mongo:
-    container_name: mongo
-    image: mongo:latest
-    volumes:
-      - ./data:/data/db
-    ports:
-      - "27017:27017"
-    networks:
-      - nextround
   server:
     container_name: server
-    depends_on:
-      - mongo
     build: ./server
-    environment:
-      - MONGODB_URI=mongodb://mongo:27017/
     ports:
       - "4000:4000"
     volumes:

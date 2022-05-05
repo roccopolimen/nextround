@@ -2,19 +2,63 @@ import { Box, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Info, Event, Contacts, Description } from '@mui/icons-material';
 import JobDetails from "components/JobSections/JobDetails";
-import { ApplicationObject, EventObject } from "typings";
+import { ApplicationObject } from "typings";
 import Events from "components/JobSections/Events";
+import { useCreateContact, useCreateEvent, useCreateNote, useDeleteContact, useDeleteEvent, useGetApplication, useUpdateApplication, useUpdateEvent } from "api";
+import { useParams } from "react-router-dom";
+import MyContacts from "components/JobSections/MyContacts";
+import MyNotes from "components/JobSections/MyNotes";
 
 export default function Job() {
     // Constants
     const BASE_CLEARBIT_URL = 'https://logo.clearbit.com/';
+    let params = useParams();
     // State variables
     const [currTab, setCurrTab] = useState(0);
     const [data, setData] = useState(
         undefined as ApplicationObject | undefined);
-    const [url, setUrl] = useState(""); // TODO: remove when clearbit is ready
+    const [url, setUrl] = useState("");
+    const [patchApp, setPatchApp] = useState(false);
+    const [shouldCreateEvent, setShouldCreateEvent] = useState(false);
+    const [shouldDeleteEvent, setShouldDeleteEvent] = useState(false);
+    const [shouldPatchEvent, setShouldPatchEvent] = useState(false);
+    const [shouldCreateContact, setShouldCreateContact] = useState(false);
+    const [shouldDeleteContact, setShouldDeleteContact] = useState(false);
+    const [shouldCreateNote, setShouldCreateNote] = useState(false);
+    const [hasNewData, setHasNewData] = useState(false);
     const [component, setComponent] = useState(undefined as
                                      ReactElement<any, any> | undefined);
+    // State variables for mutation
+    const [id, setId] = useState(data ? data._id : "");
+    const [company, setCompany] = useState(data ? data.company : "");
+    const [position, setPosition] = useState(data ? data.position : "");
+    const [location, setLocation] = useState(data ? data.location : "");
+    const [jobPostUrl, setJobPostUrl] = useState(data ? data.jobPostUrl : "");
+    const [description, setDescription] = useState(
+                                            data ? data.description : "");
+    const [salary, setSalary] = useState(data && data.salary ? data.salary : 0);
+    const [cardColor, setCardColor] = useState(data ? data.cardColor : "#fff");
+    const [progress, setProgress] = useState(data ? data.progress : 0);
+
+    const [eventTitle, setEventTitle] = useState("");
+    const [eventDate, setEventDate] = useState(new Date().toLocaleDateString());
+    const [eventLocation, setEventLocation] = useState("");
+
+    const [eventId, setEventId] = useState("");
+
+    const [eventStatus, setEventStatus] = useState(false);
+    const [eventIdUpdate, setEventIdUpdate] = useState("");
+
+    const [contactName, setContactName] = useState("");
+    const [contactPhone, setContactPhone] = useState("");
+    const [contactEmail, setContactEmail] = useState("");
+
+    const [contactId, setContactId] = useState("");
+
+    const [note, setNote] = useState("");
+
+
+    let appId: string = params.id ? params.id : "";
 
     // Responsive design
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
@@ -28,81 +72,230 @@ export default function Job() {
     let h2Size: string = mobile ? ".75rem": "2rem";
     let imgSize: number = mobile ? 45 : 75;
 
+    // Queries & Mutations
+    const { data: api_data, isLoading,
+         refetch: fetchApplication } = useGetApplication(appId);
+    const { refetch: updateApplication } = useUpdateApplication(id, company,
+         position, location, jobPostUrl, description, salary,
+         cardColor, progress);
+    const { refetch: createEvent } = useCreateEvent(appId, eventTitle,
+                                                 eventDate, eventLocation);
+    const { refetch: deleteEvent } = useDeleteEvent(appId, eventId);
+    const { refetch: updateEvent } = useUpdateEvent(appId,
+        eventIdUpdate, eventStatus);
+    const { refetch: createContact } = useCreateContact(appId, contactName,
+         contactPhone, contactEmail);
+    const { refetch: deleteContact } = useDeleteContact(appId, contactId);
+    const { refetch: createNote } = useCreateNote(appId, note);
+         
+    // TODO: Delete whole application button
+
     useEffect(() => {
         // On mount
-
-        // TODO: make api call to get job info
-        let event1: EventObject = {
-            _id: "1",
-            title: "Apply",
-            status: true,
-            date: new Date("2020-01-01"),
-            location: "Location 1"
-        };
-        let event2: EventObject = {
-            _id: "2",
-            title: "Super long event name that is an interview wooooooooooooo",
-            status: false,
-            date: new Date("2020-01-15"),
-            location: "Location 2"
-        };
-        let event3: EventObject = {
-            _id: "3",
-            title: "Final round",
-            status: false,
-            date: new Date("2023-02-20"),
-            location: "Mountain View, CA"
-        };
-
-        setData({
-            _id: "5e9f9f9f9f9f9f9f9f9f9f9",
-            company: "Google",
-            position: "Software Engineer",
-            location: "Mountain View, CA",
-            salary: 100000,
-            cardColor: "#efc920",
-            progress: 0,
-            jobPostUrl: "https://www.google.com/",
-            description: "L4 engineering role at Google; no referral",
-            notes: [],
-            events: [event1, event2, event3],
-            contacts: []
-        });
+        fetchApplication();
+        // TODO: clearbit logo from backend
         setUrl("google.com");
-    }, []);
+    }, [fetchApplication]);
+
+    useEffect(() => {
+        if(!isLoading && api_data) {
+            setData(api_data);
+        }
+    }, [isLoading, api_data]);
+
+    useEffect(() => {
+        // On data update
+        setId(data ? data._id : "");
+        setCompany(data ? data.company : "");
+        setPosition(data ? data.position : "");
+        setLocation(data ? data.location : "");
+        setJobPostUrl(data ? data.jobPostUrl : "");
+        setDescription(data ? data.description : "");
+        setSalary(data && data.salary ? data.salary : 0);
+        setCardColor(data ? data.cardColor : "#fff");
+        setProgress(data ? data.progress : 0);
+        setHasNewData(true);
+    }, [data]);
+
+    useEffect(() => {
+        // Make the patch call
+        const callApi = async () => {
+            await updateApplication();
+            await fetchApplication();
+        }
+        if(patchApp && hasNewData) {
+            setPatchApp(false);
+            callApi();
+        }
+    }, [patchApp, hasNewData, updateApplication, fetchApplication]);
+
+    useEffect(() => {
+        // Make the create event call
+        const callApi = async () => {
+            await createEvent();
+            await fetchApplication();
+        }
+
+        if(shouldCreateEvent) {
+            callApi();
+            setShouldCreateEvent(false);
+        }
+    }, [eventTitle, eventDate, eventLocation, shouldCreateEvent,
+         fetchApplication, createEvent]);
+
+    useEffect(() => {
+        // Make the delete event call
+        const callApi = async () => {
+            await deleteEvent();
+            await fetchApplication();
+        }
+
+        if(shouldDeleteEvent) {
+            callApi();
+            setShouldDeleteEvent(false);
+        }
+    }, [eventId, shouldDeleteEvent, fetchApplication, deleteEvent]);
+
+    useEffect(() => {
+        // Make the update event call
+        const callApi = async () => {
+            await updateEvent();
+            await fetchApplication();
+        }
+
+        if(shouldPatchEvent) {
+            callApi();
+        }
+    }, [shouldPatchEvent, eventIdUpdate, eventStatus, fetchApplication,
+         updateEvent]);
+
+    useEffect(() => {
+        // Make the create contact call
+        const callApi = async () => {
+            await createContact();
+            await fetchApplication();
+        }
+
+        if(shouldCreateContact) {
+            callApi();
+            setShouldCreateContact(false);
+        }
+    }, [contactName, contactPhone, contactEmail, shouldCreateContact,
+            fetchApplication, createContact]);
+
+    useEffect(() => {
+        // Make the delete contact call
+        const callApi = async () => {
+            await deleteContact();
+            await fetchApplication();
+        }
+
+        if(shouldDeleteContact) {
+            callApi();
+            setShouldDeleteContact(false);
+        }
+    } , [contactId, shouldDeleteContact, fetchApplication, deleteContact]);
+
+    useEffect(() => {
+        // Make the create note call
+        const callApi = async () => {
+            await createNote();
+            await fetchApplication();
+        }
+
+        if(shouldCreateNote) {
+            callApi();
+            setShouldCreateNote(false);
+        }
+    } , [note, shouldCreateNote, fetchApplication, createNote]);
 
     useEffect(() => {
         // On tab change
-        const chooseComponent = () => {
+
+        // Props functions
+        const updateApp = (data: ApplicationObject) => {
+            setHasNewData(false);
+            setData(data);
+            setPatchApp(true);
+        }
+
+        const changeEvent = (id: string, status: boolean) => {
+            console.log(status);
+            setEventIdUpdate(id);
+            setEventStatus(status);
+            setShouldPatchEvent(true);
+        }
+
+        const addEvent = (title: string, date: string,
+                             location: string) => {
+            setEventTitle(title);
+            setEventDate(date);
+            setEventLocation(location);
+            setShouldCreateEvent(true);
+        }
+
+        const deleteEvent = (eventId: string) => {
+            setEventId(eventId);
+            setShouldDeleteEvent(true);
+        }
+
+        const addContact = (name: string, phone: string, email: string) => {
+            setContactName(name);
+            setContactPhone(phone);
+            setContactEmail(email);
+            setShouldCreateContact(true);
+        }
+
+        const deleteContact = (id: string) => {
+            setContactId(id);
+            setShouldDeleteContact(true);
+        }
+
+        const addNote = (note: string) => {
+            setNote(note);
+            setShouldCreateNote(true);
+        }
+
+        /**
+         * Chooses the component to be rendered based on the tab
+         * @returns {JSX.Element} The component to be rendered
+         */
+        const chooseComponent = (): JSX.Element => {
             switch (currTab) {
                 case 0:
                     return (
                         <JobDetails data={data}
-                                    update={setData} />
+                                    update={updateApp} />
                     );
                 case 1:
                     return (<Events data={data}
-                                    update={setData} />);
+                                    update={changeEvent}
+                                    addEvent={addEvent}
+                                    deleteEvent={deleteEvent} />);
                 case 2:
-                    return <div>Contacts</div>;
+                    return (<MyContacts data={data}
+                                        addContact={addContact}
+                                        deleteContact={deleteContact} />);
                 case 3:
-                    return <div>Notes</div>;
+                    return (<MyNotes data={data}
+                                     addNote={addNote} />);
                 default:
                     return <div>Error</div>;
             }
         };
         setComponent(data ? chooseComponent() : undefined);
-    }, [currTab, data]);
+    }, [currTab, data, fetchApplication, updateApplication]);
 
     /**
      * Changes the current tab
-     * @param {React.SyntheticEvent} event click information
+     * @param {React.SyntheticEvent} _event click information
      * @param {number} newValue new tab index
      */
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setCurrTab(newValue);
     };
 
+    // TODO: handle errors
     if(!data) {
         return <div>Loading...</div>;
     } else {
