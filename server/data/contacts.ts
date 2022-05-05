@@ -95,12 +95,12 @@ export const getContactById = async (userId: string, applicationId: string, cont
  * Create contact
  * @param {string} userId 
  * @param {string} applicationId
- * @param {string} title 
- * @param {Date} date 
- * @param {String} location 
+ * @param {string} name
+ * @param {string} phone 
+ * @param {string} email 
  * @returns {Promise<ContactObject>} if the contact was created, throws otherwise 
  */
- export const createContact = async (userId: string, applicationId: string, name: string, pronouns: string, location: string, phone: string, email: string): Promise<ContactObject> => {
+ export const createContact = async (userId: string, applicationId: string, name: string, phone: string, email: string): Promise<ContactObject> => {
 
     if(!checkObjectId(userId)){
         throw new Error('Invalid userId');
@@ -110,12 +110,6 @@ export const getContactById = async (userId: string, applicationId: string, cont
     }
     if(!checkName(name)){
         throw new Error('Invalid name');
-    }
-    if(!checkNonEmptyString(pronouns)){
-        throw new Error('Invalid pronouns');
-    }
-    if(!checkNonEmptyString(location)){
-        throw new Error('Invalid location');
     }
     if(!checkPhoneNumber(phone)){
         throw new Error('Invalid phone number');
@@ -137,8 +131,6 @@ export const getContactById = async (userId: string, applicationId: string, cont
     const newContact: ContactObject = {
         _id: new ObjectId(),
         name: name,
-        pronouns: pronouns,
-        location: location,
         phone: phone,
         email: email
     }
@@ -173,13 +165,11 @@ export const getContactById = async (userId: string, applicationId: string, cont
  * @param {string} applicationId 
  * @param {string} contactId
  * @param {string} name
- * @param {string} pronouns
- * @param {string} location
  * @param {string} phone
  * @param {string} email
  * @returns {Promise<ContactObject>} if the contact was updated
  */
- export const updateContact = async (userId: string, applicationId: string, contactId: string, name: string, pronouns: string, location: string, phone: string, email: string): Promise<ContactObject> => {
+ export const updateContact = async (userId: string, applicationId: string, contactId: string, name: string, phone: string, email: string): Promise<ContactObject> => {
 
     if(!checkObjectId(userId))
         throw new Error('Invalid userId');
@@ -196,18 +186,6 @@ export const getContactById = async (userId: string, applicationId: string, cont
             throw new Error('Name must be a non-empty string.');
         else
             updateFields.name = name;
-    }
-    if(pronouns) {
-        if(!checkNonEmptyString(pronouns))
-            throw new Error('Pronouns must be a non-empty string.');
-        else
-            updateFields.pronouns = pronouns;
-    }
-    if(location) {
-        if(!checkNonEmptyString(location))
-            throw new Error('Location must be a non-empty string.');
-        else
-            updateFields.location = location;
     }
     if(phone) {
         if(!checkPhoneNumber(phone))

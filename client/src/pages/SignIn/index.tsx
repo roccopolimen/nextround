@@ -10,8 +10,10 @@ import Container from '@mui/material/Container';
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSignInWithEmail, useSignInWithGoogle } from 'api';
-import { Alert, CircularProgress, IconButton, Modal } from '@mui/material';
+import { Alert, IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import NavBar from 'components/NavBar';
+import Loading from 'components/Loading';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
@@ -50,74 +52,73 @@ export default function SignIn() {
     };
 
     return (
-        <div>
-        {failedAuth && <Alert severity="error">email or password incorrect</Alert>}
-        <Modal open={isLoadingEmail || isLoadingGoogle} sx={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <Box bgcolor="background.paper" sx={{ top: '50%', padding: 2, border: 1 }}>
-                <CircularProgress />
-            </Box>
-        </Modal>
-        <Container component="main" maxWidth="xs">
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <Avatar sx={{ m: 1, bgcolor: 'primary' }}>
-                    <PermIdentityOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Sign In
-                </Typography>
-                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+        <>
+            <NavBar />
+            <div>
+                {failedAuth && <Alert severity="error">email or password incorrect</Alert>}
+                <Loading open={isLoadingEmail || isLoadingGoogle} />
+                <Container component="main" maxWidth="xs">
+                    <Box
+                        sx={{
+                            marginTop: 8,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                        }}
                     >
-                        Sign In
-                    </Button>
-                    <Box display="flex" justifyContent="center">
-                        <Link to="/signup">
-                            {"Don't have an account? Sign Up"}
-                        </Link>
+                        <Avatar sx={{ m: 1, bgcolor: 'primary' }}>
+                            <PermIdentityOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
+                            Sign In
+                        </Typography>
+                        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Sign In
+                            </Button>
+                            <Box display="flex" justifyContent="center">
+                                <Link to="/signup">
+                                    {"Don't have an account? Sign Up"}
+                                </Link>
+                            </Box>
+                        </Box>
                     </Box>
-                </Box>
-            </Box>
-            <div className="logos">
-                <IconButton onClick={handleGoogle}>
-                    <FontAwesomeIcon className="google-logo" icon={faGoogle} size="2x"/>
-                </IconButton>
+                    <div className="logos">
+                        <IconButton onClick={handleGoogle}>
+                            <FontAwesomeIcon className="google-logo" icon={faGoogle} size="2x"/>
+                        </IconButton>
+                    </div>
+                </Container>
             </div>
-        </Container>
-        </div>
+        </>
     );
 }

@@ -14,6 +14,7 @@ import SignUp from 'pages/SignUp';
 import Job from 'pages/Job';
 import Settings from 'pages/Settings';
 import Forum from 'pages/Forum';
+import Metrics from 'pages/Metrics';
 
 const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
 const queryClient: QueryClient = new QueryClient({
@@ -40,9 +41,11 @@ const App = () => {
             <Route path={'*'} element={<Landing />} />
             <Route path={'/signin'} element={<SignIn />} />
             <Route path={'/signup'} element={<SignUp />} />
-            <Route path={'/test_job'} element={<Job />} />
+            <Route path={'/application/:id'} element={<Job />} />
             <Route path={'/settings'} element={<Settings />} />
             <Route path={'/forum'} element={<Forum />} />
+            <Route path={'/metrics/:cycleId'} element={<Metrics />} />
+            <Route path={'/metrics/'} element={<Metrics />} />
             </Routes>
         </Router>
         {/* </AuthProvider> */}
