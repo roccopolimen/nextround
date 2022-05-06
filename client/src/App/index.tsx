@@ -14,6 +14,8 @@ import SignUp from 'pages/SignUp';
 import Job from 'pages/Job';
 import Settings from 'pages/Settings';
 import Forum from 'pages/Forum';
+import OfferDash from 'pages/OfferDash';
+import AddCycle from 'pages/AddCycle';
 import Metrics from 'pages/Metrics';
 
 const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
@@ -46,6 +48,8 @@ const App = () => {
                 <Route path="metrics/:cycleId" element={<Metrics />} />
                 <Route path="metrics" element={<Metrics />} />
                 <Route path="forum" element={<Forum />} />
+                <Route path="offers" element={<OfferDash />} />
+                <Route path="create" element={<AddCycle />} />
             </Routes>
         </Router>
         {/* </AuthProvider> */}

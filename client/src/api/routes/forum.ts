@@ -21,9 +21,12 @@ export const useGetForum = (numPosts: number): UseQueryResult<Array<ForumPostObj
  * @returns {UseQueryResult<ForumPostObject>} the newly created post
  * @throws if fails
  */
-export const useCreatePost = (): UseQueryResult<ForumPostObject> => {
+export const useCreatePost = (content: string): UseQueryResult<ForumPostObject> => {
+    const body: Partial<ForumPostObject> = {
+        content: content
+    };
     return useQuery('createPost', async () => {
-        const { data, status } = await fetcher.post<ForumPostObject | Failure>('/forum');
+        const { data, status } = await fetcher.post<Partial<ForumPostObject> | Failure>('/forum', body);
         if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
         return (data as ForumPostObject);
     });

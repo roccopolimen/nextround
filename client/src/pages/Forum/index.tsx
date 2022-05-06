@@ -15,21 +15,10 @@ export default function Forum() {
     const [posts, setPosts] = useState(startPosts);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
-    const [numPosts, setNumPosts] = useState(3);
+    const [numPosts, setNumPosts] = useState('0');
 
     //Queries
-    const { data: postData, isLoading: isLoadingPosts, refetch: refetchPosts } = useGetForum(numPosts);
-
-    useEffect(() => {
-        async function getNumPosts() {
-            let userNumPosts = await searchParams.get("num_posts");
-            if(userNumPosts) {
-                setNumPosts(parseInt(userNumPosts));
-            }
-        }
-        getNumPosts();
-        
-    }, [numPosts, setNumPosts, searchParams]);
+    const { data: postData, isLoading: isLoadingPosts, refetch: refetchPosts } = useGetForum(parseInt(numPosts));
 
     useEffect(() => {
         async function fetchData() {
@@ -43,11 +32,21 @@ export default function Forum() {
                 setLoading(false);
             }
 		}
-        if(refresh) {
-            fetchData();
-            setRefresh(false);
-        }
+        fetchData();
+        setRefresh(false);
     }, [refresh, postData, refetchPosts, numPosts]);
+
+    useEffect(() => {
+        async function getNumPosts() {
+            let userNumPosts: string | null = await searchParams.get("num_posts");
+            if(userNumPosts) {
+                setNumPosts(userNumPosts);
+                setRefresh(true);
+            }
+        }
+        getNumPosts();
+        
+    }, [numPosts, setNumPosts, searchParams]);
 
     useEffect(() => {
         if(postData) {
@@ -58,19 +57,19 @@ export default function Forum() {
     //Responsive Design
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
     let h1Size: string = mobile ? "1.75rem": "2.5rem";
-    let leftMargins: number = mobile ? 3: 7;
+    let margins: number = mobile ? 3: 7;
 
     return (
         <>
             <SideDrawer />
             <Loading open={loading || isLoadingPosts} />
-            <Typography sx={{ fontWeight: 'bold', fontSize: h1Size, ml: leftMargins, mt: 7 }} component="h1" variant="h4">
+            <Typography sx={{ fontWeight: 'bold', fontSize: h1Size, ml: margins, mt: margins }} component="h1" variant="h4">
                 Forum
             </Typography>
-            <Button onClick={() => {setRefresh(true)}} sx={{ml: leftMargins, mt: 2}} variant="contained">
+            <Button onClick={() => {setRefresh(true)}} sx={{ml: margins, mt: 2}} variant="contained">
                 Refresh Posts
             </Button>
-            <Stack sx={{ml: leftMargins}}>
+            <Stack sx={{ml: margins}}>
                 {posts.map(post => {
                     return (<UserPost key={post['_id']} post={post}/>);
                 })}
