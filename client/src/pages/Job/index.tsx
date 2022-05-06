@@ -1,23 +1,21 @@
-import { Box, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
+import { Box, Button, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
-import { Info, Event, Contacts, Description } from '@mui/icons-material';
+import { Delete, Info, Event, Contacts, Description } from '@mui/icons-material';
 import JobDetails from "components/JobSections/JobDetails";
 import { ApplicationObject } from "typings";
 import Events from "components/JobSections/Events";
-import { useCreateContact, useCreateEvent, useCreateNote, useDeleteContact, useDeleteEvent, useGetApplication, useUpdateApplication, useUpdateEvent } from "api";
-import { useParams } from "react-router-dom";
+import { useCreateContact, useCreateEvent, useCreateNote, useDeleteApplication, useDeleteContact, useDeleteEvent, useGetApplication, useUpdateApplication, useUpdateEvent } from "api";
+import { useNavigate, useParams } from "react-router-dom";
 import MyContacts from "components/JobSections/MyContacts";
 import MyNotes from "components/JobSections/MyNotes";
 
 export default function Job() {
-    // Constants
-    const BASE_CLEARBIT_URL = 'https://logo.clearbit.com/';
     let params = useParams();
+    const navigate = useNavigate();
     // State variables
     const [currTab, setCurrTab] = useState(0);
     const [data, setData] = useState(
         undefined as ApplicationObject | undefined);
-    const [url, setUrl] = useState("");
     const [patchApp, setPatchApp] = useState(false);
     const [shouldCreateEvent, setShouldCreateEvent] = useState(false);
     const [shouldDeleteEvent, setShouldDeleteEvent] = useState(false);
@@ -73,7 +71,7 @@ export default function Job() {
     let imgSize: number = mobile ? 45 : 75;
 
     // Queries & Mutations
-    const { data: api_data, isLoading,
+    const { data: api_data, isLoading, isError,
          refetch: fetchApplication } = useGetApplication(appId);
     const { refetch: updateApplication } = useUpdateApplication(id, company,
          position, location, jobPostUrl, description, salary,
@@ -87,14 +85,11 @@ export default function Job() {
          contactPhone, contactEmail);
     const { refetch: deleteContact } = useDeleteContact(appId, contactId);
     const { refetch: createNote } = useCreateNote(appId, note);
-         
-    // TODO: Delete whole application button
+    const { refetch: deleteApplication } = useDeleteApplication(appId);
 
     useEffect(() => {
         // On mount
         fetchApplication();
-        // TODO: clearbit logo from backend
-        setUrl("google.com");
     }, [fetchApplication]);
 
     useEffect(() => {
@@ -295,18 +290,19 @@ export default function Job() {
         setCurrTab(newValue);
     };
 
-    // TODO: handle errors
-    if(!data) {
+    if(!data || isLoading) {
         return <div>Loading...</div>;
+    } else if(isError) {
+        return <div>Error</div>;
     } else {
         return (
-            <div>
+            <Box>
                 {/* Header */}
                 <Box sx={{ display: 'flex', mt: 3, mb: 1 }}>
                     <Box component="img" 
                         sx={{ mx: 5, height: imgSize, width: imgSize,
                             borderRadius: '50%' }} 
-                        src={`${BASE_CLEARBIT_URL}${url}`}
+                        src={data.companyLogo}
                         alt={data.company} />
                     <div className="job-page-typography">
                         <Typography variant="h1" id="role"
@@ -316,6 +312,17 @@ export default function Job() {
                             sx={{ fontSize: h2Size }}
                             color="#ADA7BD">{data.company}</Typography>
                     </div>
+                    {/* delete button */}
+                    <Button variant="contained"
+                        onClick={() => {
+                            deleteApplication();
+                            // redirect to home page
+                            navigate('/dashboard', { replace: false });
+                        }}
+                        color="error"
+                        sx={{ mx: 'auto', mb: 2 }}>
+                        <Delete />
+                    </Button>
                 </Box>
 
                 {/* Navigation tabs */}
@@ -350,7 +357,7 @@ export default function Job() {
                 <Box sx={{ width: '75%', mx: 'auto', mt: 2, mb: 1 }}>
                     {component}
                 </Box>
-            </div>
+            </Box>
         );
     }
 };
