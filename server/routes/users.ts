@@ -110,19 +110,4 @@ router.delete('/', async (req, res) => {
     }
 });
 
-//GET /:id
-router.get('/:userId', async (req, res) => {
-    const { userId } = req.params;
-
-    if(!userId || !checkObjectId(userId))
-        return res.status(400).json({ message: 'user id must be a string representing a mongoDB ObjectId.' });
-    
-    try {
-        const user: UserObject = await getUserById(userId);
-        res.json(user);
-    } catch(e) {
-        res.status(500).json({ message: 'Could not get information about the requested user from the database.', error: e.message });
-    }
-});
-
 export default router;

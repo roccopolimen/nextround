@@ -89,20 +89,6 @@ export const useDeleteUser = (): UseQueryResult<boolean> => {
     });
 };
 
-/**
- * @description GET /users/:userId
- * @param {string} userId 
- * @returns {UseQueryResult<UserObject>} the requested user
- * @throws if fails
- */
- export const useGetUser = (userId: string): UseQueryResult<UserObject> => {
-    return useQuery('getUser', async () => {
-        const { data, status } = await fetcher.get<UserObject | Failure>(`/users/${userId}`);
-        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
-        return (data as UserObject);
-    });
-};
-
 // TODO: change user settings api hook
 // export const useChangeSettings = () => {
 //     return useQuery('changeSettings', async () => {
