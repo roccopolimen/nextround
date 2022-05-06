@@ -225,7 +225,10 @@ export default function Events(props: {
 
             {/* List of events */}
             <FormGroup sx={{ mt: 5 }}>
-                {data.events && data.events.map((event) => {
+                {data.events && data.events.sort(
+                        (a, b) => (new Date(a.date).getTime() - 
+                                    new Date(b.date).getTime())
+                    ).map((event) => {
                     let tmp_date: Date = typeof event.date === 'string' ?
                      new Date(event.date) : event.date;
                     return (
@@ -264,7 +267,10 @@ export default function Events(props: {
 
             {/* Timeline */}
             <Timeline position="left">
-                {data.events && data.events.map((event, index) => {
+                {data.events && data.events.sort(
+                        (a, b) => (new Date(a.date).getTime() - 
+                                    new Date(b.date).getTime())
+                    ).map((event, index) => {
                     let connect: string = (index < data.events.length - 1 &&
                         data.events[index].status &&
                         data.events[index + 1].status) ? "#6e51ef" : "#bdbdbd";
@@ -274,7 +280,8 @@ export default function Events(props: {
                                 <Typography variant="body2"
                                     color="textSecondary">
                                     {typeof event.date === 'string' ? 
-                                        event.date :
+                                        new Date(
+                                            event.date).toLocaleDateString() :
                                         event.date.toLocaleDateString()}
                                 </Typography>
                             </TimelineOppositeContent>

@@ -8,6 +8,7 @@ import { useCreateContact, useCreateEvent, useCreateNote, useDeleteApplication, 
 import { useNavigate, useParams } from "react-router-dom";
 import MyContacts from "components/JobSections/MyContacts";
 import MyNotes from "components/JobSections/MyNotes";
+import Loading from "components/Loading";
 
 export default function Job() {
     let params = useParams();
@@ -291,7 +292,11 @@ export default function Job() {
     };
 
     if(!data || isLoading) {
-        return <div>Loading...</div>;
+        return (
+            <div>
+                <Loading open={ true } />
+            </div>
+        );
     } else if(isError) {
         return <div>Error</div>;
     } else {
