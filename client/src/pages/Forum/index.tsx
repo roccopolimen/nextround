@@ -1,6 +1,5 @@
-import { Box, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Grid, Typography, useMediaQuery } from "@mui/material";
+import { Stack, Typography, useMediaQuery } from "@mui/material";
 import { Button } from "@mui/material";
 import { useGetForum } from 'api';
 import { ForumPostObject } from 'typings';
@@ -71,11 +70,11 @@ export default function Forum() {
             <Button onClick={() => {setRefresh(true)}} sx={{ml: leftMargins, mt: 2}} variant="contained">
                 Refresh Posts
             </Button>
-            <Grid container sx={{ display: 'flex',  ml: leftMargins, mr: 7, mt: 5, mb: 5 }}>
+            <Stack sx={{ml: leftMargins}}>
                 {posts.map(post => {
                     return (<UserPost key={post['_id']} post={post}/>);
                 })}
-            </Grid>
+            </Stack>
         </>
     );
 }
