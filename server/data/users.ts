@@ -40,7 +40,6 @@ export const getUserByEmail = async (email: string): Promise<UserObject> => {
  * @param {string} firebaseId The firebase id the user logged in with
  * @param {string} email The email the user logged in with
  * @param {string} name the user's display name
- * @param {string} pfp the user's profile picture (default null)
  * @return {Promise<UserObject>} The new user object.
  */
 export const createUser = async (firebaseId: string, email: string, name: string): Promise<UserObject> => {
