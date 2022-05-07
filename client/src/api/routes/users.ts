@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from "react-query";
 import { fetcher } from "api/fetcher";
 import { doEmailSignIn, doEmailSignUp, doGoogleSignIn, doSignOut } from "api/firebase/functions";
-import { Failure } from "typings";
+import { Failure, UserObject } from "typings";
 
 /**
  * @description POST /users/signIn with email & password

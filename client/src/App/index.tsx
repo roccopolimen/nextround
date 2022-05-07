@@ -13,6 +13,7 @@ import SignIn from 'pages/SignIn';
 import SignUp from 'pages/SignUp';
 import Job from 'pages/Job';
 import Settings from 'pages/Settings';
+import Forum from 'pages/Forum';
 import OfferDash from 'pages/OfferDash';
 import AddCycle from 'pages/AddCycle';
 import Metrics from 'pages/Metrics';
@@ -46,6 +47,7 @@ const App = () => {
                 <Route path="settings" element={<Settings />} />
                 <Route path="metrics/:cycleId" element={<Metrics />} />
                 <Route path="metrics" element={<Metrics />} />
+                <Route path="forum" element={<Forum />} />
                 <Route path="offers" element={<OfferDash />} />
                 <Route path="create" element={<AddCycle />} />
             </Routes>
