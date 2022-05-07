@@ -11,7 +11,7 @@ import { Box,
         useMediaQuery
     } from "@mui/material";
 import { Save, Add, Delete } from '@mui/icons-material';
-import { useState, useEffect, SetStateAction, Dispatch } from "react";
+import { useState, useEffect } from "react";
 import { ApplicationObject, EventObject } from "typings";
 import { Timeline,
          TimelineConnector,
@@ -26,10 +26,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
-export default function Events(props:
-        { data: ApplicationObject | undefined,
-          update: Dispatch<SetStateAction<ApplicationObject | undefined>>
-    }) {
+export default function Events(props: {
+        data: ApplicationObject | undefined,
+        update: (id: string, status: boolean) => void,
+        addEvent: (title: string, date: string,
+             location: string) => void,
+        deleteEvent: (eventId: string) => void
+    }
+) {
    // State variables
    const [data, setData] = useState(
        undefined as ApplicationObject | undefined);
@@ -39,6 +43,7 @@ export default function Events(props:
    const [title, setTitle] = useState('');
    const [location, setLocation] = useState('');
    const [selectedDate, setSelectedDate] = useState(today as Date | null);
+   const [changedIds, setChangedIds] = useState(() => new Set() as Set<string>);
 
    // Responsive design
    const se: boolean = useMediaQuery('(max-width: 525px)');
@@ -97,6 +102,17 @@ export default function Events(props:
    const handleToggle = (event: React.ChangeEvent<HTMLInputElement>,
                             checked: boolean) => {
          // On checkbox change
+        if(changedIds.has(event.target.id)) {
+            setChangedIds(prev => {
+                const next = new Set(prev);
+                next.delete(event.target.id);
+                if(next.size === 0) setChanged(false);
+                return next;
+            });
+        } else {
+            setChangedIds(prev => new Set(prev).add(event.target.id));
+            setChanged(true);
+        }
         if (data) {
             let newData: ApplicationObject = {
                 ...data,
@@ -111,7 +127,6 @@ export default function Events(props:
                 })
             };
             setData(newData);
-            setChanged(true);
         }
         };
 
@@ -119,26 +134,14 @@ export default function Events(props:
      * Adds an event with info from the form
      */
    const handleAddEvent = () => {
-        if(title === "") return;
+        if(title === "" || location === "") return;
         if (data && selectedDate) {
-            let newData: ApplicationObject = {
-                ...data,
-                events: [...data.events, {
-                    _id: data.events.length + 1 + "",
-                    title: title,
-                    date: selectedDate,
-                    status: false,
-                    location: location
-                }]
-            };
-            // TODO: set data from api call, not from built object
+            props.addEvent(title, selectedDate.toLocaleDateString(), location);
             setChanged(true);
-            setData(newData);
             setOpen(false);
             setTitle('');
             setSelectedDate(today);
             setLocation('');
-            props.update(newData);
             setChanged(false);
         }
     };
@@ -149,15 +152,8 @@ export default function Events(props:
      */
     const deleteEvent = (id: string) =>  {
         if (data) {
-            let newData: ApplicationObject = {
-                ...data,
-                events: data.events.filter((ev: EventObject) => {
-                    return ev._id.toString() !== id;
-                })
-            };
+            props.deleteEvent(id);
             setChanged(true);
-            setData(newData);
-            props.update(newData);
             setChanged(false);
         }
     };
@@ -168,7 +164,12 @@ export default function Events(props:
    const handleSave = () => {
        if (data) {
            // TODO: api call to save data
-           props.update(data);
+           changedIds.forEach(id => {
+                let status: boolean | undefined = data.events.find(ev =>
+                    ev._id === id)?.status;
+                if(status !== undefined)
+                    props.update(id, status);
+           });
            setChanged(false);
        }
    }
@@ -209,8 +210,9 @@ export default function Events(props:
                         label="Event Title" size="small" value={title}
                         onChange={(e) => setTitle(e.target.value)} />
                     {date_picker && date_picker}
-                    <TextField id="location-value" variant="outlined"
-                        label="Location" size="small" />
+                    <TextField required id="location-value" variant="outlined"
+                        label="Location" size="small" value={location}
+                        onChange={(e) => setLocation(e.target.value)} />
                     <Button variant="contained" color="primary"
                         startIcon={<Add />}
                         sx={{ mt: 2, width: '50%', mx: 'auto' }}
@@ -223,7 +225,10 @@ export default function Events(props:
 
             {/* List of events */}
             <FormGroup sx={{ mt: 5 }}>
-                {data.events && data.events.map((event) => {
+                {data.events && data.events.sort(
+                        (a, b) => (new Date(a.date).getTime() - 
+                                    new Date(b.date).getTime())
+                    ).map((event) => {
                     let tmp_date: Date = typeof event.date === 'string' ?
                      new Date(event.date) : event.date;
                     return (
@@ -262,7 +267,10 @@ export default function Events(props:
 
             {/* Timeline */}
             <Timeline position="left">
-                {data.events && data.events.map((event, index) => {
+                {data.events && data.events.sort(
+                        (a, b) => (new Date(a.date).getTime() - 
+                                    new Date(b.date).getTime())
+                    ).map((event, index) => {
                     let connect: string = (index < data.events.length - 1 &&
                         data.events[index].status &&
                         data.events[index + 1].status) ? "#6e51ef" : "#bdbdbd";
@@ -272,7 +280,8 @@ export default function Events(props:
                                 <Typography variant="body2"
                                     color="textSecondary">
                                     {typeof event.date === 'string' ? 
-                                        event.date :
+                                        new Date(
+                                            event.date).toLocaleDateString() :
                                         event.date.toLocaleDateString()}
                                 </Typography>
                             </TimelineOppositeContent>

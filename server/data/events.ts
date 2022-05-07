@@ -166,12 +166,9 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  * @param {string} applicationId 
  * @param {string} eventId
  * @param {boolean} status
- * @param {string} title
- * @param {Date} date
- * @param {string} location
  * @returns {Promise<EventObject>} if event  was updated 
  */
- export const updateEvent = async (userId: string, applicationId: string, eventId: string, status: boolean, title: string, date: Date, location: string): Promise<EventObject> => {
+ export const updateEvent = async (userId: string, applicationId: string, eventId: string, status: boolean): Promise<EventObject> => {
     if(!checkObjectId(userId))
         throw new Error('Invalid userId');
     if(!checkObjectId(applicationId))
@@ -181,21 +178,6 @@ export const getEventById = async(userId: string, applicationId: string, eventId
 
     let updateFields: Partial<EventObject> = {};
     if(status !== null) updateFields.status = status;
-    if(title) {
-        if(!checkNonEmptyString(title))
-            throw new Error('Title must be a non-empty string.');
-        else
-            updateFields.title = title;
-    }
-    if(date) {
-        updateFields.date = date;
-    }
-    if(location) {
-        if(!checkNonEmptyString(location))
-            throw new Error('Location must be a non-empty string.');
-        else
-            updateFields.location = location;
-    }
 
     if(Object.keys(updateFields).length === 0)
         throw new Error('No fields to update in event.');
