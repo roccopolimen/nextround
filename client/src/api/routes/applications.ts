@@ -66,7 +66,7 @@ export const useCreateApplication = (company: string, position: string, location
  * @returns {UseQueryResult<EventObject>} the newly created event
  * @throws if fails
  */
-export const useCreateEvent = (applicationId: string, title: string, date: string, location: string): UseQueryResult<EventObject> => {
+export const useCreateEvent = (applicationId: string, title: string, date: Date, location: string): UseQueryResult<EventObject> => {
     return useQuery('createEvent', async () => {
         const body: Partial<EventObject> = {
             title,

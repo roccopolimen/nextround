@@ -5,8 +5,6 @@ import { Grid, Box, Card, CardMedia, CardContent, Typography } from '@mui/materi
 
 
 const JobCard = (props: {applicationId: string, url: string, company: string, role: string, color: string}) => {
-    // Constants
-    const BASE_CLEARBIT_URL = 'https://logo.clearbit.com/';
 
     // State variables
     const [applicationId, setApplicationId] = useState('');
@@ -34,7 +32,7 @@ const JobCard = (props: {applicationId: string, url: string, company: string, ro
     useEffect(() => {
         setColor(props.color);
     }, [props.color]);
-
+    
      // NOTE: I dont know a way to use one Link tag and keep the styling the same
      return (
         <Grid item xs={12}>
@@ -44,7 +42,7 @@ const JobCard = (props: {applicationId: string, url: string, company: string, ro
                         <CardMedia
                             className='image'
                             component='img'
-                            image={`${BASE_CLEARBIT_URL}${url}`}
+                            image={`${url}`}
                             alt='company logo'
                         /> 
                     </Box>

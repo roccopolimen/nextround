@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { Grid, Box, Card, CardMedia, CardContent, Typography } from '@mui/material';
 
-const UpcomingBox = (props: {applicationId: string, url: string, title: string, company: string, role: string, date: string}) => {
-    // Constants
-    const BASE_CLEARBIT_URL = 'https://logo.clearbit.com/';
+const UpcomingBox = (props: {applicationId: string, url: string, title: string, company: string, role: string, date: Date}) => {
 
     // State variables
     const [applicationId, setApplicationId] = useState('');
@@ -36,7 +34,8 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
     }, [props.role]);
 
     useEffect(() => {
-        setDate(props.date);
+        const thisDate: string = ((props.date.getMonth() > 8) ? (props.date.getMonth() + 1) : ('0' + (props.date.getMonth() + 1))) + '/' + ((props.date.getDate() > 9) ? props.date.getDate() : ('0' + props.date.getDate())) + '/' + props.date.getFullYear()
+        setDate(thisDate);
     }, [props.date]);
 
      // NOTE: I dont know a way to use one Link tag and keep the styling the same
@@ -50,7 +49,7 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
                                 <CardMedia
                                     sx={{borderRadius:'100%', maxHeight: '50px', maxWidth: '50px'}}
                                     component='img'
-                                    image={`${BASE_CLEARBIT_URL}${url}`}
+                                    image={`${url}`}
                                     alt='company logo'
                                 /> 
                             </Grid>
