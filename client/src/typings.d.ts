@@ -87,3 +87,11 @@ interface Failure {
     message: string,
     error?: string
 }
+
+interface UpcomingObject {
+    companyLogo: string,
+    company: string, 
+    role: string, 
+    date: string, 
+    title: string
+}
