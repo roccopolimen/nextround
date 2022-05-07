@@ -12,7 +12,9 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSignUpWithEmail, useSignUpWithGoogle } from 'api';
 import { Link, useNavigate } from 'react-router-dom';
-import { Alert, CircularProgress, IconButton, Modal } from '@mui/material';
+import { Alert, IconButton } from '@mui/material';
+import NavBar from 'components/NavBar';
+import Loading from 'components/Loading';
 
 const SignUp = () => {
     const [email, setEmail] = useState('');
@@ -52,91 +54,90 @@ const SignUp = () => {
     };
 
     return (
-        <div>
-        {failedAuth && <Alert severity="error">email or password incorrect</Alert>}
-        <Modal open={isLoadingEmail || isLoadingGoogle} sx={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <Box bgcolor="background.paper" sx={{ top: '50%', padding: 2, border: 1 }}>
-                <CircularProgress />
-            </Box>
-        </Modal>
-        <Container component="main" maxWidth="xs">
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <Avatar sx={{ m: 1, bgcolor: 'primary' }}>
-                    <PermIdentityOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Sign Up
-                </Typography>
-                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                        <TextField
-                            autoComplete="given-name"
-                            name="name"
-                            required
-                            fullWidth
-                            id="name"
-                            label="Name"
-                            autoFocus
-                            value={displayName}
-                            onChange={(e) => setDisplayName(e.target.value)}
-                        />
-                        </Grid>
-                        <Grid item xs={12}>
-                        <TextField
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        </Grid>
-                        <Grid item xs={12}>
-                        <TextField
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="new-password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        </Grid>
-                    </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                    >
+        <>
+            <NavBar />
+            <div>
+            {failedAuth && <Alert severity="error">email or password incorrect</Alert>}
+            <Loading open={isLoadingEmail || isLoadingGoogle} />
+            <Container component="main" maxWidth="xs">
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Avatar sx={{ m: 1, bgcolor: 'primary' }}>
+                        <PermIdentityOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
                         Sign Up
-                    </Button>
-                    <Box display="flex" justifyContent="center">
-                        <Link to="/signin">
-                            Already have an account? Sign in
-                        </Link>
+                    </Typography>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                            <TextField
+                                autoComplete="given-name"
+                                name="name"
+                                required
+                                fullWidth
+                                id="name"
+                                label="Name"
+                                autoFocus
+                                value={displayName}
+                                onChange={(e) => setDisplayName(e.target.value)}
+                            />
+                            </Grid>
+                            <Grid item xs={12}>
+                            <TextField
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                            </Grid>
+                            <Grid item xs={12}>
+                            <TextField
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                autoComplete="new-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            </Grid>
+                        </Grid>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Sign Up
+                        </Button>
+                        <Box display="flex" justifyContent="center">
+                            <Link to="/signin">
+                                Already have an account? Sign in
+                            </Link>
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
-            <div className="logos">
-                <IconButton onClick={handleGoogle}>
-                    <FontAwesomeIcon className="google-logo" icon={faGoogle} size="2x"/>
-                </IconButton>
+                <div className="logos">
+                    <IconButton onClick={handleGoogle}>
+                        <FontAwesomeIcon className="google-logo" icon={faGoogle} size="2x"/>
+                    </IconButton>
+                </div>
+            </Container>
             </div>
-        </Container>
-        </div>
+        </>
     );
 };
 

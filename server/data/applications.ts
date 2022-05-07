@@ -3,6 +3,23 @@ import { ObjectId } from 'mongodb';
 import { checkObjectId, checkNonEmptyString, checkNonNegativeNumber } from '../helpers';
 import { CycleObject, ApplicationObject, UserObject } from '../typings';
 import { randomColor } from '../helpers';
+import axios from 'axios';
+
+/**
+ * @description Uses Clearbit API to get the company's logo
+ * @param {string} company name of the company
+ * @returns {Promise<string>} the link to company logo
+ */
+const searchLogo = async (company: string): Promise<string> => {
+    try {
+        const { data } = await axios.get(`https://company.clearbit.com/v1/domains/find?name=${company}`, { auth: { username: process.env.CLEARBIT_API_KEY, password: '' } });
+        return data.logo;
+    } catch(e) {
+        console.log('Clearbit API call failed.');
+        console.log(e.message);
+        return '';
+    }
+};
 
 /**
  * @description Get an application by id
@@ -118,11 +135,13 @@ export const createApplication = async (userId: string, company: string, positio
     if(!description || !checkNonEmptyString(description))
         throw new Error("A description must be provided.");
     
-    // TODO: discuss if we are storing logo image url here
+
+    const logo = await searchLogo(company);
     const cardColor: string = randomColor();
     let newApp: ApplicationObject = {
         _id: new ObjectId(),
         company: company,
+        companyLogo: logo,
         position: position,
         location: location,
         salary: null, 
@@ -180,8 +199,10 @@ export const updateApplication = async (userId: string, applicationId: string, c
     if(company) {
         if(!checkNonEmptyString(company))
             throw new Error('Company must be a non-empty string.');
-        else
+        else {
             updateFields.company = company;
+            updateFields.companyLogo = await searchLogo(company);
+        }
     }
     if(position) {
         if(!checkNonEmptyString(position))
@@ -252,6 +273,38 @@ export const updateApplication = async (userId: string, applicationId: string, c
         throw new Error("Could not update application.");
 
     return await getApplicationFromCycleById(cycleId.toString(), applicationId);
+};
+
+export const createNote = async (userId: string, applicationId: string, note: string): Promise<ApplicationObject> => {
+    if(!userId || !checkObjectId(userId))
+        throw new Error("A proper user id must be provided.")
+    if(!applicationId || !checkObjectId(applicationId))
+        throw new Error("A proper application id must be provided.");
+    if(!note || !checkNonEmptyString(note))
+        throw new Error("A note must be provided.");
+    
+    const usersCollection = await users();
+    const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    if(user === null)
+        throw new Error("There is no user with that id.");
+
+    const cycleId: ObjectId = user.cycles[user.cycles.length-1];
+    const cyclesCollection = await cycles();
+    const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
+    if(cycle === null)
+        throw new Error("User has no cycles.");
+    
+    const appIndex: number = cycle.applications.findIndex(a => a._id.toString() === applicationId);
+    if(appIndex === -1) throw new Error("Unable to find an application with that id.");
+
+    // Add note to application
+    cycle.applications[appIndex].notes.push(note);
+    // Update mongo db
+    const updatedInfo = await cyclesCollection.updateOne({ _id: cycleId }, { $set: cycle });
+    if(updatedInfo.modifiedCount === 0)
+        throw new Error("Could not update application.");
+
+    return await getApplicationById(userId, applicationId);
 };
 
 /**
