@@ -88,6 +88,7 @@ interface Failure {
 }
 
 interface UpcomingObject {
+    applicationId: ObjectId,
     companyLogo: string,
     company: string, 
     role: string, 
