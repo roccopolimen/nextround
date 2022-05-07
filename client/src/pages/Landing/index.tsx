@@ -84,9 +84,8 @@ export default function Landing() {
                         </div>
                         </Slide>
                     </Grid>
-                    {/* right */}
+                    {/* empty right */}
                     <Grid item sm={12} lg={6}>
-                        {/* TODO: featured image here, is this still TODO? */}
                     </Grid>
                 </Grid>
 

@@ -57,10 +57,11 @@ const SideDrawer = (props: any) => {
     setOpen(false);
   };
 
-  const handleSignOut = () => {
-    // TODO call post signout
+  const handleSignOut: Function = async () => {
+    // TODO handle sign out
   };
 
+  // TODO create listitems for each archived cycle
   // useEffect(() => {
   //   console.log('get cycles useEffect fired');
   //   async function fetchData() {
@@ -77,7 +78,7 @@ const SideDrawer = (props: any) => {
   // const buildList = (item: any) => {
   //   return (
   //     <List component="div" disablePadding>
-  //       {/* TODO change href to each cycle */}
+  //       {/* TODO change href to each cycle respective metric ie metrics/:cycleId */}
   //       <ListItemButton sx={{ pl: 4 }} onClick={() => navigate('../', { replace: true })}>
   //         <ListItemText primary={item.startDate} />
   //       </ListItemButton>
@@ -130,13 +131,12 @@ const SideDrawer = (props: any) => {
         </DrawerHeader>
         <Divider />
         <List>
-          {/* TODO update navigate locations */}
           <Box textAlign="center">
             <Button
               variant="contained"
               color="primary"
               style={{ width: "90%" }}
-              onClick={() => navigate("../", { replace: true })}
+              onClick={() => navigate("../create")}
             >
               Add Job Application
             </Button>
@@ -144,7 +144,8 @@ const SideDrawer = (props: any) => {
           <ListItem
             button
             key="Home"
-            onClick={() => navigate("../", { replace: true })}
+            // TODO navigate to application/:id for the most recent cycle
+            onClick={() => navigate("../")}
           >
             <ListItemIcon>
               
@@ -155,7 +156,7 @@ const SideDrawer = (props: any) => {
           <ListItem
             button
             key="Metrics"
-            onClick={() => navigate("../", { replace: true })}
+            onClick={() => navigate("../metrics")}
           >
             <ListItemIcon>
               
@@ -166,7 +167,8 @@ const SideDrawer = (props: any) => {
           <ListItem
             button
             key="Forum"
-            onClick={() => navigate("../", { replace: true })}
+            onClick={() => navigate("../")}
+            // onClick={() => navigate("../forum") TODO uncomment when forum is merged}
           >
             <ListItemIcon>
               
@@ -177,7 +179,7 @@ const SideDrawer = (props: any) => {
           <ListItem
             button
             key="Settings"
-            onClick={() => navigate("../", { replace: true })}
+            onClick={() => navigate("../settings")}
           >
             <ListItemIcon>
               
@@ -202,7 +204,7 @@ const SideDrawer = (props: any) => {
             <List component="div" disablePadding>
               <ListItemButton
                 sx={{ pl: 4 }}
-                onClick={() => navigate("../", { replace: true })}
+                onClick={() => navigate("../")}
               >
                 <ListItemText primary="Create New Cycle" />
               </ListItemButton>

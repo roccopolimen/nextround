@@ -1,23 +1,85 @@
 import './styles.css'
+import { ReactElement, useEffect, useState } from "react";
+import Avatar from '@mui/material/Avatar';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
+import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
+
+import { useChangeSettings, useGetUser } from "api";
+import { useParams } from "react-router-dom";
+import { UserObject } from "typings";
 
 export default function Settings() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // TODO PATCH/PUT
     const data = new FormData(event.currentTarget);
-    // if (data.get)
-    console.log({
-      name: data.get("name"),
-      email: data.get("email"),
-    });
-  };
+    if (data.get("name") == '' || data.get("email") == '') return;
+    if (data.get("name") && data.get("email")) {
+      // TODO update backend
+    }
+  }
+
+  // state variables
+  const [patchSettings, setPatchSettings] = useState(false);
+  const [hasNewData, setHasNewData] = useState(false);
+
+  // state variables for queries and mutation
+  let params = useParams();
+  let userId: string = params.id ? params.id : "";
+  const [data, setData] = useState(undefined as UserObject | undefined);
+  const [id, setId] = useState(data ? data._id : "");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const { data: api_data, isLoading,
+    refetch: fetchSettings } = useGetUser(userId);
+  const { refetch: updateSettings } = useChangeSettings(name, email);
+
+  // use effects
+  useEffect(() => {
+    //on mount
+    fetchSettings();
+  }, [fetchSettings]);
+
+  useEffect(() => {
+    if(!isLoading && api_data) {
+        setData(api_data);
+    }
+}, [isLoading, api_data]);
+
+useEffect(() => {
+  // On data update
+  setId(data ? data._id : "");
+  setName(data ? data.name : "");
+  setEmail(data ? data.email : "");
+  setHasNewData(true);
+}, [data]);
+
+  useEffect(() => {
+    // make the patch call
+    const callApi = async () => {
+      await updateSettings();
+      await fetchSettings();
+    }
+    if (patchSettings && hasNewData) {
+      setPatchSettings(false);
+      callApi();
+    }
+  }, [patchSettings, hasNewData, updateSettings, fetchSettings]);
+
+  useEffect(() => {
+    //props function
+    const update = (data: UserObject) => {
+      setHasNewData(false);
+      setData(data);
+      setPatchSettings(true);
+    }
+  })
 
   return (
     <Container component="main" maxWidth="xs">
@@ -33,16 +95,17 @@ export default function Settings() {
             Edit Profile
           </Typography>
           <br/>
-          {/* TODO change with user pfp */}
           <div className="pfp">
-          <img src={require('../../images/logo.svg').default} alt="logo" width="128" height="128"/>
-          <Fab className="FAB" color="primary" aria-label="edit" size="small">
+          <Avatar sx={{ m: 1, bgcolor: 'primary', width: 128, height: 128}}>
+              <PermIdentityOutlinedIcon fontSize="large"/>
+          </Avatar>
+          {/* TODO if no pfp ? use below : load from db */}
+         <Fab className="FAB" color="primary" aria-label="edit" size="small">
             <EditIcon />
           </Fab>
           </div>
 
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          {/* TODO change default value based on user */}
           <TextField
             margin="normal"
             fullWidth
@@ -51,7 +114,7 @@ export default function Settings() {
             name="name"
             autoComplete="name"
             variant="outlined"
-            defaultValue="NAME"
+            defaultValue={name}
             // helperText="Name"
           />
           <TextField
@@ -62,7 +125,7 @@ export default function Settings() {
             name="email"
             autoComplete="email"
             variant="outlined"
-            defaultValue="EMAIL"
+            defaultValue={email}
             // helperText="Email"
           />
           <Button 

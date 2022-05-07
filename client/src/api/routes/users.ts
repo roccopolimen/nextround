@@ -1,7 +1,22 @@
 import { useQuery, UseQueryResult } from "react-query";
 import { fetcher } from "api/fetcher";
 import { doEmailSignIn, doEmailSignUp, doGoogleSignIn, doSignOut } from "api/firebase/functions";
-import { Failure } from "typings";
+import { Failure, UserObject } from "typings";
+import { AxiosResponse } from "axios";
+
+/**
+ * @description GET /setting
+ * @param {string} userId 
+ * @returns {UseQueryResult<UserObject>} the requested user
+ * @throws if fails
+ */
+export const useGetUser = (userId: string): UseQueryResult<UserObject> => {
+    return useQuery('getUser', async () => {
+        const { data, status } = await fetcher.get<UserObject | Failure>(`/user/${userId}`);
+        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
+        return (data as UserObject);
+    });
+};
 
 /**
  * @description POST /users/signIn with email & password
@@ -89,12 +104,21 @@ export const useDeleteUser = (): UseQueryResult<boolean> => {
     });
 };
 
-// TODO: change user settings api hook
-// export const useChangeSettings = () => {
-//     return useQuery('changeSettings', async () => {
-//         // TODO: take in arguments to this function and then pass them to patch call
-//         // TODO: add types to patch and cast variables as needed.
-//         const { data, status } = await fetcher.patch('/users/settings');
-//         if(status !== 200) throw new Error(`${data.message}\n\n${data.error}`);
-//     });
-// };
+/**
+ * @description POST /settings
+ * @param {string} name 
+ * @param {string} email 
+ * @returns {UseQueryResult<UserObject>} the updated user profile 
+ * @throws if fails
+ */
+export const useChangeSettings = (name: string, email: string) => {
+    return useQuery('changeSettings', async () => {
+        const body: Partial<UserObject> = {
+            name,
+            email
+        };
+        const { data, status } = await fetcher.patch<Partial<UserObject>, AxiosResponse<UserObject | Failure>>('/users/settings', body);
+        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
+        return (data as UserObject)
+    });
+};
