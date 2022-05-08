@@ -1,8 +1,8 @@
 import express from 'express';
 import { DecodedIdToken, getAuth } from "firebase-admin/auth";
 import { ObjectId } from 'mongodb';
-import { createUser, getUserByEmail, getUserById, removeUser, updateUser } from '../data';
-import { checkEmail, checkNonEmptyString, checkURL } from '../helpers';
+import { createUser, getUserByEmail, getUserById, removeUser } from '../data';
+import { checkNonEmptyString } from '../helpers';
 import { UserObject } from '../typings';
 
 const router = express.Router();
