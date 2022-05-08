@@ -94,6 +94,7 @@ interface UpcomingObject {
     company: string, 
     role: string, 
     date: Date, 
-    title: string
+    title: string,
+    status: boolean
 }
 

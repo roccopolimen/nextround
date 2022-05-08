@@ -18,7 +18,7 @@ import Loading from "components/Loading";
 
 const Upcoming = () => {
     const [applications, setApplications] = useState([] as ApplicationObject[]);
-    const [orderUpcoming, setOrderUpcoming] = useState([]);
+    const [orderUpcoming, setOrderUpcoming] = useState([] as UpcomingObject[]);
     const [changed, setChanged] = useState(false);
     const [open, setOpen] = useState(false);
     const [built, setBuilt] = useState(false);
@@ -77,7 +77,8 @@ const Upcoming = () => {
                     company: application.company, 
                     role: application.position, 
                     date: new Date(event.date), 
-                    title: event.title
+                    title: event.title,
+                    status: event.status,
                 }
             }
         }
@@ -166,7 +167,8 @@ const Upcoming = () => {
 
     useEffect(() => {
         const buildUpcomingBox: Function = (upcoming: UpcomingObject) => {
-            if(upcoming.date.getTime() < new Date().getTime())
+            console.log(upcoming);
+            if(upcoming.date.getTime() < new Date().getTime() || upcoming.status === true)
                 return null;
             return (
                 <UpcomingBox key={upcoming.eventId} applicationId={upcoming.applicationId} url={upcoming.companyLogo} company={upcoming.company} role={upcoming.role} date={upcoming.date} title={upcoming.title} />
