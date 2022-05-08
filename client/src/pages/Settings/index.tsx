@@ -11,19 +11,10 @@ import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
 
 import { useChangeSettings, useGetUser } from "api";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { UserObject } from "typings";
 
 export default function Settings() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    if (data.get("name") == '' || data.get("email") == '') return;
-    if (data.get("name") && data.get("email")) {
-      // TODO update backend
-    }
-  }
-
   // state variables
   const [patchSettings, setPatchSettings] = useState(false);
   const [hasNewData, setHasNewData] = useState(false);
@@ -36,13 +27,14 @@ export default function Settings() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  const { data: api_data, isLoading,
-    refetch: fetchSettings } = useGetUser(userId);
+  const { data: api_data, isLoading, refetch: fetchSettings } = useGetUser(userId);
   const { refetch: updateSettings } = useChangeSettings(name, email);
+
+  const navigate = useNavigate();
 
   // use effects
   useEffect(() => {
-    //on mount
+    //on mount, get data
     fetchSettings();
   }, [fetchSettings]);
 
@@ -80,6 +72,20 @@ useEffect(() => {
       setPatchSettings(true);
     }
   })
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    if (data.get("name") == '' || data.get("email") == '') return;
+    (() => {
+      try {
+        useChangeSettings(JSON.stringify(data.get("name")),  JSON.stringify(data.get("email")));
+        navigate('/settings')
+      } catch (e) {
+        console.log("Failed to update profile");
+      }
+    })();
+  }
 
   return (
     <Container component="main" maxWidth="xs">
