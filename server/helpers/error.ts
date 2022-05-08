@@ -125,6 +125,15 @@ function checkTime(timeStr: string): boolean {
     return (/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(phoneStr));
 }
 
+/**
+ * @description Checks if a given string is a valid website url
+ * @param {string} link the string to validate
+ * @returns {boolean} true if the string is a valid url and false otherwise
+ */
+function checkURL(link: string): boolean {
+    return /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/mg.test(link);
+}
+
 export {
     checkObjectId,
     checkNonEmptyString,
@@ -136,5 +145,6 @@ export {
     checkArrayObjectId,
     checkDate,
     checkTime,
-    checkPhoneNumber
+    checkPhoneNumber,
+    checkURL
 }

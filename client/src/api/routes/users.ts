@@ -5,20 +5,6 @@ import { Failure, UserObject } from "typings";
 import { AxiosResponse } from "axios";
 
 /**
- * @description GET /setting
- * @param {string} userId 
- * @returns {UseQueryResult<UserObject>} the requested user
- * @throws if fails
- */
-export const useGetUser = (userId: string): UseQueryResult<UserObject> => {
-    return useQuery('getUser', async () => {
-        const { data, status } = await fetcher.get<UserObject | Failure>(`/user/${userId}`);
-        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
-        return (data as UserObject);
-    });
-};
-
-/**
  * @description POST /users/signIn with email & password
  * @param {string} email 
  * @param {string} password 

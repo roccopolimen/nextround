@@ -4,7 +4,8 @@ import {
     Button,
     Grid,
     Slide,
-    Typography
+    Typography,
+    useMediaQuery
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,6 +19,11 @@ import NavBar from "components/NavBar";
 
 export default function Landing() {
     let navigate = useNavigate();
+    // Responsive design
+    const mobile: boolean = useMediaQuery("(max-width: 600px)");
+    const tablet: boolean = useMediaQuery("(max-width: 1200px)");
+    const width: string = mobile ? "100%" : tablet ? "65%" : "85%";
+    const height: string = mobile ? "100%" : tablet ? "65%" : "100%";
 
     return (
         <>
@@ -86,6 +92,11 @@ export default function Landing() {
                     </Grid>
                     {/* empty right */}
                     <Grid item sm={12} lg={6}>
+                        <Slide direction="left" in={true} timeout={2000}>
+                        <img 
+                            src={require('../../images/landing_graphic.png')}
+                            alt="graphic" width={width} height={height} />
+                        </Slide>
                     </Grid>
                 </Grid>
 

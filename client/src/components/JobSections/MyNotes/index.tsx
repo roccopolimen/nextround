@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardContent, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ApplicationObject } from "typings";
-
+import Loading from 'components/Loading';
 
 export default function MyNotes(props: {
     data: ApplicationObject | undefined,
@@ -22,7 +22,11 @@ export default function MyNotes(props: {
     
 
     if(!data) {
-        return <div>Loading...</div>;
+        return (
+            <div>
+                <Loading open={ true } />
+            </div>
+        );
     } else {
         return (
             <Box>

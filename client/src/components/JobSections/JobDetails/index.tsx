@@ -5,6 +5,7 @@ import { Save } from '@mui/icons-material';
 import { ColorPicker, Color } from 'material-ui-color';
 import { useState, useEffect } from "react";
 import { ApplicationObject } from "typings";
+import Loading from 'components/Loading';
 
 export default function JobDetails(props:
     { data: ApplicationObject | undefined,
@@ -106,7 +107,11 @@ export default function JobDetails(props:
     }
 
     if(!data) {
-        return <div>Loading...</div>;
+        return (
+            <div>
+                <Loading open={ true } />
+            </div>
+        );
     } else {
         return (
             <Grid container spacing={{ xs: 2, md: 3 }} 

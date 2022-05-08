@@ -29,6 +29,7 @@ import {
     YAxis
 } from "recharts";
 import { ApplicationObject, MetricsObject } from "typings";
+import Loading from 'components/Loading';
 
 export default function Metrics() {
     const params = useParams();
@@ -133,7 +134,11 @@ export default function Metrics() {
     }, [data]);
 
     if(!data || isLoading || cIsLoading || cycleIsLoading || cCycleIsLoading) {
-        return <div>Loading...</div>;
+        return (
+            <div>
+                <Loading open={ true } />
+            </div>
+        );
     } else if(isError || cIsError || cycleIsError || cCycleIsError) {
         return <div>Error...</div>;
     } else {
