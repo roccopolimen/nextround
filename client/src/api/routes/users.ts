@@ -5,6 +5,19 @@ import { Failure, UserObject } from "typings";
 import { AxiosResponse } from "axios";
 
 /**
+ * @description retrieves information on the currently signed in user.
+ * @returns the current user's information
+ * @throws if fails
+ */
+export const useGetUser = (): UseQueryResult<UserObject> => {
+    return useQuery('getUser', async () => {
+        const { data, status } = await fetcher.get<UserObject | Failure>('/users');
+        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
+        return (data as UserObject);
+    });
+};
+
+/**
  * @description POST /users/signIn with email & password
  * @param {string} email 
  * @param {string} password 
@@ -72,7 +85,7 @@ export const useSignUpWithGoogle = (): UseQueryResult<boolean> => {
 export const useSignOut = (): UseQueryResult<boolean> => {
     return useQuery('signOut', async () => {
         await doSignOut();
-        const { data, status } = await fetcher.post<Failure>('/users/signOut');
+        const { data, status } = await fetcher.get<Failure>('/users/signOut');
         if(status !== 200) throw new Error(`${data.message}\n\n${data.error}`);
         return true;
     });

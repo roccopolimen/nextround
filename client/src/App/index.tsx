@@ -12,7 +12,6 @@ import Landing from 'pages/Landing';
 import SignIn from 'pages/SignIn';
 import SignUp from 'pages/SignUp';
 import Job from 'pages/Job';
-import Settings from 'pages/Settings';
 import Forum from 'pages/Forum';
 import OfferDash from 'pages/OfferDash';
 import AddCycle from 'pages/AddCycle';
@@ -44,7 +43,6 @@ const App = () => {
                 <Route path="signin" element={<SignIn />} />
                 <Route path="signup" element={<SignUp />} />
                 <Route path="application/:id" element={<Job />} />
-                <Route path="settings" element={<Settings />} />
                 <Route path="metrics/:cycleId" element={<Metrics />} />
                 <Route path="metrics" element={<Metrics />} />
                 <Route path="forum" element={<Forum />} />

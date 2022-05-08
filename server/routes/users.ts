@@ -1,10 +1,24 @@
 import express from 'express';
 import { DecodedIdToken, getAuth } from "firebase-admin/auth";
 import { ObjectId } from 'mongodb';
-import { createUser, getUserByEmail, removeUser, updateUser } from '../data';
+import { createUser, getUserByEmail, getUserById, removeUser, updateUser } from '../data';
 import { checkEmail, checkNonEmptyString, checkURL } from '../helpers';
+import { UserObject } from '../typings';
 
 const router = express.Router();
+
+// GET /
+router.get('/', async (req, res) => {
+    if(!req.session.user)
+        return res.status(401).json({ message: 'User is not authorized, must be logged in.' });
+
+    try {
+        const user: UserObject = await getUserById(req.session.user._id);
+        res.json(user);
+    } catch(e) {
+        return res.status(500).json({ message: 'could not retrieve current user info.', error: e.message });
+    }
+});
 
 // GET /signOut
 router.get('/signOut', async (req, res) => {
@@ -94,7 +108,6 @@ router.patch('/settings', async (req, res) => {
         if(!req.body.email || !checkEmail(req.body.email)) throw new Error("[routes/users updateUser] email is invalid.");
         if(!req.body.name || !checkNonEmptyString(req.body.name)) throw new Error("[routes/users updateUser] name is invalid.");
         if(!req.body.pfp || !checkNonEmptyString(req.body.pfp) || !checkURL(req.body.pfp)) throw new Error("[routes/users updateUser] pfp link is invalid.");
-    
         try {
             const newUser = await updateUser(
                 req.session.user._id,

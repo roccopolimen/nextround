@@ -30,6 +30,19 @@ export const useGetCycle = (cycleId: string): UseQueryResult<CycleObject> => {
 };
 
 /**
+ * @description GET /cycles/all
+ * @returns {UseQueryResult<CycleObject} all the user's cycles
+ * @throws if fails
+ */
+export const useGetAllCycles = (): UseQueryResult<Array<CycleObject>> => {
+    return useQuery('getAllCycles', async () => {
+        const { data, status } = await fetcher.get<Array<CycleObject> | Failure>('/cycles/all');
+        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
+        return (data as Array<CycleObject>);
+    });
+};
+
+/**
  * @description POST /cycles
  * @returns {UseQueryResult<CycleObject>} the newly created cycle
  * @throws if fails
