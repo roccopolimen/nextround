@@ -90,7 +90,7 @@ export default function Landing() {
                         </div>
                         </Slide>
                     </Grid>
-                    {/* empty right */}
+                    {/* featured image right */}
                     <Grid item sm={12} lg={6}>
                         <Slide direction="left" in={true} timeout={2000}>
                         <img 

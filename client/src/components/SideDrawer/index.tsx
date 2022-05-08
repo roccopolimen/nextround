@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -21,7 +21,6 @@ import HomeIcon from "@mui/icons-material/Home";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ForumIcon from "@mui/icons-material/Forum";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import SettingsIcon from "@mui/icons-material/Settings";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 
@@ -185,17 +184,6 @@ const SideDrawer = (props: any) => {
               <ForumIcon />
             </ListItemIcon>
             <ListItemText primary="Forum" />
-          </ListItem>
-          <ListItem
-            button
-            key="Settings"
-            onClick={() => navigate("settings")}
-          >
-            <ListItemIcon>
-              
-              <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary="Settings" />
           </ListItem>
           <ListItem button key="Archives" onClick={handleClick}>
             <ListItemIcon>
