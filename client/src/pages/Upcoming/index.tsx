@@ -3,36 +3,49 @@ import JobCard from "components/JobCard";
 import { useGetCurrentCycle, useCreateApplication } from "api";
 import { useEffect, useState } from "react";
 
-import { AppBar, Box, Button, Card, CardContent, CardMedia, FormGroup, Grid, Modal, Slide, TextField, Typography} from '@mui/material';
+import { Box, Button, FormGroup, Grid, Modal, Slide, TextField, Typography, useMediaQuery} from '@mui/material';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Save, Add, Delete } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 import './style.css';
 import { ApplicationObject, UpcomingObject } from "typings";
+import Loading from "components/Loading";
 
 const Upcoming = () => {
     const [applications, setApplications] = useState([] as ApplicationObject[]);
     const [orderUpcoming, setOrderUpcoming] = useState([]);
     const [changed, setChanged] = useState(false);
     const [open, setOpen] = useState(false);
+    const [built, setBuilt] = useState(false);
 
     const [addJobCompany, setAddJobCompany] = useState('');
     const [addJobPosition, setAddJobPosition] = useState('');
     const [addJobLocation, setAddJobLocation] = useState('');
     const [addJobJobPostUrl, setAddJobJobPostUrl] = useState('');
     const [addJobDescription, setAddJobDescription] = useState('');
+    const [addApplyDate, setAddApplyDate] = useState(new Date());
     
-    let upcoming = null;
-    let toApply = null;
-    let applied = null;
-    
+    let date_picker: JSX.Element | null = null;
+    const [upcoming, setUpcoming] = useState(null as JSX.Element[] | null);
+    const [toApply, setToApply] = useState([] as JSX.Element[]);
+    const [applied, setApplied] = useState([] as JSX.Element[]);
+    const [rejected, setRejected] = useState([] as JSX.Element[]);
+    const [offered, setOffered] = useState([] as JSX.Element[]);
 
     const {data: cycleData, isLoading: CycleIsLoading, isError: CycleIsError, refetch: fetchCurrentCycle} = useGetCurrentCycle();
-    const {data: applicationData, isLoading: applicationIsLoading, isError: applicationIsError, refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription);
+    const {data: applicationData, isLoading: applicationIsLoading, isError: applicationIsError, refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addApplyDate);
+
+    // Responsive Design
+    const mobile: boolean = useMediaQuery('(max-width: 900px)');
 
     useEffect(() => {
         // Fetch data on mount
+        setBuilt(false);
         const fetchData = async () => {
             try{
                 await fetchCurrentCycle({ throwOnError: true });
@@ -73,8 +86,96 @@ const Upcoming = () => {
             sortedObj[key] = obj[key];
         });
         setOrderUpcoming(Object.values(sortedObj));
-        
+
+        // Set the structure
+        const buildJobCards: Function = (application: ApplicationObject) => {
+            return (
+                <JobCard key={application._id} applicationId={application._id} url={application.companyLogo} company={application.company} role={application.position} color={application.cardColor}/>
+            );
+        };
+    
+        setToApply(applications && applications.map((application) => {
+            let notApplied = true;
+            for(let event of application.events){
+                if(event.title === "Apply" && event.status){
+                    notApplied = false;
+                    break;
+                }
+            }
+            if(notApplied){
+                return buildJobCards(application);
+            }
+            return undefined;
+        }).filter((application) => {
+            return application !== undefined;
+        }));
+    
+        setApplied(applications && applications.map((application) => {
+            if(application.progress !== 0){
+                return undefined;
+            }
+            for(let event of application.events){
+                if(event.title === "Apply") {
+                    if(event.status)
+                        return buildJobCards(application);
+                    else
+                        return undefined;
+                }
+            }
+            return undefined;
+        }).filter((application) => {
+            return application !== undefined;
+        }));
+    
+        setRejected(applications && applications.map((application) => {
+            if(application.progress !== 2){
+                return undefined;
+            }
+            for(let event of application.events){
+                if(event.title === "Apply") {
+                    if(event.status)
+                        return buildJobCards(application);
+                    else
+                        return undefined;
+                }
+            }
+            return undefined;
+        }).filter((application) => {
+            return application !== undefined;
+        }));
+    
+        setOffered(applications && applications.map((application) => {
+            if(application.progress !== 1){
+                return undefined;
+            }
+            for(let event of application.events){
+                if(event.title === "Apply") {
+                    if(event.status)
+                        return buildJobCards(application);
+                    else
+                        return undefined;
+                }
+            }
+            return undefined;
+        }).filter((application) => {
+            return application !== undefined;
+        }));
+
+        setBuilt(true);
     }, [applications]);
+
+    useEffect(() => {
+        const buildUpcomingBox: Function = (upcoming: UpcomingObject) => {
+            if(upcoming.date.getTime() < new Date().getTime())
+                return null;
+            return (
+                <UpcomingBox key={upcoming.eventId} applicationId={upcoming.applicationId} url={upcoming.companyLogo} company={upcoming.company} role={upcoming.role} date={upcoming.date} title={upcoming.title} />
+            );
+        };
+        setUpcoming(orderUpcoming && orderUpcoming.map((upcoming) => {
+            return buildUpcomingBox(upcoming);
+        }));
+    }, [orderUpcoming]);
 
     const handleAddJob = async() => {
 
@@ -96,44 +197,42 @@ const Upcoming = () => {
         setChanged(false);
     };
 
-    const buildUpcomingBox: Function = (upcoming: UpcomingObject) => {
+    /**
+        * Create a proper date picker given the device type
+        * @param {boolean} mobile if the device is mobile
+        * @returns {JSX.Element | undefined} date picker
+        */
+     const buildDatePicker = (mobile: boolean): JSX.Element => {
         return (
-            <UpcomingBox key={upcoming.eventId} applicationId={upcoming.applicationId} url={upcoming.companyLogo} company={upcoming.company} role={upcoming.role} date={upcoming.date} title={upcoming.title} />
-        );
-    };
-    const buildJobCards: Function = (application: ApplicationObject) => {
-        return (
-            <JobCard key={application._id} applicationId={application._id} url={application.companyLogo} company={application.company} role={application.position} color={application.cardColor}/>
-        );
-    };
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Box m={2}>
+                    {mobile ?
+                        <MobileDatePicker
+                            label="Date"
+                            inputFormat="MM/dd/yyyy"
+                            value={addApplyDate}
+                            onChange={(value: Date | null,
+                                _key) => value ? setAddApplyDate(value) : null}
+                            renderInput={(params) => <TextField {...params} />}
+                        /> :
+                        <DesktopDatePicker
+                            label="Date"
+                            inputFormat="MM/dd/yyyy"
+                            value={addApplyDate}
+                            onChange={(value: Date | null,
+                                _key) => value ? setAddApplyDate(value) : null}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    }
+                </Box>
+            </LocalizationProvider>
+        );  
+    }
 
-    upcoming = orderUpcoming && orderUpcoming.map((upcoming) => {
-        return buildUpcomingBox(upcoming);
-    });
+    date_picker = buildDatePicker(mobile);
 
-    toApply = applications && applications.map((application) => {
-        let notApplied = true;
-        for(let event of application.events){
-            if(event.status === true){
-                notApplied = false;
-                break;
-            }
-        }
-        if(notApplied){
-            return buildJobCards(application);
-        }
-    });
-
-    applied = applications && applications.map((application) => {
-        for(let event of application.events){
-            if(event.status === true){
-                return buildJobCards(application);
-            }
-        }
-    });
-
-    if(CycleIsLoading) {
-        return <div>Loading...</div>;
+    if(CycleIsLoading || !built) {
+        return <Loading open={ true } />;
     } else if(CycleIsError) {
         return <div>Error...</div>;
     } else {
@@ -188,6 +287,7 @@ const Upcoming = () => {
                                         label="Description" size="small" value={addJobDescription}
                                         margin='normal'
                                         onChange={(e) => setAddJobDescription(e.target.value)} />
+                                    {date_picker && date_picker}
                                     <Button variant="contained" color="primary"
                                         startIcon={<Add />}
                                         sx={{ mt: 2, width: '50%', mx: 'auto' }}
@@ -204,29 +304,53 @@ const Upcoming = () => {
                     </Slide>
                     <Slide direction='left' in={true} timeout={800}>
                         <Grid item xs={12} sm={8} md={6} lg={4} xl={4} justifyContent="center" alignItems="center" marginTop='150px' marginBottom='150px'>
+                            {toApply && toApply.length > 0 ? 
                             <Accordion>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header">
+                                    aria-controls="panel1a-content" >
                                     <Typography>To Apply</Typography> 
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {toApply}
                                 </AccordionDetails>
-                            </Accordion>
+                            </Accordion> : null}
                             <br/>
+                            {applied && applied.length > 0 ?
                             <Accordion>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header">
+                                    aria-controls="panel1a-content" >
                                     <Typography>Applied</Typography> 
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {applied}
                                 </AccordionDetails>
-                            </Accordion>
+                            </Accordion> : null}
+                            <br/>
+                            {rejected && rejected.length > 0 ? 
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content" >
+                                    <Typography>Rejected</Typography> 
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {rejected}
+                                </AccordionDetails>
+                            </Accordion> : null}
+                            <br/>
+                            {offered && offered.length > 0 ? 
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content" >
+                                    <Typography>Offered</Typography> 
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {offered}
+                                </AccordionDetails>
+                            </Accordion> : null}
                         </Grid>
                     </Slide>
                 </Grid>

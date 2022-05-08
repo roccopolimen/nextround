@@ -1,7 +1,7 @@
 import './style.css'
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { Grid, Box, Card, CardMedia, CardContent, Typography } from '@mui/material';
+import { Grid, Box, CardMedia, CardContent, Typography } from '@mui/material';
 
 const UpcomingBox = (props: {applicationId: string, url: string, title: string, company: string, role: string, date: Date}) => {
 
@@ -41,20 +41,20 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
      // NOTE: I dont know a way to use one Link tag and keep the styling the same
      return (
         <Grid item xs={12} margin='10px'>
-            <Link to={`application/${applicationId}`} style={{textDecoration: 'none'}}>
+            <Link to={`/application/${applicationId}`} style={{textDecoration: 'none'}}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', margin: '10px', borderBottom: 1}}>                
                     <CardContent className='insideCard'>
                         <Grid container>
-                            <Grid item xs={1}>
+                            <Grid item xs={1} >
                                 <CardMedia
-                                    sx={{borderRadius:'100%', maxHeight: '50px', maxWidth: '50px'}}
+                                    sx={{borderRadius:'100%', maxHeight: '50px', maxWidth: '50px', mr: 1}}
                                     component='img'
                                     image={`${url}`}
                                     alt='company logo'
-                                /> 
+                                />
                             </Grid>
                             <Grid item xs={7} textAlign='left'>
-                                <Typography id='title' variant='h4'>
+                                <Typography id='title' variant='h4' sx={{ ml: 1 }}>
                                     {title}
                                 </Typography>
                             </Grid>

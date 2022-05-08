@@ -319,8 +319,8 @@ export default function Job() {
                     </div>
                     {/* delete button */}
                     <Button variant="contained"
-                        onClick={() => {
-                            deleteApplication();
+                        onClick={async () => {
+                            await deleteApplication();
                             // redirect to home page
                             navigate('/dashboard', { replace: false });
                         }}

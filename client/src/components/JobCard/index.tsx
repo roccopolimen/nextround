@@ -36,7 +36,7 @@ const JobCard = (props: {applicationId: string, url: string, company: string, ro
      // NOTE: I dont know a way to use one Link tag and keep the styling the same
      return (
         <Grid item xs={12}>
-            <Link to={`application/${applicationId}`} style={{textDecoration: 'none'}}>
+            <Link to={`/application/${applicationId}`} style={{textDecoration: 'none'}}>
                 <Card className='card' style={{ backgroundColor: color }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', margin: '10px'}}>
                         <CardMedia
@@ -44,6 +44,7 @@ const JobCard = (props: {applicationId: string, url: string, company: string, ro
                             component='img'
                             image={`${url}`}
                             alt='company logo'
+                            sx={{ width: '60px', height: '60px' }}
                         /> 
                     </Box>
                     <CardContent className='insideCard'>
