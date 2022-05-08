@@ -102,28 +102,6 @@ router.post('/signUp', async (req, res) => {
     return res.json({ message: 'Signed up.' });
 });
 
-// PATCH /settings
-router.patch('/settings', async (req, res) => {
-    if(req.session.user) { 
-        if(!req.body.email || !checkEmail(req.body.email)) throw new Error("[routes/users updateUser] email is invalid.");
-        if(!req.body.name || !checkNonEmptyString(req.body.name)) throw new Error("[routes/users updateUser] name is invalid.");
-        if(!req.body.pfp || !checkNonEmptyString(req.body.pfp) || !checkURL(req.body.pfp)) throw new Error("[routes/users updateUser] pfp link is invalid.");
-        try {
-            const newUser = await updateUser(
-                req.session.user._id,
-                req.body.email,
-                req.body.name,
-                req.body.pfp
-            )
-            return newUser;
-        } catch (e) {
-            return res.status(500).json({ message: 'Failed to update user.', error: e.message });
-        }
-    } else {
-        return res.status(403).json({ message: "[routes/users DELETE /] no user is logged in."});
-    }
-});
-
 // DELETE /
 router.delete('/', async (req, res) => {
     if(!req.session.user) // check if logged in

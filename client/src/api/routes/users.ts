@@ -1,8 +1,7 @@
 import { useQuery, UseQueryResult } from "react-query";
 import { fetcher } from "api/fetcher";
 import { doEmailSignIn, doEmailSignUp, doGoogleSignIn, doSignOut } from "api/firebase/functions";
-import { Failure, UserObject } from "typings";
-import { AxiosResponse } from "axios";
+import { Failure } from "typings";
 
 /**
  * @description retrieves information on the currently signed in user.
@@ -100,24 +99,5 @@ export const useDeleteUser = (): UseQueryResult<boolean> => {
         const { data, status } = await fetcher.delete<Failure>('/users');
         if(status !== 200) throw new Error(`${data.message}\n\n${data.error}`);
         return true;
-    });
-};
-
-/**
- * @description POST /settings
- * @param {string} name 
- * @param {string} email 
- * @returns {UseQueryResult<UserObject>} the updated user profile 
- * @throws if fails
- */
-export const useChangeSettings = (name: string, email: string) => {
-    return useQuery('changeSettings', async () => {
-        const body: Partial<UserObject> = {
-            name,
-            email
-        };
-        const { data, status } = await fetcher.patch<Partial<UserObject>, AxiosResponse<UserObject | Failure>>('/users/settings', body);
-        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
-        return (data as UserObject)
     });
 };
