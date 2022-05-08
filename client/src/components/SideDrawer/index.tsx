@@ -25,6 +25,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 
+import { useSignOut } from "api";
+
 // const cycleData = require('../../../../server/data/cycles');
 
 const drawerWidth = 240;
@@ -43,6 +45,8 @@ const SideDrawer = (props: any) => {
   const [open, setOpen] = React.useState(false);
   const [ddOpen, setDdOpen] = React.useState(false);
   // const [itemsData, setItemsData] = React.useState(undefined as CycleObject | undefined);
+  const {isLoading: isLoadingData, refetch: refetchLogout} = useSignOut();
+
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -57,8 +61,15 @@ const SideDrawer = (props: any) => {
     setOpen(false);
   };
 
-  const handleSignOut: Function = async () => {
-    // TODO handle sign out
+  const handleSignOut = async () => {
+    (async () => {
+      try {
+        await refetchLogout({throwOnError: true});
+        navigate('/')
+      } catch (e) {
+        console.log("Failed to logout");
+      }
+    })();
   };
 
   // TODO create listitems for each archived cycle
@@ -79,7 +90,7 @@ const SideDrawer = (props: any) => {
   //   return (
   //     <List component="div" disablePadding>
   //       {/* TODO change href to each cycle respective metric ie metrics/:cycleId */}
-  //       <ListItemButton sx={{ pl: 4 }} onClick={() => navigate('../', { replace: true })}>
+  //       <ListItemButton sx={{ pl: 4 }} onClick={() => navigate('/metrics/:cycleid', { replace: true })}>
   //         <ListItemText primary={item.startDate} />
   //       </ListItemButton>
   //     </List>
@@ -136,7 +147,7 @@ const SideDrawer = (props: any) => {
               variant="contained"
               color="primary"
               style={{ width: "90%" }}
-              onClick={() => navigate("../create")}
+              onClick={() => navigate("create")}
             >
               Add Job Application
             </Button>
@@ -145,7 +156,7 @@ const SideDrawer = (props: any) => {
             button
             key="Home"
             // TODO navigate to application/:id for the most recent cycle
-            onClick={() => navigate("../")}
+            onClick={() => navigate("/")}
           >
             <ListItemIcon>
               
@@ -156,7 +167,7 @@ const SideDrawer = (props: any) => {
           <ListItem
             button
             key="Metrics"
-            onClick={() => navigate("../metrics")}
+            onClick={() => navigate("metrics")}
           >
             <ListItemIcon>
               
@@ -167,8 +178,7 @@ const SideDrawer = (props: any) => {
           <ListItem
             button
             key="Forum"
-            onClick={() => navigate("../")}
-            // onClick={() => navigate("../forum") TODO uncomment when forum is merged}
+            onClick={() => navigate("forum")}
           >
             <ListItemIcon>
               
@@ -179,7 +189,7 @@ const SideDrawer = (props: any) => {
           <ListItem
             button
             key="Settings"
-            onClick={() => navigate("../settings")}
+            onClick={() => navigate("settings")}
           >
             <ListItemIcon>
               
@@ -204,7 +214,7 @@ const SideDrawer = (props: any) => {
             <List component="div" disablePadding>
               <ListItemButton
                 sx={{ pl: 4 }}
-                onClick={() => navigate("../")}
+                onClick={() => navigate("/")}
               >
                 <ListItemText primary="Create New Cycle" />
               </ListItemButton>
@@ -221,7 +231,7 @@ const SideDrawer = (props: any) => {
         >
           <IconButton
             aria-label="signout"
-            // onClick={handleSignOut}
+            onClick={handleSignOut}
           >
             <LogoutIcon />
           </IconButton>

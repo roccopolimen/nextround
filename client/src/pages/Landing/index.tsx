@@ -92,15 +92,11 @@ export default function Landing() {
                     </Grid>
                     {/* empty right */}
                     <Grid item sm={12} lg={6}>
-<<<<<<< HEAD
-=======
-                        {/* TODO: featured image here, is this still TODO? */}
                         <Slide direction="left" in={true} timeout={2000}>
                         <img 
                             src={require('../../images/landing_graphic.png')}
                             alt="graphic" width={width} height={height} />
                         </Slide>
->>>>>>> 57217ab7af776a5806c60edabf34bf3120bae672
                     </Grid>
                 </Grid>
 
