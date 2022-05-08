@@ -48,7 +48,7 @@ interface EventObject {
     _id: ObjectId,
     status: boolean,
     title: string,
-    date: Date | string,
+    date: Date,
     location: string
 }
 
@@ -86,3 +86,15 @@ interface Failure {
     message: string,
     error?: string
 }
+
+interface UpcomingObject {
+    eventId: ObjectId,
+    applicationId: ObjectId,
+    companyLogo: string,
+    company: string, 
+    role: string, 
+    date: Date, 
+    title: string,
+    status: boolean
+}
+

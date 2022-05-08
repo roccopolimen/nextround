@@ -39,19 +39,29 @@ export const useGetApplicationFromCycle = (cycleId: string, applicationId: strin
  * @param {string} location 
  * @param  {string} jobPostUrl 
  * @param {string} description 
+ * @param {string} applyDate
  * @returns {UseQueryResult<ApplicationObject>} the newly created application
  * @throws if fails
  */
-export const useCreateApplication = (company: string, position: string, location: string, jobPostUrl: string, description: string): UseQueryResult<ApplicationObject> => {
+export const useCreateApplication = (company: string, position: string, location: string, jobPostUrl: string, description: string, applyDate: Date): UseQueryResult<ApplicationObject> => {
     return useQuery('createApplication', async () => {
-        const body: Partial<ApplicationObject> = {
+        interface Body {
+            company: string;
+            position: string;
+            location: string;
+            jobPostUrl: string;
+            description: string;
+            applyDate: string;
+        }
+        const body: Partial<Body> = {
             company,
             position,
             location,
             jobPostUrl,
-            description
+            description,
+            applyDate: applyDate.toLocaleDateString()
         };
-        const { data, status } = await fetcher.post<Partial<ApplicationObject>, AxiosResponse<ApplicationObject | Failure>>('/application', body);
+        const { data, status } = await fetcher.post<Partial<Body>, AxiosResponse<ApplicationObject | Failure>>('/application', body);
         if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
         return (data as ApplicationObject);
     });
@@ -66,7 +76,7 @@ export const useCreateApplication = (company: string, position: string, location
  * @returns {UseQueryResult<EventObject>} the newly created event
  * @throws if fails
  */
-export const useCreateEvent = (applicationId: string, title: string, date: string, location: string): UseQueryResult<EventObject> => {
+export const useCreateEvent = (applicationId: string, title: string, date: Date, location: string): UseQueryResult<EventObject> => {
     return useQuery('createEvent', async () => {
         const body: Partial<EventObject> = {
             title,

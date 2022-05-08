@@ -1,6 +1,6 @@
 import { cycles, users } from '../config/mongoCollections';
 import { ObjectId } from 'mongodb';
-import { checkObjectId, checkNonEmptyString, checkNonNegativeNumber } from '../helpers';
+import { checkObjectId, checkNonEmptyString, checkNonNegativeNumber, checkDate } from '../helpers';
 import { CycleObject, ApplicationObject, UserObject } from '../typings';
 import { randomColor } from '../helpers';
 import axios from 'axios';
@@ -118,10 +118,11 @@ export const getAllApplications = async (cycleId: string): Promise<ApplicationOb
  * @param {string} location Location being applied to
  * @param {string} jobPostUrl URL the application was found at
  * @param {string} description Application description
+ * @param {string} applyDate Date to apply by
  * @returns {Promise<ApplicationObject>} Returns the created application Object if successful anf throws
  * and error otherwise
  */
-export const createApplication = async (userId: string, company: string, position: string, location: string, jobPostUrl: string, description: string): Promise<ApplicationObject> => {
+export const createApplication = async (userId: string, company: string, position: string, location: string, jobPostUrl: string, description: string, applyDate: string): Promise<ApplicationObject> => {
     if(!userId || !checkObjectId(userId))
         throw new Error("A proper cycle id must be provided.");
     if(!company || !checkNonEmptyString(company))
@@ -134,6 +135,8 @@ export const createApplication = async (userId: string, company: string, positio
         throw new Error("An application url must be provided.");
     if(!description || !checkNonEmptyString(description))
         throw new Error("A description must be provided.");
+    if(!applyDate || !checkDate(applyDate))
+        throw new Error('Apply by date must be provided.');
     
 
     const logo = await searchLogo(company);
@@ -150,7 +153,15 @@ export const createApplication = async (userId: string, company: string, positio
         description: description,
         progress: 0,
         notes: [],
-        events: [],
+        events: [
+            {
+                _id: new ObjectId(),
+                status: false,
+                title: "Apply",
+                date: new Date(applyDate),
+                location: ""
+            }
+        ],
         contacts: []
     };
 

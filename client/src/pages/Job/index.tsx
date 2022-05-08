@@ -40,7 +40,7 @@ export default function Job() {
     const [progress, setProgress] = useState(data ? data.progress : 0);
 
     const [eventTitle, setEventTitle] = useState("");
-    const [eventDate, setEventDate] = useState(new Date().toLocaleDateString());
+    const [eventDate, setEventDate] = useState(new Date());
     const [eventLocation, setEventLocation] = useState("");
 
     const [eventId, setEventId] = useState("");
@@ -225,7 +225,7 @@ export default function Job() {
         const addEvent = (title: string, date: string,
                              location: string) => {
             setEventTitle(title);
-            setEventDate(date);
+            setEventDate(new Date(date));
             setEventLocation(location);
             setShouldCreateEvent(true);
         }
@@ -319,8 +319,8 @@ export default function Job() {
                     </div>
                     {/* delete button */}
                     <Button variant="contained"
-                        onClick={() => {
-                            deleteApplication();
+                        onClick={async () => {
+                            await deleteApplication();
                             // redirect to home page
                             navigate('/dashboard', { replace: false });
                         }}

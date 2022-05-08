@@ -55,9 +55,9 @@ router.post('/', async (req, res) => {
     if(!req.body)
         return res.status(400).json({ message: 'no body provided for application creation.' });
 
-    let company: string, position: string, location: string, jobPostUrl: string, description: string;
+    let company: string, position: string, location: string, jobPostUrl: string, description: string, applyDate: string;
     try {
-        ({ company, position, location, jobPostUrl, description } = req.body);
+        ({ company, position, location, jobPostUrl, description, applyDate } = req.body);
         if(!company || !checkNonEmptyString(company))
             throw new Error('Company name must be provided.');
         if(!position || !checkNonEmptyString(position))
@@ -68,12 +68,14 @@ router.post('/', async (req, res) => {
             throw new Error('Job Post Url must be provided.');
         if(!description || !checkNonEmptyString(description))
             throw new Error('Description must be provided.');
+        if(!applyDate || !checkDate(applyDate))
+            throw new Error('Apply by date must be provided.');
     } catch(e) {
         return res.status(400).json({ message: e.message });
     }
 
     try {
-        const application: ApplicationObject = await createApplication(req.session.user._id, company, position, location, jobPostUrl, description);
+        const application: ApplicationObject = await createApplication(req.session.user._id, company, position, location, jobPostUrl, description, applyDate);
         res.json(application);
     } catch(e) {
         res.status(500).json({ message: 'problem creating the application.', error: e.message });
