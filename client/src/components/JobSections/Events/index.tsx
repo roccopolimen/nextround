@@ -25,6 +25,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import Loading from 'components/Loading';
 
 export default function Events(props: {
         data: ApplicationObject | undefined,
@@ -175,7 +176,11 @@ export default function Events(props: {
    }
 
    if(!data) {
-       return <div>Loading...</div>;
+    return (
+        <div>
+            <Loading open={ true } />
+        </div>
+    );
    } else {
        return (
         <Box>

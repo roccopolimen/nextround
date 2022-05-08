@@ -2,7 +2,7 @@ import { Box, Button, Card, CardActions, CardContent, FormGroup, Grid, IconButto
 import { Add, Delete, Email, LocalPhone } from '@mui/icons-material';
 import { useEffect, useState } from "react";
 import { ApplicationObject } from "typings";
-
+import Loading from 'components/Loading';
 
 export default function MyContacts(props: {
     data: ApplicationObject | undefined,
@@ -55,7 +55,11 @@ export default function MyContacts(props: {
     };
 
     if(!data) {
-        return <div>Loading...</div>;
+        return (
+            <div>
+                <Loading open={ true } />
+            </div>
+        );
     } else {
         return (
             <Box>
