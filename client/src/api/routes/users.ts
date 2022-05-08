@@ -1,7 +1,20 @@
 import { useQuery, UseQueryResult } from "react-query";
 import { fetcher } from "api/fetcher";
 import { doEmailSignIn, doEmailSignUp, doGoogleSignIn, doSignOut } from "api/firebase/functions";
-import { Failure, UserObject } from "typings";
+import { Failure } from "typings";
+
+/**
+ * @description retrieves information on the currently signed in user.
+ * @returns the current user's information
+ * @throws if fails
+ */
+export const useGetUser = (): UseQueryResult<UserObject> => {
+    return useQuery('getUser', async () => {
+        const { data, status } = await fetcher.get<UserObject | Failure>('/users');
+        if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
+        return (data as UserObject);
+    });
+};
 
 /**
  * @description POST /users/signIn with email & password
@@ -71,7 +84,7 @@ export const useSignUpWithGoogle = (): UseQueryResult<boolean> => {
 export const useSignOut = (): UseQueryResult<boolean> => {
     return useQuery('signOut', async () => {
         await doSignOut();
-        const { data, status } = await fetcher.post<Failure>('/users/signOut');
+        const { data, status } = await fetcher.get<Failure>('/users/signOut');
         if(status !== 200) throw new Error(`${data.message}\n\n${data.error}`);
         return true;
     });
@@ -88,13 +101,3 @@ export const useDeleteUser = (): UseQueryResult<boolean> => {
         return true;
     });
 };
-
-// TODO: change user settings api hook
-// export const useChangeSettings = () => {
-//     return useQuery('changeSettings', async () => {
-//         // TODO: take in arguments to this function and then pass them to patch call
-//         // TODO: add types to patch and cast variables as needed.
-//         const { data, status } = await fetcher.patch('/users/settings');
-//         if(status !== 200) throw new Error(`${data.message}\n\n${data.error}`);
-//     });
-// };

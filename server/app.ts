@@ -22,11 +22,18 @@ app.use((req, _, next) => {
     }
     next();
 });
+app.set('trust proxy', 1)
 app.use(session({
     name: 'AuthCookie',
     secret: "Michael Karsen is an iPad kid",
     saveUninitialized: true,
-    resave: false
+    resave: false,
+    proxy: true,
+    cookie: process.env.production ? {
+    	secure: true,
+        httpOnly: false,
+        sameSite: 'none'
+    } : null
 }));
 app.use('*', (req, _, next) => {
     let date = new Date().toUTCString();
