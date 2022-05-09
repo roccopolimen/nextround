@@ -42,6 +42,7 @@ const Upcoming = () => {
 
     // Responsive Design
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
+    const img_size: string = mobile ? "200px" : "400px";
 
     useEffect(() => {
         // Fetch data on mount
@@ -167,7 +168,6 @@ const Upcoming = () => {
 
     useEffect(() => {
         const buildUpcomingBox: Function = (upcoming: UpcomingObject) => {
-            console.log(upcoming);
             if(upcoming.date.getTime() < new Date().getTime() || upcoming.status === true)
                 return null;
             return (
@@ -176,6 +176,8 @@ const Upcoming = () => {
         };
         setUpcoming(orderUpcoming && orderUpcoming.map((upcoming) => {
             return buildUpcomingBox(upcoming);
+        }).filter((upcoming) => {
+            return upcoming !== null;
         }));
     }, [orderUpcoming]);
 
@@ -244,7 +246,7 @@ const Upcoming = () => {
                     <Slide direction='right' in={true} timeout={800}>
                         <Grid item xs={12} sm={12} md={6} lg={6} xl={6} justifyContent="center" alignItems="center" >
                             <br/>
-                            <Typography className="title" variant='h3' margin='20px'>Upcoming</Typography>
+                            <Typography className="title" variant='h1' margin='20px' sx={{ fontSize: '24pt' }}>Upcoming</Typography>
 
                             {/* Add Job Button */}
                                 <Box sx={{ marginLeft: '65%', justifyContent: "right",
@@ -301,7 +303,16 @@ const Upcoming = () => {
                             </Modal>
 
                             <br/>
-                            {upcoming}
+                            {upcoming && upcoming.length > 0 ? upcoming :
+                            <Box sx={{ margin: 'auto', width: "50%" }}>
+                                <Box component="img"
+                                src={require('../../images/read_relax.png')}
+                                width={img_size} height={img_size} alt="Relax" />
+                                <Typography variant="body1" sx={{ ml: 2, fontSize: '18pt' }}>
+                                    No upcoming events.
+                                </Typography>
+                            </Box>}
+                             
                         </Grid>
                     </Slide>
                     <Slide direction='left' in={true} timeout={800}>
