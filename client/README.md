@@ -18,8 +18,6 @@
 
 `/social`: Social media page
 
-`/settings`: Settings page for the current user
-
 `/application/:applicationID`: Single job page for the job with id of `jobID` within the current cycle
 
 `/application/:applicationID/:cycleID`: Single job page for the job with id of `jobID` within the cycle with id of `cycleID`
