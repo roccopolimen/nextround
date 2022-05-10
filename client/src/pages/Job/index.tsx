@@ -1,4 +1,4 @@
-import { Box, Button, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
+import { Alert, Box, Button, Snackbar, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Delete, Info, Event, Contacts, Description } from '@mui/icons-material';
 import JobDetails from "components/JobSections/JobDetails";
@@ -56,6 +56,9 @@ export default function Job() {
     const [contactId, setContactId] = useState("");
 
     const [note, setNote] = useState("");
+
+    const [snackOpen, setSnackOpen] = useState(false);
+    const [snackMessage, setSnackMessage] = useState("");
 
 
     let appId: string = params.id ? params.id : "";
@@ -117,7 +120,14 @@ export default function Job() {
     useEffect(() => {
         // Make the patch call
         const callApi = async () => {
-            await updateApplication();
+            try {
+                await updateApplication({ throwOnError: true });
+            } catch (e: any) {
+                console.log(e);
+                setSnackMessage(e ? e.data.message : "Something went wrong");
+                setSnackOpen(true);
+            }
+            
             await fetchApplication();
         }
         if(patchApp && hasNewData) {
@@ -129,7 +139,12 @@ export default function Job() {
     useEffect(() => {
         // Make the create event call
         const callApi = async () => {
-            await createEvent();
+            try {
+                await createEvent({ throwOnError: true });
+            } catch (e: any) {
+                setSnackMessage(e ? e.data.message : "Something went wrong");
+                setSnackOpen(true);
+            }
             await fetchApplication();
         }
 
@@ -143,7 +158,12 @@ export default function Job() {
     useEffect(() => {
         // Make the delete event call
         const callApi = async () => {
-            await deleteEvent();
+            try {
+                await deleteEvent({ throwOnError: true });
+            } catch (e: any) {
+                setSnackMessage(e ? e.data.message : "Something went wrong");
+                setSnackOpen(true);
+            }
             await fetchApplication();
         }
 
@@ -156,7 +176,12 @@ export default function Job() {
     useEffect(() => {
         // Make the update event call
         const callApi = async () => {
-            await updateEvent();
+            try {
+                await updateEvent({ throwOnError: true });
+            } catch (e: any) {
+                setSnackMessage(e ? e.data.message : "Something went wrong");
+                setSnackOpen(true);
+            }
             await fetchApplication();
         }
 
@@ -169,7 +194,12 @@ export default function Job() {
     useEffect(() => {
         // Make the create contact call
         const callApi = async () => {
-            await createContact();
+            try {
+                await createContact({ throwOnError: true });
+            } catch (e: any) {
+                setSnackMessage(e ? e.data.message : "Something went wrong");
+                setSnackOpen(true);
+            }
             await fetchApplication();
         }
 
@@ -183,7 +213,12 @@ export default function Job() {
     useEffect(() => {
         // Make the delete contact call
         const callApi = async () => {
-            await deleteContact();
+            try {
+                await deleteContact({ throwOnError: true });
+            } catch (e: any) {
+                setSnackMessage(e ? e.data.message : "Something went wrong");
+                setSnackOpen(true);
+            }
             await fetchApplication();
         }
 
@@ -196,7 +231,12 @@ export default function Job() {
     useEffect(() => {
         // Make the create note call
         const callApi = async () => {
-            await createNote();
+            try {
+                await createNote({ throwOnError: true });
+            } catch (e: any) {
+                setSnackMessage(e ? e.data.message : "Something went wrong");
+                setSnackOpen(true);
+            }
             await fetchApplication();
         }
 
@@ -299,7 +339,7 @@ export default function Job() {
             </div>
         );
     } else if(isError) {
-        return <div>Error</div>;
+        return <div>Error retrieving application details.</div>;
     } else {
         return (
             <Box>
@@ -364,6 +404,16 @@ export default function Job() {
                 <Box sx={{ width: '75%', mx: 'auto', mt: 2, mb: 1 }}>
                     {component}
                 </Box>
+                <Snackbar
+                    open={snackOpen}
+                    autoHideDuration={6000}
+                    onClose={() => setSnackOpen(false)}
+                    sx={{ position: 'absolute', bottom: '0rem', left: '0rem' }}
+                >
+                    <Alert severity="error" sx={{ width: '100%' }}>
+                        {snackMessage}
+                    </Alert>
+                </Snackbar>
             </Box>
         );
     }
