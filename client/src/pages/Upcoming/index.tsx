@@ -15,11 +15,12 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import './style.css';
 import { ApplicationObject, UpcomingObject } from "typings";
 import Loading from "components/Loading";
+import SideDrawer from "components/SideDrawer";
 
 const Upcoming = () => {
     const [applications, setApplications] = useState([] as ApplicationObject[]);
     const [orderUpcoming, setOrderUpcoming] = useState([] as UpcomingObject[]);
-    const [changed, setChanged] = useState(false);
+    const [, setChanged] = useState(false);
     const [open, setOpen] = useState(false);
     const [built, setBuilt] = useState(false);
 
@@ -38,7 +39,7 @@ const Upcoming = () => {
     const [offered, setOffered] = useState([] as JSX.Element[]);
 
     const {data: cycleData, isLoading: CycleIsLoading, isError: CycleIsError, refetch: fetchCurrentCycle} = useGetCurrentCycle();
-    const {data: applicationData, isLoading: applicationIsLoading, isError: applicationIsError, refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addApplyDate);
+    const { refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addApplyDate);
 
     // Responsive Design
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
@@ -241,7 +242,8 @@ const Upcoming = () => {
         return <div>Error...</div>;
     } else {
         return (
-            <>          
+            <>       
+                <SideDrawer />   
                 <Grid container className='grid' spacing={5} justifyContent="space-around" alignItems="stretch">
                     <Slide direction='right' in={true} timeout={800}>
                         <Grid item xs={12} sm={12} md={6} lg={6} xl={6} justifyContent="center" alignItems="center" >

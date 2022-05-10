@@ -1,17 +1,17 @@
 import './style.css';
 import { useEffect, useState } from "react";
 import { Grid, Typography, useMediaQuery } from "@mui/material";
-import { Card,
+import {
     Avatar,
+    Card,
     CardHeader,
     CardContent,
     CardActions,
     Button,
     Modal,
     TextField,
-    FormGroup,
-    CircularProgress,
-    Box } from "@mui/material";
+    FormGroup
+} from "@mui/material";
 import { ApplicationObject } from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
 import { useNavigate } from 'react-router-dom';

@@ -16,17 +16,13 @@ export default function FirstCycle () {
     const navigate = useNavigate();
 
     //Queries
-    const { data: cycleData, refetch: refetchNewCycle } = useCreateCycle();
+    const { refetch:createCycle } = useCreateCycle();
     
     const addCycle: Function = async () => {
         try {
-            console.log("Make a cycle");
-            await refetchNewCycle();
-            console.log(cycleData);
-            navigate('/upcoming');
-        } catch(e) {
-            navigate('/error');
-        }
+            await createCycle({ throwOnError: true });
+            navigate('/dashboard');
+        } catch(e) {}
     }
 
     return (

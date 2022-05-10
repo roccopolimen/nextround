@@ -60,6 +60,7 @@ const SideDrawer = () => {
         })();
     };
 
+
     useEffect(() => {
         (async () => {
             try {
@@ -142,12 +143,12 @@ const SideDrawer = () => {
                         {ddOpen ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={ddOpen} timeout="auto" unmountOnExit>
-                        {allCycles?.reverse().slice(1).map(cycle => {
+                        {allCycles?.slice().reverse().slice(1).map(cycle => {
                             return (
-                                <List component="div" disablePadding>
+                                <List key={cycle._id} component="div" disablePadding>
                                     <ListItemButton
                                         sx={{ pl: 4 }} 
-                                        onClick={() => navigate(`metrics/${cycle._id}`)}>
+                                        onClick={() => navigate(`/metrics/${cycle._id}`)}>
                                         <ListItemText primary={cycle.startDate} />
                                     </ListItemButton>
                                 </List>
@@ -156,7 +157,7 @@ const SideDrawer = () => {
                         <List component="div" disablePadding>
                             <ListItemButton
                                 sx={{ pl: 4 }}
-                                onClick={() => navigate("/")}
+                                onClick={() => navigate("/create")}
                             >
                                 <ListItemText primary="Create New Cycle" />
                             </ListItemButton>

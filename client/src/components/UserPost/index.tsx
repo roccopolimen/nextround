@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Grid, Typography, useMediaQuery } from "@mui/material";
-import { Card, CardHeader, CardContent, Button, Modal } from "@mui/material";
+import { Card, CardHeader, CardContent } from "@mui/material";
 import { ForumPostObject } from 'typings';
 import StatCard from 'components/StatCard';
 
 const UserPost = (props: {post: ForumPostObject}) => {
-    const [ post, setPost ] = useState(props.post);
+    const [ post ] = useState(props.post);
 
     const getDateString: Function = (post: ForumPostObject) => {
         if(post && post.postDate) {

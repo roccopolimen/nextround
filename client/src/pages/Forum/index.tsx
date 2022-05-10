@@ -11,7 +11,7 @@ import Loading from 'components/Loading';
 export default function Forum() {
     let startPosts: ForumPostObject[] = [];
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const [posts, setPosts] = useState(startPosts);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);

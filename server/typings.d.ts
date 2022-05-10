@@ -10,7 +10,6 @@ interface UserObject {
     firebaseId: string,
     email: string,
     name: string,
-    pfp: string,
     cycles: Array<ObjectId>
 }
 

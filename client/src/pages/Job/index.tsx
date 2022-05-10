@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MyContacts from "components/JobSections/MyContacts";
 import MyNotes from "components/JobSections/MyNotes";
 import Loading from "components/Loading";
+import SideDrawer from "components/SideDrawer";
 
 export default function Job() {
     let params = useParams();
@@ -302,6 +303,7 @@ export default function Job() {
     } else {
         return (
             <Box>
+                <SideDrawer />
                 {/* Header */}
                 <Box sx={{ display: 'flex', mt: 3, mb: 1 }}>
                     <Box component="img" 

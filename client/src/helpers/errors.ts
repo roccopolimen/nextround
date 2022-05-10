@@ -70,10 +70,7 @@ function checkName(name: string): boolean {
  * @returns {boolean} true if the string is a valid date and false otherwise
  */
 function checkDate(dateStr: string): boolean {
-    const parts = dateStr.split('/').map((n) => parseInt(n));
-    parts[0] -= 1;
-    const date = new Date(parts[2], parts[0], parts[1]);
-    return date.getMonth() === parts[0] && date.getDate() === parts[1] && date.getFullYear() === parts[2];
+    return !isNaN(Date.parse(dateStr));
 }
 
 /**

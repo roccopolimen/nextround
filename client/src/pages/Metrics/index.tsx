@@ -30,6 +30,7 @@ import {
 } from "recharts";
 import { ApplicationObject, MetricsObject } from "typings";
 import Loading from 'components/Loading';
+import SideDrawer from "components/SideDrawer";
 
 export default function Metrics() {
     const params = useParams();
@@ -52,6 +53,7 @@ export default function Metrics() {
 
     useEffect(() => {
         // Fetch data on mount
+        console.log('hello');
         const fetchData = async () => {
             if (cycleId) {
                 await fetchMetrics();
@@ -144,6 +146,7 @@ export default function Metrics() {
     } else {
         return (
             <Box sx={{ mb: 3}}>
+                <SideDrawer />
                 <Typography variant="h1"
                     sx={{ mb: 5, ml: 5, mt: 2, fontSize: '36pt' }}>
                     Metrics
