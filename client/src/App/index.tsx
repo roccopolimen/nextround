@@ -17,6 +17,9 @@ import Forum from 'pages/Forum';
 import OfferDash from 'pages/OfferDash';
 import AddCycle from 'pages/AddCycle';
 import Metrics from 'pages/Metrics';
+import PrivateRoute from 'components/PrivateRoute';
+import PublicRoute from 'components/PublicRoute';
+import { AuthProvider } from 'context';
 
 const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
 const queryClient: QueryClient = new QueryClient({
@@ -36,23 +39,31 @@ const App = () => {
     return (
         <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
-        {/* <AuthProvider> */}
+        <AuthProvider>
         <CssBaseline />
         <Router basename={process.env.REACT_APP_PATH || ""}>
             <Routes>
-                <Route path="" element={<Landing />} />
-                <Route path="signin" element={<SignIn />} />
-                <Route path="signup" element={<SignUp />} />
-                <Route path="dashboard" element={<Upcoming />} />
-                <Route path="application/:id" element={<Job />} />
-                <Route path="metrics/:cycleId" element={<Metrics />} />
-                <Route path="metrics" element={<Metrics />} />
-                <Route path="forum" element={<Forum />} />
-                <Route path="offers" element={<OfferDash />} />
-                <Route path="create" element={<AddCycle />} />
+                <Route path="" element={<PublicRoute />}>
+                    <Route path="" element={<Landing />} />
+                </Route>
+                <Route path="signin" element={<PublicRoute />}>
+                    <Route path="" element={<SignIn />} />
+                </Route>
+                <Route path="signup" element={<PublicRoute />}>
+                    <Route path="" element={<SignUp />} />
+                </Route>
+                <Route element={<PrivateRoute />}>
+                    <Route path="dashboard" element={<Upcoming />} />
+                    <Route path="application/:id" element={<Job />} />
+                    <Route path="metrics/:cycleId" element={<Metrics />} />
+                    <Route path="metrics" element={<Metrics />} />
+                    <Route path="forum" element={<Forum />} />
+                    <Route path="offers" element={<OfferDash />} />
+                    <Route path="create" element={<AddCycle />} />
+                </Route>
             </Routes>
         </Router>
-        {/* </AuthProvider> */}
+        </AuthProvider>
         </ThemeProvider>
         </QueryClientProvider>
     );

@@ -9,13 +9,16 @@ export const useAuthContext = () => useContext(AuthContext);
 interface PropType { children: ReactNode };
 export const AuthProvider = ({ children }: PropType) => {
     const [user, setUser] = useState<AuthContent>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         firebaseApp.auth().onAuthStateChanged((newUser) => {
             setUser(newUser);
+            setLoading(false);
         });
     }, []);
 
+    if(loading) return <></>;
     return (
         <AuthContext.Provider value={user}>
             {children}

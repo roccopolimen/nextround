@@ -53,7 +53,6 @@ export default function Metrics() {
 
     useEffect(() => {
         // Fetch data on mount
-        console.log('hello');
         const fetchData = async () => {
             if (cycleId) {
                 await fetchMetrics();
@@ -69,9 +68,9 @@ export default function Metrics() {
 
     useEffect(() => {
         // Set data when successfully retrieved
-        if (metricsData) {
+        if (metricsData && cycleId) {
             setData(metricsData);
-        } else if(cMetricsData) {
+        } else if(cMetricsData && !cycleId) {
             setData(cMetricsData);
         }
 
@@ -80,7 +79,7 @@ export default function Metrics() {
         } else if (cCycleData) {
             setApplications(cCycleData.applications);
         }
-    }, [cMetricsData, metricsData, cCycleData, cycleData]);
+    }, [cMetricsData, metricsData, cCycleData, cycleData, cycleId]);
 
     useEffect(() => {
         // Create funnel data
