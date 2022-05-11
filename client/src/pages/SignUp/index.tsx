@@ -1,5 +1,5 @@
 import './style.css';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -15,22 +15,29 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Alert, IconButton } from '@mui/material';
 import NavBar from 'components/NavBar';
 import Loading from 'components/Loading';
+import { useAuthContext } from 'context';
 
 const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [displayName, setDisplayName] = useState('');
     const [failedAuth, setFailedAuth] = useState(false);
+    const checkAuth = useRef<boolean>(false);
     const { isLoading: isLoadingEmail, refetch: refetchEmail } = useSignUpWithEmail(email, password, displayName);
     const { isLoading: isLoadingGoogle, refetch: refetchGoogle } = useSignUpWithGoogle();
     const navigate = useNavigate();
+    const user = useAuthContext();
+
+    useEffect(() => {
+        if(!checkAuth.current && user) navigate('/dashboard');
+        checkAuth.current = true;
+    }, [navigate, user]);
 
     const handleGoogle = () => {
         setFailedAuth(false);
         (async () => {
             try {
                 await refetchGoogle({ throwOnError: true });
-                // TODO: set context w/ user's data retrieved from refetching?
                 navigate('/dashboard');
             } catch(e) {
                 setFailedAuth(true);
@@ -44,7 +51,6 @@ const SignUp = () => {
         (async () => {
             try {
                 await refetchEmail({ throwOnError: true });
-                // TODO: set context w/ user's data retrieved from refetching?
                 navigate('/dashboard');
             } catch(e) {
                 setPassword('');
