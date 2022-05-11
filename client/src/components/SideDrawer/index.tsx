@@ -144,12 +144,13 @@ const SideDrawer = () => {
                     </ListItem>
                     <Collapse in={ddOpen} timeout="auto" unmountOnExit>
                         {allCycles?.slice().reverse().slice(1).map(cycle => {
+                            console.log(cycle);
                             return (
                                 <List key={cycle._id} component="div" disablePadding>
                                     <ListItemButton
                                         sx={{ pl: 4 }} 
                                         onClick={() => navigate(`/metrics/${cycle._id}`)}>
-                                        <ListItemText primary={cycle.startDate} />
+                                        <ListItemText primary={(new Date(cycle.startDate)).toISOString().slice(0,10)} />
                                     </ListItemButton>
                                 </List>
                             );
