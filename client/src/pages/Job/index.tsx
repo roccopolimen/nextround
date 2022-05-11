@@ -366,8 +366,7 @@ export default function Job() {
                             // redirect to home page
                             navigate('/dashboard', { replace: false });
                         }}
-                        color="error"
-                        sx={{ mx: 'auto', mb: 2 }}>
+                        color="error">
                         <Delete />
                     </Button>
                 </Box>
@@ -379,21 +378,21 @@ export default function Job() {
                         onChange={handleChange}
                         variant="fullWidth"
                         aria-label="tab navigation">
-                        <Tab icon={<Info style={{ fontSize: iconSize }} />}
+                        <Tab icon={<Info style={{ fontSize: "medium" }} />}
                             iconPosition="start" 
                             label={details}
                             disableRipple
                             sx={{ mx: tab_spacing }} />
-                        <Tab icon={<Event style={{ fontSize: iconSize }} />}
+                        <Tab icon={<Event style={{ fontSize: "medium" }} />}
                             iconPosition="start" 
                             label={events}
                             sx={{ mx: tab_spacing }} />
-                        <Tab icon={<Contacts style={{ fontSize: iconSize }} />}
+                        <Tab icon={<Contacts style={{ fontSize: "medium" }} />}
                             iconPosition="start" 
                             label={contacts}
                             sx={{ mx: tab_spacing }} />
                         <Tab icon={<Description 
-                            style={{ fontSize: iconSize }} />}
+                            style={{ fontSize: "medium" }} />}
                             iconPosition="start" 
                             label={notes}
                             sx={{ mx: tab_spacing }} />

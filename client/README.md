@@ -12,11 +12,13 @@
 
 `/dashboard/:id`: Main home page for any cycle with id of `id`
 
+`/create`: Create your first cycle page
+
 `/metrics`: Metrics dashboard for the current cycle
 
 `/metrics/:id`: Metrics dashboard for any cycle with id of `id`
 
-`/social`: Social media page
+`/forum`: Forum page
 
 `/application/:applicationID`: Single job page for the job with id of `jobID` within the current cycle
 

@@ -18,6 +18,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import HandshakeIcon from '@mui/icons-material/Handshake';
 import HomeIcon from "@mui/icons-material/Home";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ForumIcon from "@mui/icons-material/Forum";
@@ -128,6 +129,14 @@ const SideDrawer = () => {
                     >
                         <ListItemIcon><BarChartIcon /></ListItemIcon>
                         <ListItemText primary="Metrics" />
+                    </ListItem>
+                    <ListItem
+                        button
+                        key="Offers"
+                        onClick={() => navigate("/offers")}
+                    >
+                        <ListItemIcon><HandshakeIcon /></ListItemIcon>
+                        <ListItemText primary="Offers" />
                     </ListItem>
                     <ListItem
                         button

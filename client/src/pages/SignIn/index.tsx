@@ -16,6 +16,8 @@ import NavBar from 'components/NavBar';
 import Loading from 'components/Loading';
 import { useAuthContext } from 'context';
 
+import SideDrawer from 'components/SideDrawer';
+
 export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -60,6 +62,7 @@ export default function SignIn() {
     return (
         <>
             <NavBar />
+            <SideDrawer />
             <div>
                 {failedAuth && <Alert severity="error">email or password incorrect</Alert>}
                 <Loading open={isLoadingEmail || isLoadingGoogle} />
