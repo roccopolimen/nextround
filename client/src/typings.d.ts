@@ -16,7 +16,7 @@ interface UserObject {
 interface CycleObject {
     _id: ObjectId,
     startDate: Date,
-    endDate: Date,
+    endDate: Date | null,
     applications: Array<ApplicationObject>
 }
 

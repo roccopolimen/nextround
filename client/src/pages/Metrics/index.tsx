@@ -74,9 +74,9 @@ export default function Metrics() {
             setData(cMetricsData);
         }
 
-        if (cycleData) {
+        if (cycleData && cycleId) {
             setApplications(cycleData.applications);
-        } else if (cCycleData) {
+        } else if (cCycleData && !cycleId) {
             setApplications(cCycleData.applications);
         }
     }, [cMetricsData, metricsData, cCycleData, cycleData, cycleId]);
@@ -237,6 +237,7 @@ export default function Metrics() {
                                 <TableCell align="right">
                                     {app.progress === 1 ? "Offered" : 
                                     (app.progress === 2 ? "Rejected" :
+                                    app.progress === 3 ? "Waitlist" :
                                      "Pending")}
                                 </TableCell>
                                 </TableRow>
