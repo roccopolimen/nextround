@@ -1,5 +1,5 @@
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
-import { DecodedIdToken, getAuth, ListUsersResult, UserRecord } from "firebase-admin/auth";
+import { getAuth, ListUsersResult, UserRecord } from "firebase-admin/auth";
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -44,6 +44,7 @@ const seedFirebase = async (): Promise<void> => {
     await addUser('mpolimen@stevens.edu', 'password3', 'Marco Polimeni');
     await addUser('bwormser@stevens.edu', 'password4', 'Brian Wormser');
     await addUser('gmattern@stevens.edu', 'password5', 'Grace Mattern');
+    await addUser('phill@stevens.edu', 'inanutshell', 'Patrick Hill');
 
 };
 

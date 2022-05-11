@@ -37,6 +37,7 @@ const Upcoming = () => {
     const [applied, setApplied] = useState([] as JSX.Element[]);
     const [rejected, setRejected] = useState([] as JSX.Element[]);
     const [offered, setOffered] = useState([] as JSX.Element[]);
+    const [waitlisted, setWaitlisted] = useState([] as JSX.Element[]);
 
     const {data: cycleData, isLoading: CycleIsLoading, isError: CycleIsError, refetch: fetchCurrentCycle} = useGetCurrentCycle();
     const { refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addApplyDate);
@@ -149,6 +150,23 @@ const Upcoming = () => {
     
         setOffered(applications && applications.map((application) => {
             if(application.progress !== 1){
+                return undefined;
+            }
+            for(let event of application.events){
+                if(event.title === "Apply") {
+                    if(event.status)
+                        return buildJobCards(application);
+                    else
+                        return undefined;
+                }
+            }
+            return undefined;
+        }).filter((application) => {
+            return application !== undefined;
+        }));
+
+        setWaitlisted(applications && applications.map((application) => {
+            if(application.progress !== 3){
                 return undefined;
             }
             for(let event of application.events){
@@ -364,6 +382,18 @@ const Upcoming = () => {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {offered}
+                                </AccordionDetails>
+                            </Accordion> : null}
+                            <br/>
+                            {offered && offered.length > 0 ? 
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content" >
+                                    <Typography>Waitlisted</Typography> 
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {waitlisted}
                                 </AccordionDetails>
                             </Accordion> : null}
                         </Grid>
