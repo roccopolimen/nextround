@@ -29,7 +29,6 @@ export default function MyContacts(props: {
      * Adds an event with info from the form
      */
     const handleAddContact = () => {
-        // TODO: Form validation?
         if(name === "" || phone === "" || email === "") return;
         if (data) {
             props.addContact(name, phone, email);
