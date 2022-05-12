@@ -29,7 +29,8 @@ const Upcoming = () => {
     const [addJobLocation, setAddJobLocation] = useState('');
     const [addJobJobPostUrl, setAddJobJobPostUrl] = useState('');
     const [addJobDescription, setAddJobDescription] = useState('');
-    const [addApplyDate, setAddApplyDate] = useState(new Date());
+    const today = new Date();
+    const [addApplyDate, setAddApplyDate] = useState(today as Date);
     
     let date_picker: JSX.Element | null = null;
     const [upcoming, setUpcoming] = useState(null as JSX.Element[] | null);
@@ -186,8 +187,10 @@ const Upcoming = () => {
     }, [applications]);
 
     useEffect(() => {
+        const today: Date = new Date();
+        today.setDate(today.getDate());
         const buildUpcomingBox: Function = (upcoming: UpcomingObject) => {
-            if(upcoming.date.getTime() < new Date().getTime() || upcoming.status === true)
+            if(upcoming.date.getTime() < today.getTime() || upcoming.status === true)
                 return null;
             return (
                 <UpcomingBox key={upcoming.eventId} applicationId={upcoming.applicationId} url={upcoming.companyLogo} company={upcoming.company} role={upcoming.role} date={upcoming.date} title={upcoming.title} />
@@ -201,7 +204,6 @@ const Upcoming = () => {
     }, [orderUpcoming]);
 
     const handleAddJob = async() => {
-
         try{
             await fetchCreateApplication({ throwOnError: true });
             await fetchCurrentCycle({ throwOnError: true });
@@ -234,16 +236,16 @@ const Upcoming = () => {
                             label="Date"
                             inputFormat="MM/dd/yyyy"
                             value={addApplyDate}
-                            onChange={(value: Date | null,
-                                _key) => value ? setAddApplyDate(value) : null}
+                            onChange={(value: Date | null, _key) => 
+                                value ? setAddApplyDate(value) : null}
                             renderInput={(params) => <TextField {...params} />}
                         /> :
                         <DesktopDatePicker
                             label="Date"
                             inputFormat="MM/dd/yyyy"
                             value={addApplyDate}
-                            onChange={(value: Date | null,
-                                _key) => value ? setAddApplyDate(value) : null}
+                            onChange={(value: Date | null, _key) => 
+                                value ? setAddApplyDate(value) : null}
                             renderInput={(params) => <TextField {...params} />}
                         />
                     }

@@ -148,15 +148,6 @@ export default function Events(props: {
         }
     };
 
-   /**
-    * Saves locally typed information
-    */
-   const handleSave = async () => {
-       if (data) {
-           setChanged(false);
-       }
-   }
-
    if(!data) {
     return (
         <div>
