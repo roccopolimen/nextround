@@ -129,7 +129,7 @@ export default function JobDetails(props:
                         <TextField id="position-value"
                         variant="outlined" label="Job Title" size="small"
                         onChange={handleTextChange}
-                        defaultValue={data.position} /> : <div></div>
+                        value={data.position} /> : <div></div>
                     }
                 </Grid>
                 <Grid item >
@@ -137,7 +137,7 @@ export default function JobDetails(props:
                         <TextField id="url-value"
                         variant="outlined" label="Job Post URL" size="small"
                         onChange={handleTextChange}
-                        defaultValue={data.jobPostUrl} /> : <div></div>
+                        value={data.jobPostUrl} /> : <div></div>
                     }
                 </Grid>
                 <Grid item >
@@ -145,7 +145,7 @@ export default function JobDetails(props:
                         <TextField id="location-value"
                         variant="outlined" label="Location" size="small"
                         onChange={handleTextChange}
-                        defaultValue={data.location} /> : <div></div>
+                        value={data.location} /> : <div></div>
                     }
                 </Grid>
                 <Grid item >
@@ -167,7 +167,7 @@ export default function JobDetails(props:
                         multiline
                         onChange={handleTextChange}
                         rows={5}
-                        defaultValue={data.description} /> : <div></div>
+                        value={data.description} /> : <div></div>
                     }
                 </Grid>
                 <Grid item >
