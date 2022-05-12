@@ -144,7 +144,6 @@ const SideDrawer = () => {
                     </ListItem>
                     <Collapse in={ddOpen} timeout="auto" unmountOnExit>
                         {allCycles?.slice().reverse().slice(1).map(cycle => {
-                            console.log(cycle);
                             return (
                                 <List key={cycle._id} component="div" disablePadding>
                                     <ListItemButton

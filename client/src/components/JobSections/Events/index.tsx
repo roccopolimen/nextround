@@ -10,7 +10,7 @@ import { Box,
         Typography,
         useMediaQuery
     } from "@mui/material";
-import { Save, Add, Delete } from '@mui/icons-material';
+import { Add, Delete } from '@mui/icons-material';
 import { useState, useEffect } from "react";
 import { ApplicationObject, EventObject } from "typings";
 import { Timeline,
@@ -29,7 +29,7 @@ import Loading from 'components/Loading';
 
 export default function Events(props: {
         data: ApplicationObject | undefined,
-        update: (id: string, status: boolean) => void,
+        update: (id: string, status: boolean) => Promise<void>,
         addEvent: (title: string, date: string,
              location: string) => void,
         deleteEvent: (eventId: string) => void
@@ -44,7 +44,6 @@ export default function Events(props: {
    const [title, setTitle] = useState('');
    const [location, setLocation] = useState('');
    const [selectedDate, setSelectedDate] = useState(today as Date | null);
-   const [changedIds, setChangedIds] = useState(() => new Set() as Set<string>);
 
    // Responsive design
    const se: boolean = useMediaQuery('(max-width: 525px)');
@@ -103,17 +102,6 @@ export default function Events(props: {
    const handleToggle = (event: React.ChangeEvent<HTMLInputElement>,
                             checked: boolean) => {
          // On checkbox change
-        if(changedIds.has(event.target.id)) {
-            setChangedIds(prev => {
-                const next = new Set(prev);
-                next.delete(event.target.id);
-                if(next.size === 0) setChanged(false);
-                return next;
-            });
-        } else {
-            setChangedIds(prev => new Set(prev).add(event.target.id));
-            setChanged(true);
-        }
         if (data) {
             let newData: ApplicationObject = {
                 ...data,
@@ -128,6 +116,7 @@ export default function Events(props: {
                 })
             };
             setData(newData);
+            props.update(event.target.id, checked);
         }
         };
 
@@ -162,15 +151,8 @@ export default function Events(props: {
    /**
     * Saves locally typed information
     */
-   const handleSave = () => {
+   const handleSave = async () => {
        if (data) {
-           // TODO: api call to save data
-           changedIds.forEach(id => {
-                let status: boolean | undefined = data.events.find(ev =>
-                    ev._id === id)?.status;
-                if(status !== undefined)
-                    props.update(id, status);
-           });
            setChanged(false);
        }
    }
@@ -309,16 +291,6 @@ export default function Events(props: {
                     );
                 })}
             </Timeline>
-
-            {/* Save button */}
-            {changed ?
-                <Button variant="contained" color="primary"
-                startIcon={<Save />} onClick={() => handleSave()}
-                sx={{ position: 'fixed',
-                    bottom: (theme) => theme.spacing(2),
-                    right: (theme) => theme.spacing(2) }} >
-                Save</Button> : <div></div>
-            }
         </Box>
     );
     }

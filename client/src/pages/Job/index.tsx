@@ -18,6 +18,7 @@ export default function Job() {
     const [currTab, setCurrTab] = useState(0);
     const [data, setData] = useState(
         undefined as ApplicationObject | undefined);
+    const [fetchApp, setFetchApp] = useState(false);
     const [patchApp, setPatchApp] = useState(false);
     const [shouldCreateEvent, setShouldCreateEvent] = useState(false);
     const [shouldDeleteEvent, setShouldDeleteEvent] = useState(false);
@@ -95,7 +96,8 @@ export default function Job() {
     useEffect(() => {
         // On mount
         fetchApplication();
-    }, [fetchApplication]);
+        if(fetchApp) setFetchApp(false);
+    }, [fetchApplication, appId, fetchApp]);
 
     useEffect(() => {
         if(!isLoading && api_data) {
@@ -123,7 +125,6 @@ export default function Job() {
             try {
                 await updateApplication({ throwOnError: true });
             } catch (e: any) {
-                console.log(e);
                 setSnackMessage(e ? e.data.message : "Something went wrong");
                 setSnackOpen(true);
             }
@@ -256,8 +257,7 @@ export default function Job() {
             setPatchApp(true);
         }
 
-        const changeEvent = (id: string, status: boolean) => {
-            console.log(status);
+        const changeEvent = async (id: string, status: boolean) => {
             setEventIdUpdate(id);
             setEventStatus(status);
             setShouldPatchEvent(true);

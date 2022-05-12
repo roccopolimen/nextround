@@ -100,7 +100,6 @@ export default function JobDetails(props:
      */
     const handleSave = () => {
         if (data) {
-            // TODO: api call to save data
             props.update(data);
             setChanged(false);
         }
