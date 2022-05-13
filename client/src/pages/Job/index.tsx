@@ -366,14 +366,15 @@ export default function Job() {
                             color="#190446">{data.company}</Typography>
                     </div>
                     {/* delete button */}
-                    <Button variant="contained"
+                    <Button 
+                        variant="contained"
                         onClick={async () => {
                             await deleteApplication();
                             // redirect to home page
                             navigate('/dashboard', { replace: false });
                         }}
-                        color="error">
-                        <Delete />
+                        color="error"
+                        startIcon={<Delete />}>
                     </Button>
                 </Box>
 
