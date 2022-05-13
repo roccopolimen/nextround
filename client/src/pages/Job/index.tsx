@@ -10,7 +10,7 @@ import MyContacts from "components/JobSections/MyContacts";
 import MyNotes from "components/JobSections/MyNotes";
 import Loading from "components/Loading";
 import SideDrawer from "components/SideDrawer";
-import Error from 'pages/Error';
+import Error from 'components/Error';
 
 export default function Job() {
     let params = useParams();
@@ -343,9 +343,7 @@ export default function Job() {
         return (
             <div>
                 <SideDrawer />
-                <Typography variant="h1">
-                    Error retrieving application details.
-                </Typography>
+                <Error />
             </div>
         );
     } else {

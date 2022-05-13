@@ -16,7 +16,7 @@ import './style.css';
 import { ApplicationObject, UpcomingObject } from "typings";
 import Loading from "components/Loading";
 import SideDrawer from "components/SideDrawer";
-import Error from 'pages/Error';
+import Error from 'components/Error';
 import { useNavigate } from "react-router-dom";
 
 const Upcoming = () => {

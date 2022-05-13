@@ -35,6 +35,10 @@ export const createForumPost = async (userId: string,
         throw new Error('Invalid id');
     }
 
+    if(!content) {
+        throw new Error('Invalid content');
+    }
+
     const poster: UserObject = await getUserById(userId);
     if(poster === null)
         throw new Error("There is no user with that id.");

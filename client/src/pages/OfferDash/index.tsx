@@ -15,7 +15,7 @@ import {
 import { ApplicationObject } from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
 import { useNavigate } from 'react-router-dom';
-import Error from 'pages/Error';
+import Error from 'components/Error';
 import SideDrawer from 'components/SideDrawer';
 import Loading from 'components/Loading';
 
