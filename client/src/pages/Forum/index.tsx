@@ -16,7 +16,7 @@ export default function Forum() {
     const [posts, setPosts] = useState(startPosts);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
-    const [numPosts, setNumPosts] = useState('0');
+    const [numPosts, setNumPosts] = useState('5');
 
     //Queries
     const { data: postData, isLoading: isLoadingPosts, refetch: refetchPosts } = useGetForum(parseInt(numPosts));
