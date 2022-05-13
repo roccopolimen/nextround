@@ -149,18 +149,18 @@ const seedDB = async () => {
 
 // CREATE CYCLES
     const michaelFall: CycleObject = makeCycle(new ObjectId('624e956c4c06f2509b940b1d'), new Date('September 22, 2021'), new Date('December 20, 2021'));
-    const roccoFall: CycleObject   = makeCycle(new ObjectId('624e36a9c78fc2142856b173'), new Date('September 22, 2021'), new Date('December 20, 2021'));
     const roccoSpring: CycleObject = makeCycle(new ObjectId('624e181fc086e2c5081110ca'), new Date('March 20, 2021'),     new Date('June 19, 2021'));
+    const roccoFall: CycleObject   = makeCycle(new ObjectId('624e36a9c78fc2142856b173'), new Date('September 22, 2021'), null);
     const marcoSummer: CycleObject = makeCycle(new ObjectId('624e36b2ae8647ff7668ab04'), new Date('June 20, 2021'),      new Date('September 21, 2021'));
-    const marcoFall: CycleObject   = makeCycle(new ObjectId('624e36ae80109e5a1cce8516'), new Date('September 22, 2021'), new Date('December 20, 2021'));
-    const brianSpring: CycleObject = makeCycle(new ObjectId('624e36cf865d56f8a9a07c71'), new Date('March 20, 2021'),     new Date('June 19, 2021'));
-    const graceWinter: CycleObject = makeCycle(new ObjectId('624e199cec15debf1e33b54a'), new Date('December 21, 2021'),  new Date('March 19, 2022'));
+    const marcoFall: CycleObject   = makeCycle(new ObjectId('624e36ae80109e5a1cce8516'), new Date('September 22, 2021'), null);
+    const brianSpring: CycleObject = makeCycle(new ObjectId('624e36cf865d56f8a9a07c71'), new Date('March 20, 2021'),     null);
+    const graceWinter: CycleObject = makeCycle(new ObjectId('624e199cec15debf1e33b54a'), new Date('December 21, 2021'),  null);
     const patrickOne: CycleObject  = makeCycle(new ObjectId('624e129dec15debf1e33b54a'), new Date('August 5, 2021'),  new Date('October 20, 2021'));
     const patrickCur: CycleObject  = makeCycle(new ObjectId('664e129dec15d58f1233b54a'), new Date('April 1, 2022'),  null);
     
     addCycleToUser(michael, michaelFall._id);
-    addCycleToUser(rocco, roccoFall._id);
     addCycleToUser(rocco, roccoSpring._id);
+    addCycleToUser(rocco, roccoFall._id);
     addCycleToUser(marco, marcoSummer._id);
     addCycleToUser(marco, marcoFall._id);
     addCycleToUser(brian, brianSpring._id);

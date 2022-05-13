@@ -16,8 +16,11 @@ import './style.css';
 import { ApplicationObject, UpcomingObject } from "typings";
 import Loading from "components/Loading";
 import SideDrawer from "components/SideDrawer";
+import { useNavigate } from "react-router-dom";
 
 const Upcoming = () => {
+    const navigate = useNavigate();
+
     const [applications, setApplications] = useState([] as ApplicationObject[]);
     const [orderUpcoming, setOrderUpcoming] = useState([] as UpcomingObject[]);
     const [, setChanged] = useState(false);
@@ -52,10 +55,10 @@ const Upcoming = () => {
         // Fetch data on mount
         setBuilt(false);
         const fetchData = async () => {
-            try{
+            try {
                 await fetchCurrentCycle({ throwOnError: true });
             } catch(e) {
-
+                navigate('/create');
             }
         };
         fetchData();
@@ -190,6 +193,7 @@ const Upcoming = () => {
     useEffect(() => {
         const today: Date = new Date();
         today.setDate(today.getDate());
+        today.setHours(0, 0, 0, 0);
         const buildUpcomingBox: Function = (upcoming: UpcomingObject) => {
             if(upcoming.date.getTime() < today.getTime() || upcoming.status === true)
                 return null;
