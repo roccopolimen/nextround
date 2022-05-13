@@ -29,6 +29,9 @@ router.get('/:id', async (req, res) => {
     if(!id || !checkObjectId(id))
         return res.status(400).json({ message: 'Invalid id.' });
 
+    if(!req.session.user)
+        return res.status(401).json({ message: 'User is not authorized, must be logged in.' });
+
     // Verify user owns cycle
     try {
         const userInfo: UserObject = await getUserById(req.session.user._id);

@@ -9,7 +9,7 @@ import { CycleObject, UserObject } from '../typings';
  * @returns {Promise<CycleObject>} Cycle object
  */
 export const getCycleByID = async (id: string): Promise<CycleObject> => {
-    if(!checkObjectId(id)){
+    if(!id || !checkObjectId(id)){
         throw new Error('Invalid id');
     }
 
@@ -27,7 +27,7 @@ export const getCycleByID = async (id: string): Promise<CycleObject> => {
  * @returns {Promise<CycleObject[]>} List of cycles
  */
 export const getAllCycles = async (userId: string): Promise<CycleObject[]> => {
-    if(!checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId)){
         throw new Error('Invalid id');
     }
 
@@ -52,7 +52,7 @@ export const getAllCycles = async (userId: string): Promise<CycleObject[]> => {
  * @returns {{Promise<CycleObject>}} The newly created cycle object
  */
 export const createCycle = async (userId: string): Promise<CycleObject> => {
-    if(!checkObjectId(userId))
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid id');
 
     let currDate: Date = new Date();
@@ -101,7 +101,7 @@ export const createCycle = async (userId: string): Promise<CycleObject> => {
  * @returns {{Promise<CycleObject>}} The updated cycle object
  */
 export const finishCycle = async (userId: string): Promise<CycleObject> => {
-    if(!checkObjectId(userId))
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid id');
 
     const usersCollection = await users();

@@ -10,6 +10,9 @@ router.get('/', async (req, res) => {
     if(!req.query.num_posts)
         return res.status(400).json({ message: 'Number of posts not provided.' });
 
+    if(!req.session.user)
+        return res.status(401).json({ message: 'User is not authorized, must be logged in.' });
+
     const num_posts: number = parseInt("" + req.query.num_posts);
     if(!checkNonNegativeNumber(num_posts))
         return res.status(400).json({ message: 'Invalid number of posts' });
@@ -33,6 +36,9 @@ router.post('/', async (req, res) => {
     if(!content || !checkNonEmptyString(content))
         return res.status(400).json({ message: 'Invalid content' });
 
+    if(!req.session.user)
+        return res.status(401).json({ message: 'User is not authorized, must be logged in.' });
+        
     // Create new post and return it
     try {
         const newPost: ForumPostObject = await createForumPost(req.session.user._id, content);

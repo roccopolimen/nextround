@@ -12,7 +12,7 @@ import { getUserById } from './users';
  */
 export const getForumPosts = async (
     num_posts: number): Promise<Array<ForumPostObject>> => {
-    if(!checkNonNegativeNumber(num_posts)){
+    if(!num_posts || !checkNonNegativeNumber(num_posts)){
         throw new Error('Invalid number of posts');
     }
 
@@ -31,7 +31,7 @@ export const getForumPosts = async (
 export const createForumPost = async (userId: string,
      content: string): Promise<ForumPostObject> => {
     
-    if(!checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId)){
         throw new Error('Invalid id');
     }
 
