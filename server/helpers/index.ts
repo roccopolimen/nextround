@@ -1,5 +1,8 @@
-import { getCycleByID, getUserById } from '../data';
+import { getAuth } from 'firebase-admin/auth';
+import { ObjectId } from 'mongodb';
+import { getCycleByID, getUserByEmail, getUserById } from '../data';
 import { CycleObject, UserObject } from '../typings';
+import { checkNonEmptyString } from './error';
 
 export * from './error';
 
@@ -47,4 +50,30 @@ export const isUsersApplication = async (userId: string, applicationId: string, 
 export const randomColor = (): string => {
    let n = (Math.random() * 0xfffff * 1000000).toString(16);
    return '#' + n.slice(0, 6);
+};
+
+/**
+ * @description validates the bearer token for the user in case the express session expired (mostly a heroku issue).
+ * @param {string} token the JWT of the firebase user 
+ * @returns {Promise<{ _id: string; email: string; }>} the data to store in session.
+ */
+export const getSession = async (token: string): Promise<{ _id: string; email: string; }> => {
+    if(!token || !checkNonEmptyString(token))
+            throw new Error("auth token is invalid.");
+    token = token.split('JWT ')[1];
+    let email: string;
+    try {
+        ({ email } = await getAuth().verifyIdToken(token));
+    } catch(e) {
+        throw new Error("invalidated session. could not authenticate.");
+    }
+
+    let id: ObjectId;
+    try { // ensure user is in the database
+        ({ _id: id } = await getUserByEmail(email));
+    } catch(e) {
+        throw new Error("user does not exist in the database.");
+    }
+
+    return { _id: id.toString(), email };
 };

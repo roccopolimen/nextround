@@ -22,8 +22,4 @@
 
 `/application/:applicationID`: Single job page for the job with id of `jobID` within the current cycle
 
-`/application/:applicationID/:cycleID`: Single job page for the job with id of `jobID` within the cycle with id of `cycleID`
-
 `/offers`: Offer dashboard for the current cycle
-
-`/offers/:id`: Offer dashboard for the cycle with id of `id`

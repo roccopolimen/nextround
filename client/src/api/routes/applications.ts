@@ -45,25 +45,16 @@ export const useGetApplicationFromCycle = (cycleId: string, applicationId: strin
  */
 export const useCreateApplication = (company: string, position: string, location: string, jobPostUrl: string, description: string, salary: number, applyDate: Date): UseQueryResult<ApplicationObject> => {
     return useQuery('createApplication', async () => {
-        interface Body {
-            company: string;
-            position: string;
-            location: string;
-            jobPostUrl: string;
-            description: string;
-            salary: number;
-            applyDate: string;
-        }
-        const body: Partial<Body> = {
+        const body: Partial<ApplicationObject> & { applyDate: Date } = {
             company,
             position,
             location,
             jobPostUrl,
             description,
             salary,
-            applyDate: applyDate.toLocaleDateString()
+            applyDate: applyDate
         };
-        const { data, status } = await fetcher.post<Partial<Body>, AxiosResponse<ApplicationObject | Failure>>('/application', body);
+        const { data, status } = await fetcher.post<Partial<ApplicationObject> & { applyDate: Date }, AxiosResponse<ApplicationObject | Failure>>('/application', body);
         if(status !== 200) throw new Error(`${(data as Failure).message}\n\n${(data as Failure).error}`);
         return (data as ApplicationObject);
     });

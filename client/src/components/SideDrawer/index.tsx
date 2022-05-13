@@ -28,6 +28,13 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useGetAllCycles, useSignOut } from "api";
 import Loading from "components/Loading";
 
+import { FormGroup, Modal, TextField, Typography, useMediaQuery} from '@mui/material';
+import { useGetCurrentCycle, useCreateApplication } from "api";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { Add } from '@mui/icons-material';
 
 const drawerWidth = 240;
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -47,6 +54,24 @@ const SideDrawer = () => {
 
     const { isLoading:isLoadingSignOut, refetch:signOut } = useSignOut();
     const { data:allCycles, isLoading:isLoadingAllCycles , refetch:getAllCycles } = useGetAllCycles();
+
+    // modal stuff
+    const [, setChanged] = useState(false);
+    const [built, setBuilt] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [addJobCompany, setAddJobCompany] = useState('');
+    const [addJobPosition, setAddJobPosition] = useState('');
+    const [addJobLocation, setAddJobLocation] = useState('');
+    const [addJobJobPostUrl, setAddJobJobPostUrl] = useState('');
+    const [addJobDescription, setAddJobDescription] = useState('');
+    const [addJobSalary, setAddJobSalary] = useState(0);
+    const today = new Date();
+    const [addApplyDate, setAddApplyDate] = useState(today as Date);
+    let date_picker: JSX.Element | null = null;
+    const {data: cycleData, isLoading: CycleIsLoading, isError: CycleIsError, refetch: fetchCurrentCycle} = useGetCurrentCycle();
+    const { refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addJobSalary, addApplyDate);
+    const mobile: boolean = useMediaQuery('(max-width: 900px)');
+
 
     const handleClick = () => setDdOpen(!ddOpen);
     const handleDrawerOpen = () => setOpen(true);
@@ -69,6 +94,73 @@ const SideDrawer = () => {
             } catch(e) {}
         })();
     }, [getAllCycles]);
+
+    useEffect(() => {
+        // Fetch data on mount
+        setBuilt(false);
+        const fetchData = async () => {
+            try{
+                await fetchCurrentCycle({ throwOnError: true });
+            } catch(e) {
+
+            }
+        };
+        fetchData();
+    }, [fetchCurrentCycle]);
+
+    const handleAddJob = async() => {
+        try{
+            await fetchCreateApplication({ throwOnError: true });
+            await fetchCurrentCycle({ throwOnError: true });
+        } catch(e) {
+
+        }
+        setChanged(true);
+        setOpenModal(false);
+        
+        setAddJobCompany('');
+        setAddJobPosition('');
+        setAddJobLocation('');
+        setAddJobJobPostUrl('');
+        setAddJobSalary(0);
+        setAddJobDescription('');
+
+        setChanged(false);
+    };
+
+    /**
+        * Create a proper date picker given the device type
+        * @param {boolean} mobile if the device is mobile
+        * @returns {JSX.Element | undefined} date picker
+        */
+     const buildDatePicker = (mobile: boolean): JSX.Element => {
+        return (
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Box m={2}>
+                    {mobile ?
+                        <MobileDatePicker
+                            label="Date"
+                            inputFormat="MM/dd/yyyy"
+                            value={addApplyDate}
+                            onChange={(value: Date | null, _key) => 
+                                value ? setAddApplyDate(value) : null}
+                            renderInput={(params) => <TextField {...params} />}
+                        /> :
+                        <DesktopDatePicker
+                            label="Date"
+                            inputFormat="MM/dd/yyyy"
+                            value={addApplyDate}
+                            onChange={(value: Date | null, _key) => 
+                                value ? setAddApplyDate(value) : null}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    }
+                </Box>
+            </LocalizationProvider>
+        );  
+    }
+
+    date_picker = buildDatePicker(mobile);
 
     return (
         <Box sx={{ display: "flex", ml: 2 }}>
@@ -111,9 +203,53 @@ const SideDrawer = () => {
                             variant="contained"
                             color="primary"
                             style={{ width: "90%" }}
-                            onClick={() => navigate("/create")}
+                            onClick={() => setOpenModal(true)}
                         >Add Job Application</Button>
                     </Box>
+                    <Modal open={openModal} onClose={() => setOpenModal(false)}
+                        aria-labelledby="Add job form" >
+                        <FormGroup sx={{ position: 'absolute', top: '50%', left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        width: '50%', bgcolor: 'background.paper',
+                                        boxShadow: 24,
+                                        padding: 1}}>
+                            <Typography variant="h4">
+                                Job Details
+                            </Typography>
+                            <TextField required id="job-company" variant="outlined"
+                                label="Company" size="small" value={addJobCompany}
+                                margin='normal'
+                                onChange={(e) => setAddJobCompany(e.target.value)} />
+                            <TextField required id="job-position" variant="outlined"
+                                label="Position" size="small" value={addJobPosition}
+                                margin='normal'
+                                onChange={(e) => setAddJobPosition(e.target.value)} />
+                            <TextField required id="job-location" variant="outlined"
+                                label="Location" size="small" value={addJobLocation}
+                                margin='normal'
+                                onChange={(e) => setAddJobLocation(e.target.value)} />
+                            <TextField required id="job-jobposturl" variant="outlined"
+                                label="Job Post Url" size="small" value={addJobJobPostUrl}
+                                margin='normal'
+                                onChange={(e) => setAddJobJobPostUrl(e.target.value)} />
+                            <TextField required id="job-salary" variant="outlined"
+                                label="Salary" size="small" value={addJobSalary}
+                                margin='normal' type="number"
+                                onChange={(e) => setAddJobSalary(parseInt(e.target.value))} />
+                            <TextField required id="job-description" variant="outlined"
+                                label="Description" size="small" value={addJobDescription}
+                                margin='normal'
+                                onChange={(e) => setAddJobDescription(e.target.value)} />
+                            {date_picker && date_picker}
+                            <Button variant="contained" color="primary"
+                                startIcon={<Add />}
+                                sx={{ mt: 2, width: '50%', mx: 'auto' }}
+                                onClick={handleAddJob}
+                            >
+                                Submit
+                            </Button>
+                        </FormGroup>
+                    </Modal>
                     <ListItem
                         button
                         key="Home"
@@ -153,7 +289,6 @@ const SideDrawer = () => {
                     </ListItem>
                     <Collapse in={ddOpen} timeout="auto" unmountOnExit>
                         {allCycles?.slice().reverse().slice(1).map(cycle => {
-                            console.log(cycle);
                             return (
                                 <List key={cycle._id} component="div" disablePadding>
                                     <ListItemButton

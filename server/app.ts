@@ -5,6 +5,7 @@ import configRoutes from './routes';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
 import dotenv from 'dotenv';
 import path from 'path';
+import { getSession } from './helpers';
 
 dotenv.config({ path: path.resolve() + '/.env' });
 initializeApp({
@@ -35,6 +36,21 @@ app.use(session({
         sameSite: 'none'
     } : null
 }));
+app.use('*', (req, _, next) => {
+    if(req.originalUrl.startsWith('/users') || req.session.user) next();
+    else {
+        const token: string = req.headers.authorization as string;
+        getSession(token)
+        .then(sessionObject => {
+            req.session.user = sessionObject;
+            next();
+        })
+        .catch(e => {
+            console.log(e.message);
+            next();
+        });
+    }
+});
 app.use('*', (req, _, next) => {
     let date = new Date().toUTCString();
     let reqmethod = req.method;
