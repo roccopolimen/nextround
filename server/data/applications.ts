@@ -147,7 +147,7 @@ export const createApplication = async (userId: string, company: string, positio
         companyLogo: logo,
         position: position,
         location: location,
-        salary: null, 
+        salary: 0, 
         jobPostUrl: jobPostUrl,
         cardColor: cardColor,
         description: description,
