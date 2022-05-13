@@ -91,15 +91,15 @@ export default function MyContacts(props: {
                             Contact Info
                         </Typography>
                         <TextField required id="contact-name" variant="outlined"
-                            label="Name" size="small" value={name}
+                            label="Name" size="small" value={name} margin='normal'
                             onChange={(e) => setName(e.target.value)} />
                         <TextField required id="contact-phone"
                             variant="outlined" label="Phone #" size="small"
-                            value={phone}
+                            value={phone} margin='normal'
                             onChange={(e) => setPhone(e.target.value)} />
                         <TextField required id="contact-email"
                             variant="outlined" label="Email" size="small"
-                            value={email}
+                            value={email} margin='normal'
                             onChange={(e) => setEmail(e.target.value)} />
                         <Button variant="contained" color="primary"
                             startIcon={<Add />}

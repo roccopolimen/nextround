@@ -341,7 +341,7 @@ export default function Job() {
         return (
             <div>
                 <SideDrawer />
-                <Typography variant="h1">
+                <Typography variant="h1" sx={{ fontSize: 16 }}>
                     Error retrieving application details.
                 </Typography>
             </div>
@@ -360,10 +360,10 @@ export default function Job() {
                     <div className="job-page-typography">
                         <Typography variant="h1" id="role"
                             sx={{ fontSize: h1Size }}
-                            color="#190446">{data.position}</Typography>
+                            color="#ADA7BD">{data.position}</Typography>
                         <Typography variant="h2" id="company"
                             sx={{ fontSize: h2Size }}
-                            color="#ADA7BD">{data.company}</Typography>
+                            color="#190446">{data.company}</Typography>
                     </div>
                     {/* delete button */}
                     <Button variant="contained"

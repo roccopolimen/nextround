@@ -41,8 +41,8 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
      // NOTE: I dont know a way to use one Link tag and keep the styling the same
      return (
         <Grid item xs={12} margin='10px'>
-            <Link to={`/application/${applicationId}`} style={{textDecoration: 'none'}}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', margin: '10px', borderBottom: 1}}>                
+            <Box sx={{ display: 'flex', flexDirection: 'column', margin: '10px', borderBottom: 1}}>            
+                <Link to={`/application/${applicationId}`} style={{textDecoration: 'none'}}>
                     <CardContent className='insideCard'>
                         <Grid container>
                             <Grid item xs={1} >
@@ -78,8 +78,8 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
                             </Grid>
                         </Grid>
                     </CardContent>
-                </Box>
-            </Link>
+                </Link>
+            </Box>
         </Grid>
       );
 }
