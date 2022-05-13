@@ -174,7 +174,7 @@ export default function OfferDash () {
                                                 avatar={
                                                     <Avatar
                                                     alt={offer["company"]}
-                                                    src={offer["companyLogo"]}
+                                                    src={`${BASE_CLEARBIT_URL}${offer["company"]}.com`}
                                                     />
                                                 }
                                                 titleTypographyProps={{variant: "h5"}}
