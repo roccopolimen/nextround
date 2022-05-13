@@ -53,8 +53,6 @@ export default function OfferDash () {
                 setOfferData(offerApplications);
             } catch(e) {
                 navigate('/create');
-                // let emptyApplications: ApplicationObject[] = [];
-                // setOfferData(emptyApplications);
             }
         })();
     }, [refetchCycle, userCycle]);
