@@ -20,6 +20,7 @@ import Metrics from 'pages/Metrics';
 import PrivateRoute from 'components/PrivateRoute';
 import PublicRoute from 'components/PublicRoute';
 import { AuthProvider } from 'context';
+import CurrentCycleRoute from 'components/CurrentCycleRoute';
 
 const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
 const queryClient: QueryClient = new QueryClient({

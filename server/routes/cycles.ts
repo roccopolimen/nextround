@@ -14,7 +14,10 @@ router.get('/', async (req, res) => {
     // Gets current cycle
     try {
         const cycles: Array<CycleObject> = await getAllCycles(req.session.user._id);
-        res.json(cycles.slice(-1)[0]);
+        if(cycles.length === 0 || cycles.slice(-1)[0].endDate !== null)
+            res.status(404).json({ message: 'No current cycle found.' });
+        else
+            res.json(cycles.slice(-1)[0]);
     } catch(e) {
         res.status(500).json({ 
             message: 'Internal Server Error. Failed to get current cycle.',
