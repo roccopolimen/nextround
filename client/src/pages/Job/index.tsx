@@ -351,7 +351,7 @@ export default function Job() {
             <Box>
                 <SideDrawer />
                 {/* Header */}
-                <Box sx={{ display: 'flex', mt: 3, mb: 1 }}>
+                <Box display="flex" alignItems="flex-end" sx={{ mt: 3, mb: 1 }}>
                     <Box component="img" 
                         sx={{ mx: 5, height: imgSize, width: imgSize,
                             borderRadius: '50%' }} 
@@ -374,7 +374,8 @@ export default function Job() {
                             navigate('/dashboard', { replace: false });
                         }}
                         color="error"
-                        startIcon={<Delete />}>
+                        startIcon={<Delete />}
+                        sx={{display:"flex"}}>
                     </Button>
                 </Box>
 
