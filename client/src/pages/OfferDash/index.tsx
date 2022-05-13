@@ -26,7 +26,6 @@ export default function OfferDash () {
     const [open, setOpen] = useState(false);
     const [postText, setPostText] = useState('');
     const navigate = useNavigate();
-    const BASE_CLEARBIT_URL: string = 'https://logo.clearbit.com/';
 
     
 
