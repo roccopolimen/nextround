@@ -28,7 +28,6 @@ export default function OfferDash () {
     const [postText, setPostText] = useState('');
     const [error, setError ] = useState(false);
     const navigate = useNavigate();
-    const BASE_CLEARBIT_URL: string = 'https://logo.clearbit.com/';
 
     
 
@@ -174,7 +173,7 @@ export default function OfferDash () {
                                                 avatar={
                                                     <Avatar
                                                     alt={offer["company"]}
-                                                    src={`${BASE_CLEARBIT_URL}${offer["company"]}.com`}
+                                                    src={offer["companyLogo"]}
                                                     />
                                                 }
                                                 titleTypographyProps={{variant: "h5"}}
