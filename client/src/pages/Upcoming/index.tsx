@@ -192,6 +192,7 @@ const Upcoming = () => {
     useEffect(() => {
         const today: Date = new Date();
         today.setDate(today.getDate());
+        today.setHours(0, 0, 0, 0);
         const buildUpcomingBox: Function = (upcoming: UpcomingObject) => {
             if(upcoming.date.getTime() < today.getTime() || upcoming.status === true)
                 return null;
