@@ -76,11 +76,13 @@ export const createCycle = async (userId: string): Promise<CycleObject> => {
     if(user === null)
         throw new Error("There is no user with that id.");
 
-    const currCycle: CycleObject = await cycleCollection.findOne({
-        _id: new ObjectId(user.cycles[user.cycles.length - 1])
-    });
-    if(currCycle.endDate === null)
-        await finishCycle(userId);
+    if(user.cycles.length > 0) {
+        const currCycle: CycleObject = await cycleCollection.findOne({
+            _id: new ObjectId(user.cycles[user.cycles.length - 1])
+        });
+        if(currCycle.endDate === null)
+            await finishCycle(userId);
+    }
 
     // Add to user's cycles list
     user.cycles.push(newId);

@@ -42,7 +42,7 @@ export default function OfferDash () {
     useEffect(() => {
         (async () => { 
             try {
-                await refetchCycle();
+                await refetchCycle({ throwOnError: true });
                 let offerApplications: ApplicationObject[] = [];
                 if(userCycle && userCycle["applications"]) {
                     let cycleApp: ApplicationObject; 
@@ -54,8 +54,7 @@ export default function OfferDash () {
                 }
                 setOfferData(offerApplications);
             } catch(e) {
-                let emptyApplications: ApplicationObject[] = [];
-                setOfferData(emptyApplications);
+                navigate('/create');
             }
         })();
     }, [refetchCycle, userCycle]);

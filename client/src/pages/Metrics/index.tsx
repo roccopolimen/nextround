@@ -15,7 +15,7 @@ import {
 import { useGetCurrentCycle, useGetCycle, useGetCycleMetrics, useGetMetrics } from "api";
 import StatCard from "components/StatCard";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { 
     CartesianGrid,
     Funnel,
@@ -33,6 +33,7 @@ import Loading from 'components/Loading';
 import SideDrawer from "components/SideDrawer";
 
 export default function Metrics() {
+    const navigate = useNavigate();
     const params = useParams();
     const cycleId = params.cycleId;
     // State variables
@@ -55,11 +56,15 @@ export default function Metrics() {
         // Fetch data on mount
         const fetchData = async () => {
             if (cycleId) {
-                await fetchMetrics();
                 await fetchCycle();
+                await fetchMetrics();
             } else {
-                await fetchCurrentMetrics();
-                await fetchCurrentCycle();
+                try {
+                    await fetchCurrentCycle({ throwOnError: true });
+                    await fetchCurrentMetrics();
+                } catch(e) {
+                    navigate('/create');
+                }
             }
         };
         fetchData();
@@ -134,14 +139,21 @@ export default function Metrics() {
         }
     }, [data]);
 
-    if(!data || isLoading || cIsLoading || cycleIsLoading || cCycleIsLoading) {
+    if(isLoading || cIsLoading || cycleIsLoading || cCycleIsLoading) {
         return (
             <div>
                 <Loading open={ true } />
             </div>
         );
-    } else if(isError || cIsError || cycleIsError || cCycleIsError) {
-        return <div>Error...</div>;
+    } else if(!data || isError || cIsError || cycleIsError || cCycleIsError) {
+        return (
+            <div>
+                <SideDrawer />
+                <Typography variant="h1">
+                    Error retrieving metrics details.
+                </Typography>
+            </div>
+        );
     } else {
         return (
             <Box sx={{ mb: 3}}>
