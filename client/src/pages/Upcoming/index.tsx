@@ -32,7 +32,6 @@ const Upcoming = () => {
     const [addJobLocation, setAddJobLocation] = useState('');
     const [addJobJobPostUrl, setAddJobJobPostUrl] = useState('');
     const [addJobDescription, setAddJobDescription] = useState('');
-    const [addJobSalary, setAddJobSalary] = useState(0);
     const today = new Date();
     const [addApplyDate, setAddApplyDate] = useState(today as Date);
     
@@ -45,7 +44,7 @@ const Upcoming = () => {
     const [waitlisted, setWaitlisted] = useState([] as JSX.Element[]);
 
     const {data: cycleData, isLoading: CycleIsLoading, isError: CycleIsError, refetch: fetchCurrentCycle} = useGetCurrentCycle();
-    const { refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addJobSalary, addApplyDate);
+    const { refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addApplyDate);
 
     // Responsive Design
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
@@ -222,7 +221,6 @@ const Upcoming = () => {
         setAddJobPosition('');
         setAddJobLocation('');
         setAddJobJobPostUrl('');
-        setAddJobSalary(0);
         setAddJobDescription('');
 
         setChanged(false);
@@ -315,10 +313,6 @@ const Upcoming = () => {
                                         label="Job Post Url" size="small" value={addJobJobPostUrl}
                                         margin='normal'
                                         onChange={(e) => setAddJobJobPostUrl(e.target.value)} />
-                                    <TextField required id="job-salary" variant="outlined"
-                                        label="Salary" size="small" value={addJobSalary}
-                                        margin='normal' type="number"
-                                        onChange={(e) => setAddJobSalary(parseInt(e.target.value))} />
                                     <TextField required id="job-description" variant="outlined"
                                         label="Description" size="small" value={addJobDescription}
                                         margin='normal'

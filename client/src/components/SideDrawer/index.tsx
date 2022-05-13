@@ -57,19 +57,18 @@ const SideDrawer = () => {
 
     // modal stuff
     const [, setChanged] = useState(false);
-    const [built, setBuilt] = useState(false);
+    const [, setBuilt] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [addJobCompany, setAddJobCompany] = useState('');
     const [addJobPosition, setAddJobPosition] = useState('');
     const [addJobLocation, setAddJobLocation] = useState('');
     const [addJobJobPostUrl, setAddJobJobPostUrl] = useState('');
     const [addJobDescription, setAddJobDescription] = useState('');
-    const [addJobSalary, setAddJobSalary] = useState(0);
     const today = new Date();
     const [addApplyDate, setAddApplyDate] = useState(today as Date);
     let date_picker: JSX.Element | null = null;
-    const {data: cycleData, isLoading: CycleIsLoading, isError: CycleIsError, refetch: fetchCurrentCycle} = useGetCurrentCycle();
-    const { refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addJobSalary, addApplyDate);
+    const {refetch: fetchCurrentCycle} = useGetCurrentCycle();
+    const { refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addApplyDate);
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
 
 
@@ -122,7 +121,6 @@ const SideDrawer = () => {
         setAddJobPosition('');
         setAddJobLocation('');
         setAddJobJobPostUrl('');
-        setAddJobSalary(0);
         setAddJobDescription('');
 
         setChanged(false);
@@ -232,10 +230,6 @@ const SideDrawer = () => {
                                 label="Job Post Url" size="small" value={addJobJobPostUrl}
                                 margin='normal'
                                 onChange={(e) => setAddJobJobPostUrl(e.target.value)} />
-                            <TextField required id="job-salary" variant="outlined"
-                                label="Salary" size="small" value={addJobSalary}
-                                margin='normal' type="number"
-                                onChange={(e) => setAddJobSalary(parseInt(e.target.value))} />
                             <TextField required id="job-description" variant="outlined"
                                 label="Description" size="small" value={addJobDescription}
                                 margin='normal'

@@ -71,7 +71,6 @@ export default function Job() {
     let contacts: string = mobile ? "" : "Contacts";
     let notes: string = mobile ? "" : "Notes";
     let tab_spacing: number = mobile ? 0 : 5;
-    let iconSize: string = mobile ? "small" : "medium";
     let h1Size: string = mobile ? "1rem": "2.5rem";
     let h2Size: string = mobile ? ".75rem": "2rem";
     let imgSize: number = mobile ? 45 : 75;

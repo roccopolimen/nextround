@@ -43,7 +43,7 @@ export const useGetApplicationFromCycle = (cycleId: string, applicationId: strin
  * @returns {UseQueryResult<ApplicationObject>} the newly created application
  * @throws if fails
  */
-export const useCreateApplication = (company: string, position: string, location: string, jobPostUrl: string, description: string, salary: number, applyDate: Date): UseQueryResult<ApplicationObject> => {
+export const useCreateApplication = (company: string, position: string, location: string, jobPostUrl: string, description: string, applyDate: Date): UseQueryResult<ApplicationObject> => {
     return useQuery('createApplication', async () => {
         const body: Partial<ApplicationObject> & { applyDate: Date } = {
             company,
@@ -51,7 +51,6 @@ export const useCreateApplication = (company: string, position: string, location
             location,
             jobPostUrl,
             description,
-            salary,
             applyDate: applyDate
         };
         const { data, status } = await fetcher.post<Partial<ApplicationObject> & { applyDate: Date }, AxiosResponse<ApplicationObject | Failure>>('/application', body);
