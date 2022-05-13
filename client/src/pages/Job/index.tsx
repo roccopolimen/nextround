@@ -332,14 +332,21 @@ export default function Job() {
         setCurrTab(newValue);
     };
 
-    if(!data || isLoading) {
+    if(isLoading) {
         return (
             <div>
                 <Loading open={ true } />
             </div>
         );
-    } else if(isError) {
-        return <div>Error retrieving application details.</div>;
+    } else if(isError || !data) {
+        return (
+            <div>
+                <SideDrawer />
+                <Typography variant="h1">
+                    Error retrieving application details.
+                </Typography>
+            </div>
+        );
     } else {
         return (
             <Box>
