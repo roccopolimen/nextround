@@ -15,6 +15,7 @@ import {
 import { ApplicationObject } from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
 import { useNavigate } from 'react-router-dom';
+import Error from 'pages/Error';
 import SideDrawer from 'components/SideDrawer';
 import Loading from 'components/Loading';
 
@@ -25,6 +26,7 @@ export default function OfferDash () {
     const [accept, setAccept] = useState(false);
     const [open, setOpen] = useState(false);
     const [postText, setPostText] = useState('');
+    const [error, setError ] = useState(false);
     const navigate = useNavigate();
     const BASE_CLEARBIT_URL: string = 'https://logo.clearbit.com/';
 
@@ -73,7 +75,7 @@ export default function OfferDash () {
             console.log("Finish Cycle");
             navigate('/forum');
         } catch(e) {
-            navigate('/error');
+            setError(true);
         }
     };
 
@@ -84,7 +86,7 @@ export default function OfferDash () {
             console.log("Finish Cycle");
             navigate('/create');
         } catch(e) {
-            navigate('/error');
+            setError(true);
         }
     };
 
@@ -120,6 +122,14 @@ export default function OfferDash () {
     let cardWidth: number = mobile ? 225: 275;
     let formWidth: number = mobile ? 175: 225;
     let margins: number = mobile ? 2 : 7;
+
+    if(error) {
+        <>
+            <Loading open={isLoadingCycle} />
+            <SideDrawer />
+            <Error />
+        </> 
+    }
 
     return (
         <>  

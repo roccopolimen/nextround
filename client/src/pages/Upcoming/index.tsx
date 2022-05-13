@@ -16,6 +16,7 @@ import './style.css';
 import { ApplicationObject, UpcomingObject } from "typings";
 import Loading from "components/Loading";
 import SideDrawer from "components/SideDrawer";
+import Error from 'pages/Error';
 
 const Upcoming = () => {
     const [applications, setApplications] = useState([] as ApplicationObject[]);
@@ -259,7 +260,7 @@ const Upcoming = () => {
     if(CycleIsLoading || !built) {
         return <Loading open={ true } />;
     } else if(CycleIsError) {
-        return <div>Error...</div>;
+        return <Error />;
     } else {
         return (
             <>       

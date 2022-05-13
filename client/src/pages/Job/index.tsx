@@ -10,6 +10,7 @@ import MyContacts from "components/JobSections/MyContacts";
 import MyNotes from "components/JobSections/MyNotes";
 import Loading from "components/Loading";
 import SideDrawer from "components/SideDrawer";
+import Error from 'pages/Error';
 
 export default function Job() {
     let params = useParams();
@@ -339,7 +340,7 @@ export default function Job() {
             </div>
         );
     } else if(isError) {
-        return <div>Error retrieving application details.</div>;
+        return <Error />;
     } else {
         return (
             <Box>
