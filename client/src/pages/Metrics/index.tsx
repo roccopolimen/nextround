@@ -49,18 +49,20 @@ const Metrics = (): JSX.Element => {
         = useGetMetrics();
     const { data: metricsData, isLoading, isError, refetch: fetchMetrics }
         = useGetCycleMetrics(cycleId ? cycleId : "");
-    const { data: cCycleData, isLoading: cCycleIsLoading, isError: cCycleIsError, refetch: fetchCurrentCycle }
+    const { data: cCycleData, refetch: fetchCurrentCycle }
         = useGetCurrentCycle();
-    const { data: cycleData, isLoading: cycleIsLoading, isError: cycleIsError, refetch: fetchCycle }
+    const { data: cycleData, refetch: fetchCycle }
         = useGetCycle(cycleId ? cycleId : "");
 
     useEffect(() => {
         // Fetch data on mount
         const fetchData = async () => {
             if (cycleId) {
+                console.log("Fetching metrics for cycle " + cycleId);
                 await fetchCycle();
                 await fetchMetrics();
             } else {
+                console.log("Fetching current cycle");
                 try {
                     await fetchCurrentCycle({ throwOnError: true });
                     await fetchCurrentMetrics();
@@ -75,14 +77,18 @@ const Metrics = (): JSX.Element => {
     useEffect(() => {
         // Set data when successfully retrieved
         if (metricsData && cycleId) {
+            console.log("Setting metrics data");
             setData(metricsData);
         } else if(cMetricsData && !cycleId) {
+            console.log("Setting current metrics data");
             setData(cMetricsData);
         }
 
         if (cycleData && cycleId) {
+            console.log("Setting cycle data");
             setApplications(cycleData.applications);
         } else if (cCycleData && !cycleId) {
+            console.log("Setting current cycle data");
             setApplications(cCycleData.applications);
         }
     }, [cMetricsData, metricsData, cCycleData, cycleData, cycleId]);
@@ -140,9 +146,15 @@ const Metrics = (): JSX.Element => {
         }
     }, [data]);
 
-    if(isLoading || cIsLoading || cycleIsLoading || cCycleIsLoading) {
+    if(isLoading || cIsLoading) {
+        console.log("Loading...");
+        console.log(isLoading);
+        console.log(cIsLoading);
         return <Loading open={ true } />;
-    } else if(!data || isError || cIsError || cycleIsError || cCycleIsError) {
+    } else if(!data || isError || cIsError) {
+        console.log("isError:", isError);
+        console.log("cIsError:", cIsError);
+        console.log("data:", data);
         return (
             <div>
                 <SideDrawer />
