@@ -72,7 +72,6 @@ export default function Job() {
     let contacts: string = mobile ? "" : "Contacts";
     let notes: string = mobile ? "" : "Notes";
     let tab_spacing: number = mobile ? 0 : 5;
-    let iconSize: string = mobile ? "small" : "medium";
     let h1Size: string = mobile ? "1rem": "2.5rem";
     let h2Size: string = mobile ? ".75rem": "2rem";
     let imgSize: number = mobile ? 45 : 75;
@@ -343,7 +342,13 @@ export default function Job() {
         return (
             <div>
                 <SideDrawer />
+<<<<<<< HEAD
                 <Error />
+=======
+                <Typography variant="h1" sx={{ fontSize: 16 }}>
+                    Error retrieving application details.
+                </Typography>
+>>>>>>> bb9cb7fa406111a1261d52c6576af601b1904349
             </div>
         );
     } else {
@@ -351,7 +356,7 @@ export default function Job() {
             <Box>
                 <SideDrawer />
                 {/* Header */}
-                <Box sx={{ display: 'flex', mt: 3, mb: 1 }}>
+                <Box sx={{ m: 3, mb: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <Box component="img" 
                         sx={{ mx: 5, height: imgSize, width: imgSize,
                             borderRadius: '50%' }} 
@@ -360,22 +365,23 @@ export default function Job() {
                     <div className="job-page-typography">
                         <Typography variant="h1" id="role"
                             sx={{ fontSize: h1Size }}
-                            color="#190446">{data.position}</Typography>
+                            color="#ADA7BD">{data.position}</Typography>
                         <Typography variant="h2" id="company"
                             sx={{ fontSize: h2Size }}
-                            color="#ADA7BD">{data.company}</Typography>
+                            color="#190446">{data.company}</Typography>
                     </div>
                     {/* delete button */}
-                    <Button variant="contained"
+                    <Button 
+                        variant="contained"
                         onClick={async () => {
                             await deleteApplication();
                             // redirect to home page
                             navigate('/dashboard', { replace: false });
                         }}
                         color="error"
-                        sx={{ mx: 'auto', mb: 2 }}>
-                        <Delete />
-                    </Button>
+                        startIcon={<Delete />}
+                        sx={{display:"flex"}}
+                        className="right" />
                 </Box>
 
                 {/* Navigation tabs */}
@@ -385,21 +391,21 @@ export default function Job() {
                         onChange={handleChange}
                         variant="fullWidth"
                         aria-label="tab navigation">
-                        <Tab icon={<Info style={{ fontSize: iconSize }} />}
+                        <Tab icon={<Info style={{ fontSize: "medium" }} />}
                             iconPosition="start" 
                             label={details}
                             disableRipple
                             sx={{ mx: tab_spacing }} />
-                        <Tab icon={<Event style={{ fontSize: iconSize }} />}
+                        <Tab icon={<Event style={{ fontSize: "medium" }} />}
                             iconPosition="start" 
                             label={events}
                             sx={{ mx: tab_spacing }} />
-                        <Tab icon={<Contacts style={{ fontSize: iconSize }} />}
+                        <Tab icon={<Contacts style={{ fontSize: "medium" }} />}
                             iconPosition="start" 
                             label={contacts}
                             sx={{ mx: tab_spacing }} />
                         <Tab icon={<Description 
-                            style={{ fontSize: iconSize }} />}
+                            style={{ fontSize: "medium" }} />}
                             iconPosition="start" 
                             label={notes}
                             sx={{ mx: tab_spacing }} />

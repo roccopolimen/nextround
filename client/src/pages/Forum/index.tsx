@@ -56,7 +56,7 @@ export default function Forum() {
     }, [postData, setPosts, numPosts]);
 
     //Responsive Design
-    const mobile: boolean = useMediaQuery('(max-width: 900px)');
+    const mobile: boolean = useMediaQuery('(max-width: 540px)');
     let h1Size: string = mobile ? "1.75rem": "2.5rem";
     let margins: number = mobile ? 3: 7;
 

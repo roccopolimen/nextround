@@ -119,6 +119,9 @@ const SignUp = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+                            <Typography variant="caption" display="block" gutterBottom>
+                                *Password must be six (6) characters long
+                            </Typography>
                             </Grid>
                         </Grid>
                         <Button

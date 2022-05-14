@@ -15,7 +15,7 @@ import {
 import { useGetCurrentCycle, useGetCycle, useGetCycleMetrics, useGetMetrics } from "api";
 import StatCard from "components/StatCard";
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { 
     CartesianGrid,
     Funnel,
@@ -149,7 +149,7 @@ export default function Metrics() {
         return (
             <div>
                 <SideDrawer />
-                <Typography variant="h1">
+                <Typography variant="h1" sx={{ fontSize: 16 }}>
                     Error retrieving metrics details.
                 </Typography>
             </div>

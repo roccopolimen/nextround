@@ -273,7 +273,7 @@ const Upcoming = () => {
                     <Slide direction='right' in={true} timeout={800}>
                         <Grid item xs={12} sm={12} md={6} lg={6} xl={6} justifyContent="center" alignItems="center" >
                             <br/>
-                            <Typography className="title" variant='h1' margin='20px' sx={{ fontSize: '24pt' }}>Upcoming</Typography>
+                            <Typography className="title" variant='h1' margin='20px' sx={{ fontSize: '24pt', fontWeight: 'bold'}}>Upcoming</Typography>
 
                             {/* Add Job Button */}
                                 <Box sx={{ marginLeft: '65%', justifyContent: "right",
