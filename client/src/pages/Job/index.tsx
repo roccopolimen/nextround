@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Snackbar, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
+import { Alert, Box, Button, IconButton, Snackbar, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Delete, Info, Event, Contacts, Description } from '@mui/icons-material';
 import JobDetails from "components/JobSections/JobDetails";
@@ -350,7 +350,7 @@ export default function Job() {
             <Box>
                 <SideDrawer />
                 {/* Header */}
-                <Box sx={{ m: 3, mb: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <Box sx={{ m: 3, mb: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
                     <Box component="img" 
                         sx={{ mx: 5, height: imgSize, width: imgSize,
                             borderRadius: '50%' }} 
@@ -365,8 +365,8 @@ export default function Job() {
                             color="#190446">{data.company}</Typography>
                     </div>
                     {/* delete button */}
-                    <Button 
-                        variant="contained"
+                    <IconButton 
+                        // variant="contained"
                         aria-label="Delete"
                         onClick={async () => {
                             await deleteApplication();
@@ -374,9 +374,10 @@ export default function Job() {
                             navigate('/dashboard', { replace: false });
                         }}
                         color="error"
-                        startIcon={<Delete />}
-                        sx={{display:"flex"}}
-                        className="right" />
+                        sx={{ float: 'right', mr: 3 }}
+                        className="right" >
+                        <Delete fontSize={mobile ? "medium" : "large"} />
+                    </IconButton>
                 </Box>
 
                 {/* Navigation tabs */}
