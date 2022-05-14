@@ -342,13 +342,7 @@ export default function Job() {
         return (
             <div>
                 <SideDrawer />
-<<<<<<< HEAD
                 <Error />
-=======
-                <Typography variant="h1" sx={{ fontSize: 16 }}>
-                    Error retrieving application details.
-                </Typography>
->>>>>>> bb9cb7fa406111a1261d52c6576af601b1904349
             </div>
         );
     } else {
