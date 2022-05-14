@@ -351,7 +351,7 @@ export default function Job() {
             <Box>
                 <SideDrawer />
                 {/* Header */}
-                <Box display="flex" alignItems="flex-end" sx={{ mt: 3, mb: 1 }}>
+                <Box sx={{ m: 3, mb: 1, display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <Box component="img" 
                         sx={{ mx: 5, height: imgSize, width: imgSize,
                             borderRadius: '50%' }} 
@@ -375,8 +375,8 @@ export default function Job() {
                         }}
                         color="error"
                         startIcon={<Delete />}
-                        sx={{display:"flex"}}>
-                    </Button>
+                        sx={{display:"flex"}}
+                        className="right" />
                 </Box>
 
                 {/* Navigation tabs */}
