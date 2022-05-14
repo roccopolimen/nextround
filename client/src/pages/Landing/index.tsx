@@ -61,9 +61,9 @@ export default function Landing() {
                         <Slide direction="down" in={true} timeout={1000}>
                         <div className="HomePageContainer">
                             <br /><br /><br />
-                            <Typography variant="h3" id="title">NextRound</Typography>
+                            <Typography variant="h1" id="title" >NextRound</Typography>
                             <br />
-                            <Typography variant="subtitle1" id="blurb">
+                            <Typography variant="h2" id="blurb">
                             Track your job applications all in one place with
                             NextRound's unique features that will help you land the job
                             of your dreams! Ditch those spreadsheets; keep all the
@@ -115,7 +115,7 @@ export default function Landing() {
                     <Grid item sm={12} lg={6}>
                         <Slide in={true} direction="up" timeout={2000}>
                         <div className="HomePageContainer">
-                            <Typography variant="h5" id="subtitle">
+                            <Typography variant="h3" id="subtitle">
                             Track Applications for Top Companies
                             </Typography>
                             <div className="logos">
