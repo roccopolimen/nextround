@@ -365,7 +365,7 @@ const Upcoming = () => {
                             marginBottom='150px'
                         >
                             {toApply && toApply.length > 0 ? 
-                                <Accordion>
+                                <Accordion sx={{ mb: 1 }}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel1a-content" >
@@ -376,9 +376,9 @@ const Upcoming = () => {
                                     </AccordionDetails>
                                 </Accordion> : null
                             }
-                            <br/>
+
                             {applied && applied.length > 0 ?
-                                <Accordion>
+                                <Accordion sx={{ mb: 1 }}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel1a-content" >
@@ -389,9 +389,9 @@ const Upcoming = () => {
                                     </AccordionDetails>
                                 </Accordion> : null
                             }
-                            <br/>
+
                             {rejected && rejected.length > 0 ? 
-                                <Accordion>
+                                <Accordion sx={{ mb: 1 }}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel1a-content" >
@@ -402,9 +402,9 @@ const Upcoming = () => {
                                     </AccordionDetails>
                                 </Accordion> : null
                             }
-                            <br/>
+                            
                             {offered && offered.length > 0 ? 
-                                <Accordion>
+                                <Accordion sx={{ mb: 1 }}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel1a-content" >
@@ -415,7 +415,7 @@ const Upcoming = () => {
                                     </AccordionDetails>
                                 </Accordion> : null
                             }
-                            <br/>
+                            
                             {waitlisted && waitlisted.length > 0 ? 
                                 <Accordion>
                                     <AccordionSummary
