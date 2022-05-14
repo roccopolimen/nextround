@@ -22,17 +22,18 @@ export default function Landing() {
     // Responsive design
     const mobile: boolean = useMediaQuery("(max-width: 600px)");
     const tablet: boolean = useMediaQuery("(max-width: 1200px)");
+    const desktop: boolean = useMediaQuery("(min-width: 1201px");
     const width: string = mobile ? "100%" : tablet ? "65%" : "85%";
     const height: string = mobile ? "100%" : tablet ? "65%" : "100%";
+    const ml: number = desktop ? 20 : 0;
 
     return (
         <>
             {/* navbar */}
             <NavBar />
             {/* content */}
-            <Box
+            <Box ml={ml}
                 sx={{
-                    marginLeft: 20,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",

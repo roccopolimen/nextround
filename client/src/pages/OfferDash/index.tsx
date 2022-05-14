@@ -124,7 +124,7 @@ export default function OfferDash () {
             <Loading open={isLoadingCycle} />
             <SideDrawer />
             <Typography sx={{ fontWeight: 'bold', fontSize: h1Size, ml: margins, mt: margins }} component="h1" variant="h4">
-                Offer Dashboard
+                Offers Dashboard
             </Typography>
             <Modal open={open} onClose={() => closeModal()}
                 aria-labelledby="Add event form" >
