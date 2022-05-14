@@ -3,15 +3,24 @@ import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { Grid, Box, CardMedia, CardContent, Typography } from '@mui/material';
 
-const UpcomingBox = (props: {applicationId: string, url: string, title: string, company: string, role: string, date: Date}) => {
+interface PropType {
+    applicationId: string,
+    url: string,
+    title: string,
+    company: string,
+    role: string,
+    date: Date
+};
+
+const UpcomingBox = (props: PropType): JSX.Element => {
 
     // State variables
-    const [applicationId, setApplicationId] = useState('');
-    const [url, setUrl] = useState('');
-    const [title, setTitle] = useState('');
-    const [company, setCompany] = useState('');
-    const [role, setRole] = useState('');
-    const [date, setDate] = useState('');
+    const [applicationId, setApplicationId] = useState<string>('');
+    const [url, setUrl] = useState<string>('');
+    const [title, setTitle] = useState<string>('');
+    const [company, setCompany] = useState<string>('');
+    const [role, setRole] = useState<string>('');
+    const [date, setDate] = useState<string>('');
     
     useEffect(() => {
         setApplicationId(props.applicationId);
@@ -34,15 +43,17 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
     }, [props.role]);
 
     useEffect(() => {
-        const thisDate: string = ((props.date.getMonth() > 8) ? (props.date.getMonth() + 1) : ('0' + (props.date.getMonth() + 1))) + '/' + ((props.date.getDate() > 9) ? props.date.getDate() : ('0' + props.date.getDate())) + '/' + props.date.getFullYear()
+        const thisDate: string = ((props.date.getMonth() > 8) 
+        ? (props.date.getMonth() + 1)
+        : ('0' + (props.date.getMonth() + 1))) + '/' + ((props.date.getDate() > 9)
+            ? props.date.getDate()
+            : ('0' + props.date.getDate())) + '/' + props.date.getFullYear();
         setDate(thisDate);
     }, [props.date]);
 
-     // NOTE: I dont know a way to use one Link tag and keep the styling the same
-     return (
+    return (
         <Grid item xs={12} margin='10px'>
             <Box sx={{ display: 'flex', flexDirection: 'column', margin: '10px', borderBottom: 1}}>            
-                
                     <CardContent className='insideCard'>
                         <Grid container>
                             <Grid item xs={1} >
@@ -83,7 +94,7 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
                 
             </Box>
         </Grid>
-      );
-}
+    );
+};
 
 export default UpcomingBox;

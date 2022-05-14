@@ -1,5 +1,4 @@
 import express from 'express';
-import { ObjectId } from 'mongodb';
 import { getCycleByID, getAllCycles, createCycle, finishCycle, getUserById,  } from '../data';
 import { checkObjectId } from '../helpers/error';
 import { CycleObject, UserObject } from '../typings';

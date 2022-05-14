@@ -4,7 +4,7 @@ import SideDrawer from 'components/SideDrawer';
 import { useCreateCycle } from "api";
 import { useNavigate } from 'react-router-dom';
 
-export default function FirstCycle () {
+const AddCycle = (): JSX.Element => {
 
     //Responsive Design
     const mobile: boolean = useMediaQuery('(max-width: 900px)');
@@ -40,3 +40,5 @@ export default function FirstCycle () {
         </>
     );
 };
+
+export default AddCycle;

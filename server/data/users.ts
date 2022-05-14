@@ -14,8 +14,8 @@ export const getUserById = async (id: string): Promise<UserObject> => {
 
     const userCollection = await users();
     const user: UserObject = await userCollection.findOne({ _id: new ObjectId(id) });
-    if(user === null)
-        throw new Error("[data/users getById] no user with that id.");
+    if(user === null) throw new Error("[data/users getById] no user with that id.");
+
     return user;
 };
 
@@ -30,8 +30,8 @@ export const getUserByEmail = async (email: string): Promise<UserObject> => {
 
     const userCollection = await users();
     const user: UserObject = await userCollection.findOne({ email: email });
-    if(user === null)
-        throw new Error("[data/users getByEmail] no user with that email.");
+    if(user === null) throw new Error("[data/users getByEmail] no user with that email.");
+
     return user;
 };
 
@@ -45,10 +45,8 @@ export const getUserByEmail = async (email: string): Promise<UserObject> => {
 export const createUser = async (firebaseId: string, email: string, name: string): Promise<UserObject> => {
     if(!firebaseId || !checkNonEmptyString(firebaseId))
         throw new Error("[data/users create] firebaseId is invalid.");
-
     if(!email || !checkEmail(email))
         throw new Error("[data/users create] email is invalid.");
-
     if(!name || !checkNonEmptyString(name))
         throw new Error("[data/users create] name is invalid.");
 
@@ -58,14 +56,12 @@ export const createUser = async (firebaseId: string, email: string, name: string
         alreadySeen = true;
     } catch(e) {}
 
-    if(alreadySeen)
-        throw new Error("[data/users create] user already exists with credentials.");
+    if(alreadySeen) throw new Error("[data/users create] user already exists with credentials.");
 
-    const newUser = {
+    const newUser: UserObject = {
         _id: new ObjectId(),
         email: email,
         name: name,
-        pfp: "",
         firebaseId: firebaseId,
         cycles: []
     };
@@ -81,13 +77,12 @@ export const createUser = async (firebaseId: string, email: string, name: string
 /**
  * @description Delete the user from the user's collection
  * @param {string} id the id of the user
- * @return {boolean} true if it was successful
+ * @return {Promise<boolean>} true if it was successful
  */
 export const removeUser = async (id: string): Promise<boolean> => {
     if(!id || !checkObjectId(id))
         throw new Error("[data/users remove] id is invalid.");
 
-    const userCollection = await users();
     const user: UserObject = await getUserById(id);
 
     const user_cycles: Array<ObjectId> = user.cycles;
@@ -95,9 +90,7 @@ export const removeUser = async (id: string): Promise<boolean> => {
     for(let cycleId of user_cycles)
         await cycleCollection.deleteOne({ _id: cycleId });
 
-    // TODO: delete social media posts as well??
-    // Discuss this during standup.
-
+    const userCollection = await users();
     const deleteInfo = await userCollection.deleteOne({ _id: new ObjectId(id) });
     if(deleteInfo.deletedCount === 0)
         throw new Error("[data/users remove] could not delete user.");

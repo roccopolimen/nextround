@@ -10,17 +10,14 @@ import { getUserById } from './users';
  * @param {number} num_posts Number of posts to return
  * @returns {Promise<Array<ForumPostObject>>} List of posts
  */
-export const getForumPosts = async (
-    num_posts: number): Promise<Array<ForumPostObject>> => {
-    if(!num_posts || !checkNonNegativeNumber(num_posts)){
+export const getForumPosts = async (num_posts: number): Promise<Array<ForumPostObject>> => {
+    if(!checkNonNegativeNumber(num_posts))
         throw new Error('Invalid number of posts');
-    }
 
     const forumCollection = await media();
-    const forumPosts: Array<ForumPostObject> = await forumCollection.find({
-        }).limit(num_posts).toArray();
+    const forumPosts: Array<ForumPostObject> = await forumCollection.find({}).limit(num_posts).toArray();
     return forumPosts;
-}
+};
 
 /**
  * @description Creates a new forum post
@@ -28,26 +25,21 @@ export const getForumPosts = async (
  * @param {string} content Content of the post
  * @returns {Promise<ForumPostObject>} The newly created post object
  */
-export const createForumPost = async (userId: string,
-     content: string): Promise<ForumPostObject> => {
+export const createForumPost = async (userId: string, content: string): Promise<ForumPostObject> => {
     
-    if(!userId || !checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid id');
-    }
-
-    if(!content) {
+    if(!content)
         throw new Error('Invalid content');
-    }
 
     const poster: UserObject = await getUserById(userId);
-    if(poster === null)
-        throw new Error("There is no user with that id.");
+    if(poster === null) throw new Error("There is no user with that id.");
 
-    let jobCycle: ObjectId = poster.cycles[poster.cycles.length - 1];
-    let metrics: MetricsObject = await getMetricsByID(jobCycle.toString());
-    let postDate: Date = new Date();
+    const jobCycle: ObjectId = poster.cycles[poster.cycles.length - 1];
+    const metrics: MetricsObject = await getMetricsByID(jobCycle.toString());
+    const postDate: Date = new Date();
 
-    let forumPost: ForumPostObject = {
+    const forumPost: ForumPostObject = {
         _id: new ObjectId(),
         poster: poster._id,
         content: content,
@@ -63,4 +55,4 @@ export const createForumPost = async (userId: string,
         throw new Error("Failed to create forum post.");
         
     return forumPost;
-}
+};

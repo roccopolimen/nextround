@@ -1,8 +1,8 @@
 import {Navigate, Outlet} from 'react-router-dom';
-import { useAuthContext } from 'context';
+import { AuthContent, useAuthContext } from 'context';
 
-const PrivateRoute = () => {
-    const user = useAuthContext();
+const PrivateRoute = (): JSX.Element => {
+    const user: AuthContent = useAuthContext();
 
     // If authorized, return an outlet that will render child elements
     // If not, return element that will navigate to login page

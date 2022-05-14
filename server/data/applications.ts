@@ -12,7 +12,8 @@ import axios from 'axios';
  */
 const searchLogo = async (company: string): Promise<string> => {
     try {
-        const { data } = await axios.get(`https://company.clearbit.com/v1/domains/find?name=${company}`, { auth: { username: process.env.CLEARBIT_API_KEY, password: '' } });
+        const { data } = await axios.get(`https://company.clearbit.com/v1/domains/find?name=${company}`,
+                                        { auth: { username: process.env.CLEARBIT_API_KEY, password: '' } });
         return data.logo;
     } catch(e) {
         console.log('Clearbit API call failed.');
@@ -25,7 +26,7 @@ const searchLogo = async (company: string): Promise<string> => {
  * @description Get an application by id
  * @param {string} userId user id
  * @param {string} applicationId Application id
- * @returns {Promise<Object>} Cycle Object with given id if found 
+ * @returns {Promise<ApplicationObject>} Cycle Object with given id if found 
  * and throws an error otherwise
  */
 export const getApplicationById = async (userId: string, applicationId: string): Promise<ApplicationObject> => {
@@ -37,18 +38,15 @@ export const getApplicationById = async (userId: string, applicationId: string):
 
     const usersCollection = await users();
     const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
-    if(user === null)
-        throw new Error("There is no user with that id.");
+    if(user === null) throw new Error("There is no user with that id.");
 
     const cycleId: ObjectId = user.cycles[user.cycles.length-1];
     const cyclesCollection = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
-    if(cycle === null)
-        throw new Error("User has no cycles.");
+    if(cycle === null) throw new Error("User has no cycles.");
 
-    let application: ApplicationObject = cycle.applications.find(a => a._id.toString() === applicationId);
-    if(application === undefined)
-        throw new Error("No application found with that id.")
+    const application: ApplicationObject = cycle.applications.find(a => a._id.toString() === applicationId);
+    if(application === undefined) throw new Error("No application found with that id.");
     
     return application;
 };
@@ -57,10 +55,11 @@ export const getApplicationById = async (userId: string, applicationId: string):
  * @description Get an application by id from a given cycle
  * @param {string} cycleId cycle id
  * @param {string} applicationId Application id
- * @returns {Promise<Object>} Cycle Object with given id if found 
+ * @returns {Promise<ApplicationObject>} Cycle Object with given id if found 
  * and throws an error otherwise
  */
- export const getApplicationFromCycleById = async (cycleId: string, applicationId: string): Promise<ApplicationObject> => {
+ export const getApplicationFromCycleById = async (cycleId: string, applicationId: string): 
+                                                                    Promise<ApplicationObject> => {
     if(!cycleId || !checkObjectId(cycleId))
         throw new Error("A proper cycle id must be provided.");
 
@@ -69,49 +68,16 @@ export const getApplicationById = async (userId: string, applicationId: string):
 
     const cyclesCollection = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({ _id: new ObjectId(cycleId) });
-    if(cycle === null)
-        throw new Error("User has no cycles.");
+    if(cycle === null) throw new Error("User has no cycles.");
 
-    let application: ApplicationObject = cycle.applications.find(a => a._id.toString() === applicationId);
-    if(application === undefined)
-        throw new Error("No application found with that id.")
+    const application: ApplicationObject = cycle.applications.find(a => a._id.toString() === applicationId);
+    if(application === undefined) throw new Error("No application found with that id.");
     
     return application;
 };
 
 /**
- * @description Finds all applications from a given cycle
- * @param {string} cycleId The cycle id to get all applications from
- * @returns {Promise<ApplicationObject[]>} Array of applications belonging to a given cycle,
- * otherwise throws and error
- */
-export const getAllApplications = async (cycleId: string): Promise<ApplicationObject[]> => {
-    if(!cycleId || !checkObjectId(cycleId)) {
-        throw new Error("a proper cycle id must be provided.")
-    }
-
-    //Find the cycle with cycleId
-    const cycleCollection: any = await cycles();
-    const cycle: CycleObject = await cycleCollection.findOne({
-        _id: new ObjectId(cycleId)
-    });
-
-    if(cycle === null) {
-        throw new Error("There is no cycle with that id.");
-    }
-
-    //Grabs all applicatins in cycle 
-    const cycleApps: ApplicationObject[] = cycle["applications"];
-    let retApps: ApplicationObject[] = []; 
-    for(let app of cycleApps) {
-        retApps.push(app);
-    }
-
-    return retApps;
-};
-
-/**
- * Creates a new application within a given cycle
+ * @description Creates a new application within a given cycle
  * @param {string} userId The user id
  * @param {string} company Company the application is for
  * @param {string} position Position beign applied to
@@ -122,7 +88,9 @@ export const getAllApplications = async (cycleId: string): Promise<ApplicationOb
  * @returns {Promise<ApplicationObject>} Returns the created application Object if successful anf throws
  * and error otherwise
  */
-export const createApplication = async (userId: string, company: string, position: string, location: string, jobPostUrl: string, description: string, applyDate: string): Promise<ApplicationObject> => {
+export const createApplication = async (userId: string, company: string, position: string, location: string,
+                                        jobPostUrl: string, description: string, applyDate: string):
+                                                                                    Promise<ApplicationObject> => {
     if(!userId || !checkObjectId(userId))
         throw new Error("A proper cycle id must be provided.");
     if(!company || !checkNonEmptyString(company))
@@ -141,7 +109,7 @@ export const createApplication = async (userId: string, company: string, positio
 
     const logo = await searchLogo(company);
     const cardColor: string = randomColor();
-    let newApp: ApplicationObject = {
+    const newApp: ApplicationObject = {
         _id: new ObjectId(),
         company: company,
         companyLogo: logo,
@@ -153,29 +121,24 @@ export const createApplication = async (userId: string, company: string, positio
         description: description,
         progress: 0,
         notes: [],
-        events: [
-            {
-                _id: new ObjectId(),
-                status: false,
-                title: "Apply",
-                date: new Date(applyDate),
-                location: ""
-            }
-        ],
+        events: [{
+            _id: new ObjectId(),
+            status: false,
+            title: "Apply",
+            date: new Date(applyDate),
+            location: ""
+        }],
         contacts: []
     };
 
     const usersCollection = await users();
     const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
-    if(user === null)
-        throw new Error("There is no user with that id.");
+    if(user === null) throw new Error("There is no user with that id.");
 
     const cycleId: ObjectId = user.cycles[user.cycles.length-1];
     const cyclesCollection = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
-    if(cycle === null)
-        throw new Error("User has no cycles.");
-
+    if(cycle === null) throw new Error("User has no cycles.");
 
     cycle.applications.push(newApp);
     let updatedInfo = await cyclesCollection.updateOne({ _id: cycle._id }, { $set: cycle });
@@ -186,7 +149,7 @@ export const createApplication = async (userId: string, company: string, positio
 };
 
 /**
- * Updates a given application with new data
+ * @description Updates a given application with new data
  * @param {string} userId user id
  * @param {string} applicationId Id of application to change
  * @param {string} company
@@ -200,9 +163,12 @@ export const createApplication = async (userId: string, company: string, positio
  * @returns {Promise<ApplicationObject>} Returns the updated application if successful and 
  * throws an error otherwise
  */
-export const updateApplication = async (userId: string, applicationId: string, company: string, position: string, location: string, jobPostUrl: string, description: string, salary: number, cardColor: string, progress: number): Promise<ApplicationObject> => {
+export const updateApplication = async (userId: string, applicationId: string, company: string, position: string,
+                                        location: string, jobPostUrl: string, description: string, salary: number,
+                                        cardColor: string, progress: number): Promise<ApplicationObject> => {
+
     if(!userId || !checkObjectId(userId))
-        throw new Error("A proper cycle id must be provided.")
+        throw new Error("A proper cycle id must be provided.");
     if(!applicationId || !checkObjectId(applicationId))
         throw new Error("A proper application id must be provided.");
 
@@ -263,14 +229,12 @@ export const updateApplication = async (userId: string, applicationId: string, c
 
     const usersCollection = await users();
     const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
-    if(user === null)
-        throw new Error("There is no user with that id.");
+    if(user === null) throw new Error("There is no user with that id.");
 
     const cycleId: ObjectId = user.cycles[user.cycles.length-1];
     const cyclesCollection = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
-    if(cycle === null)
-        throw new Error("User has no cycles.");
+    if(cycle === null) throw new Error("User has no cycles.");
     
     const appIndex: number = cycle.applications.findIndex(a => a._id.toString() === applicationId);
     if(appIndex === -1) throw new Error("Unable to find an application with that id.");
@@ -280,12 +244,18 @@ export const updateApplication = async (userId: string, applicationId: string, c
     });
 
     const updatedInfo = await cyclesCollection.updateOne({ _id: cycleId }, { $set: cycle });
-    if(updatedInfo.modifiedCount === 0)
-        throw new Error("Could not update application.");
+    if(updatedInfo.modifiedCount === 0) throw new Error("Could not update application.");
 
     return await getApplicationFromCycleById(cycleId.toString(), applicationId);
 };
 
+/**
+ * @description adds a note to the user's application
+ * @param {string} userId 
+ * @param {string} applicationId 
+ * @param {string} note text of note to be added
+ * @returns {Promise<ApplicationObject>} the updated application
+ */
 export const createNote = async (userId: string, applicationId: string, note: string): Promise<ApplicationObject> => {
     if(!userId || !checkObjectId(userId))
         throw new Error("A proper user id must be provided.")
@@ -296,14 +266,12 @@ export const createNote = async (userId: string, applicationId: string, note: st
     
     const usersCollection = await users();
     const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
-    if(user === null)
-        throw new Error("There is no user with that id.");
+    if(user === null) throw new Error("There is no user with that id.");
 
     const cycleId: ObjectId = user.cycles[user.cycles.length-1];
     const cyclesCollection = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
-    if(cycle === null)
-        throw new Error("User has no cycles.");
+    if(cycle === null) throw new Error("User has no cycles.");
     
     const appIndex: number = cycle.applications.findIndex(a => a._id.toString() === applicationId);
     if(appIndex === -1) throw new Error("Unable to find an application with that id.");
@@ -319,7 +287,7 @@ export const createNote = async (userId: string, applicationId: string, note: st
 };
 
 /**
- * Deletes an application from a given cycle
+ * @description Deletes an application from a given cycle
  * @param {string} userId
  * @param {string} applicationId Application to be deleted
  * @returns {Promise<boolean>} Returns true if application was successfully deleted and 

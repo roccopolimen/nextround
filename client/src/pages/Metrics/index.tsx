@@ -1,3 +1,6 @@
+import './style.css';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { 
     Box,
     Card,
@@ -12,10 +15,6 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
-import { useGetCurrentCycle, useGetCycle, useGetCycleMetrics, useGetMetrics } from "api";
-import StatCard from "components/StatCard";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { 
     CartesianGrid,
     Funnel,
@@ -28,30 +27,32 @@ import {
     XAxis, 
     YAxis
 } from "recharts";
+import { useGetCurrentCycle, useGetCycle, useGetCycleMetrics, useGetMetrics } from "api";
 import { ApplicationObject, MetricsObject } from "typings";
+import StatCard from "components/StatCard";
 import Loading from 'components/Loading';
 import SideDrawer from "components/SideDrawer";
-import './style.css';
 
-export default function Metrics() {
+const Metrics = (): JSX.Element => {
     const navigate = useNavigate();
     const params = useParams();
-    const cycleId = params.cycleId;
+    const cycleId: string | undefined = params.cycleId;
+
     // State variables
-    const [applications, setApplications] = useState([] as ApplicationObject[]);
-    const [data, setData] = useState(undefined as MetricsObject | undefined);
-    const [funnelData, setFunnelData] = useState([] as any[]);
-    const [lineData, setLineData] = useState([] as any[]);
+    const [applications, setApplications] = useState<Array<ApplicationObject>>([]);
+    const [data, setData] = useState<MetricsObject | undefined>(undefined);
+    const [funnelData, setFunnelData] = useState<Array<any>>([]);
+    const [lineData, setLineData] = useState<Array<any>>([]);
 
     // Queries
-    const { data: cMetricsData, isLoading: cIsLoading, isError: cIsError,
-         refetch: fetchCurrentMetrics } = useGetMetrics();
-    const { data: metricsData, isLoading, isError,
-         refetch: fetchMetrics } = useGetCycleMetrics(cycleId ? cycleId : "");
-    const {data: cCycleData, isLoading: cCycleIsLoading, isError: cCycleIsError,
-         refetch: fetchCurrentCycle} = useGetCurrentCycle();
-    const {data: cycleData, isLoading: cycleIsLoading, isError: cycleIsError,
-         refetch: fetchCycle} = useGetCycle(cycleId ? cycleId : "");
+    const { data: cMetricsData, isLoading: cIsLoading, isError: cIsError, refetch: fetchCurrentMetrics }
+        = useGetMetrics();
+    const { data: metricsData, isLoading, isError, refetch: fetchMetrics }
+        = useGetCycleMetrics(cycleId ? cycleId : "");
+    const { data: cCycleData, isLoading: cCycleIsLoading, isError: cCycleIsError, refetch: fetchCurrentCycle }
+        = useGetCurrentCycle();
+    const { data: cycleData, isLoading: cycleIsLoading, isError: cycleIsError, refetch: fetchCycle }
+        = useGetCycle(cycleId ? cycleId : "");
 
     useEffect(() => {
         // Fetch data on mount
@@ -69,8 +70,7 @@ export default function Metrics() {
             }
         };
         fetchData();
-    }, [cycleId, fetchCurrentCycle, fetchCycle, fetchMetrics,
-         fetchCurrentMetrics]);
+    }, [cycleId, fetchCurrentCycle, fetchCycle, fetchMetrics, fetchCurrentMetrics, navigate]);
 
     useEffect(() => {
         // Set data when successfully retrieved
@@ -90,7 +90,7 @@ export default function Metrics() {
     useEffect(() => {
         // Create funnel data
         if (data) {
-            const funnelData: any[] = [];
+            const funnelData: Array<any> = [];
             if(data.num_saved > 0) {
                 funnelData.push({
                     name: "Saved",
@@ -122,7 +122,7 @@ export default function Metrics() {
             setFunnelData(funnelData);
 
             // Create line chart data
-            let lineData: any[] = [];
+            let lineData: Array<any> = [];
             let count: number = 0;
             let n: number = data.application_timeline.length;
             for(let d: Date = new Date(data.application_timeline[0]);
@@ -141,11 +141,7 @@ export default function Metrics() {
     }, [data]);
 
     if(isLoading || cIsLoading || cycleIsLoading || cCycleIsLoading) {
-        return (
-            <div>
-                <Loading open={ true } />
-            </div>
-        );
+        return <Loading open={ true } />;
     } else if(!data || isError || cIsError || cycleIsError || cCycleIsError) {
         return (
             <div>
@@ -263,3 +259,5 @@ export default function Metrics() {
         );
     }
 };
+
+export default Metrics;

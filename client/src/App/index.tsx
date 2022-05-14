@@ -7,7 +7,6 @@ import {
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from 'constants';
-// import { AuthProvider } from 'context';
 import Landing from 'pages/Landing';
 import SignIn from 'pages/SignIn';
 import SignUp from 'pages/SignUp';
@@ -21,7 +20,7 @@ import PrivateRoute from 'components/PrivateRoute';
 import PublicRoute from 'components/PublicRoute';
 import { AuthProvider } from 'context';
 
-const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
+const twentyFourHoursInMs: number = 1000 * 60 * 60 * 24;
 const queryClient: QueryClient = new QueryClient({
     defaultOptions: {
         queries: {
@@ -35,7 +34,7 @@ const queryClient: QueryClient = new QueryClient({
     },
 });
 
-const App = () => {
+const App = (): JSX.Element => {
     return (
         <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
@@ -63,6 +62,6 @@ const App = () => {
         </ThemeProvider>
         </QueryClientProvider>
     );
-}
+};
 
 export default App;

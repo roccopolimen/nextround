@@ -4,171 +4,129 @@ import { checkObjectId, checkDate, checkNonEmptyString } from '../helpers/error'
 import { ApplicationObject, CycleObject, EventObject, UserObject } from '../typings';
 
 /**
- * Get event by id
+ * @description Get event by id
  * @param {string} userId
  * @param {string} applicationId
  * @param {string} eventId
  * @returns {Promise<EventObject>} The event given the ids above
  */
-export const getEventById = async(userId: string, applicationId: string, eventId: string):Promise<EventObject> => {
+export const getEventById = async (userId: string, applicationId: string, eventId: string): Promise<EventObject> => {
     
-    if(!userId || !checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    }
-    if(!applicationId || !checkObjectId(applicationId)){
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    }
-    if(!eventId || !checkObjectId(eventId)){
+    if(!eventId || !checkObjectId(eventId))
         throw new Error('Invalid eventId');
-    }
 
-    const usersCollection: any = await users();
-    const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
+    const usersCollection = await users();
+    const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
-
-    const cyclesCollection: any = await cycles();
-    const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
+    const cycleId: ObjectId = user.cycles[user.cycles.length - 1];
+    const cyclesCollection = await cycles();
+    const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
     if(cycle === null) throw new Error('Could not find cycle');
 
-    let application: ApplicationObject = null;
-    for(let element of cycle.applications){
-        if(element._id.toString() === applicationId){
-            application = element;
-        }
-    }
-    if(application === null) throw new Error('Could not find application');
+    const application: ApplicationObject = cycle.applications.find(app => app._id.toString() === applicationId);
+    if(application === undefined) throw new Error('Could not find application');
 
-    let event: EventObject = null;
-    for(let element of application.events){
-        if(element._id.toString() === eventId){
-            event = element
-        }
-    }
-    if(event === null) throw new Error('Could not find event');
+    const event: EventObject = application.events.find(e => e._id.toString() === eventId);
+    if(event === undefined) throw new Error('Could not find event');
 
     return event;
-}
+};
 
 /**
- * Get all events
+ * @description Get all events
  * @param {string} userId
  * @param {string} applicationId
- * @returns {Promise<EventObject[]>}All the events of the application
+ * @returns {Promise<Array<EventObject>>} All the events of the application
  */
- export const getAllEvents = async (userId: string, applicationId: string): Promise<EventObject[]> => {
+ export const getAllEvents = async (userId: string, applicationId: string): Promise<Array<EventObject>> => {
 
-    if(!userId || !checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    }
-    if(!applicationId || !checkObjectId(applicationId)){
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    }
 
-    const usersCollection: any = await users();
-    const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
+    const usersCollection = await users();
+    const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
-
-    const cyclesCollection: any = await cycles();
-    const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
+    const cycleId: ObjectId = user.cycles[user.cycles.length - 1];
+    const cyclesCollection = await cycles();
+    const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
     if(cycle === null) throw new Error('Could not find cycle');
 
-    let application: ApplicationObject = null;
-    for(let element of cycle.applications){
-        if(element._id.toString() === applicationId){
-            application = element;
-            break;
-        }
-    }
-    if(application === null) throw new Error('Could not find application');
-    
-    let events: EventObject[] = application.events ? application.events : [];
+    const application: ApplicationObject = cycle.applications.find(app => app._id.toString() === applicationId);
+    if(application === undefined) throw new Error('Could not find application');
 
-    return events
-}
+    return application.events;
+};
 
 /**
- * Create event
+ * @description Create event
  * @param {string} userId
  * @param {string} applicationId
  * @param {string} title 
- * @param {Date} date 
- * @param {String} location 
+ * @param {string} date 
+ * @param {string} location 
  * @returns {Promise<EventObject>} if the event was created, throws otherwise 
  */
- export const createEvent = async (userId: string, applicationId: string, title: string, date: string, location: string): Promise<EventObject> => {
+ export const createEvent = async (userId: string, applicationId: string, title: string,
+                                    date: string, location: string): Promise<EventObject> => {
 
-    if(!userId || !checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    }
-    if(!applicationId || !checkObjectId(applicationId)){
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    }
-    if(!title || !checkNonEmptyString(title)){
+    if(!title || !checkNonEmptyString(title))
         throw new Error('Invalid title');
-    }
-    if(!date || !checkDate(date)){
+    if(!date || !checkDate(date))
         throw new Error('Invalid date');
-    }
-    if(!location || !checkNonEmptyString(location)){
+    if(!location || !checkNonEmptyString(location))
         throw new Error('Invalid location');
-    }
 
-    const usersCollection: any = await users();
-    const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
+    const usersCollection = await users();
+    const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
-
-    const cyclesCollection: any = await cycles();
-    const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
+    const cycleId: ObjectId = user.cycles[user.cycles.length - 1];
+    const cyclesCollection = await cycles();
+    const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
     if(cycle === null) throw new Error('Could not find cycle');
 
     const newEvent: EventObject = {
         _id: new ObjectId(),
         status: false,
         title: title,
-        date: new Date(date), // Potential bugs here if date is passed as '1/1/22' i know 'January 1 2022' works
+        date: new Date(date),
         location: location
-    }
+    };
 
-    // Used to check if application exists 
-    let application: number = null;
-    for(let element of cycle.applications){
-        if(element._id.toString() === applicationId){
-            application = 1;
-            break;
-        } 
-    }
-    if(application === null) throw new Error('Could not find application');
+    const application: ApplicationObject = cycle.applications.find(app => app._id.toString() === applicationId);
+    if(application === undefined) throw new Error('Could not find application');
     
     let updateInfo = await cyclesCollection.updateOne(
-        {
-        _id: new ObjectId(cycleId),
-        "applications._id": new ObjectId(applicationId)
-        }, 
-        {$push: {
-            "applications.$.events": newEvent
-            }
-        }
+        { _id: cycleId, "applications._id": new ObjectId(applicationId) }, 
+        { $push: { "applications.$.events": newEvent } }
     );
     if (updateInfo.modifiedCount === 0) throw new Error('Could not add event');
 
     return await getEventById(userId, applicationId, newEvent._id.toString());
-}
+};
 
 /**
- * Update event
+ * @description Update event
  * @param {string} userId 
  * @param {string} applicationId 
  * @param {string} eventId
  * @param {boolean} status
  * @returns {Promise<EventObject>} if event  was updated 
  */
- export const updateEvent = async (userId: string, applicationId: string, eventId: string, status: boolean): Promise<EventObject> => {
+ export const updateEvent = async (userId: string, applicationId: string, eventId: string, status: boolean): 
+                                                                                        Promise<EventObject> => {
     if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
     if(!applicationId || !checkObjectId(applicationId))
@@ -182,11 +140,11 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     if(Object.keys(updateFields).length === 0)
         throw new Error('No fields to update in event.');
 
-    const usersCollection: any = await users();
+    const usersCollection = await users();
     const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
     if(user === null) throw new Error('Could not find user');
 
-    const cyclesCollection: any = await cycles();
+    const cyclesCollection = await cycles();
     const cycleId: ObjectId = user.cycles[user.cycles.length - 1];
     const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
     if(cycle === null) throw new Error('Could not find cycle');
@@ -204,75 +162,49 @@ export const getEventById = async(userId: string, applicationId: string, eventId
     // update mongodb with new events list
     let updateInfo = await cyclesCollection.updateOne(
         { _id: cycleId, "applications._id": new ObjectId(applicationId) }, 
-        {
-            $set: {
-                "applications.$.events": cycle.applications[appIndex].events
-            }
-        }
+        { $set: { "applications.$.events": cycle.applications[appIndex].events } }
     );
-    if (updateInfo.modifiedCount === 0) throw new Error('Could not update event');
+    if(updateInfo.modifiedCount === 0) throw new Error('Could not update event');
 
     return await getEventById(userId, applicationId, eventId);
-}
+};
 
 /**
- * Delete event
+ * @description Delete event
  * @param {string} userId 
  * @param {string} applicationId 
  * @param {string} eventId 
- * @returns true if the event was deleted, throws otherwise
+ * @returns {Promise<boolean>} true if the event was deleted, throws otherwise
  */
  export const deleteEvent = async (userId: string, applicationId: string, eventId: string): Promise<boolean> => {
 
-    if(!userId || !checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    }
-    if(!applicationId || !checkObjectId(applicationId)){
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    }
-    if(!eventId || !checkObjectId(eventId)){
+    if(!eventId || !checkObjectId(eventId))
         throw new Error('Invalid eventId');
-    }
 
-    const usersCollection: any = await users();
-    const user: UserObject = await usersCollection.findOne({_id: new ObjectId(userId)});
+    const usersCollection = await users();
+    const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
     if(user === null) throw new Error('Could not find user');
 
-    const cycleId: string = user.cycles[user.cycles.length - 1].toString();
-
-    const cyclesCollection: any = await cycles();
-    const cycle: CycleObject = await cyclesCollection.findOne({_id: new ObjectId(cycleId)});
+    const cycleId: ObjectId = user.cycles[user.cycles.length - 1];
+    const cyclesCollection = await cycles();
+    const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
     if(cycle === null) throw new Error('Could not find cycle');
 
-    let application: ApplicationObject = null;
-    for(let element of cycle.applications){
-        if(element._id.toString() === applicationId){
-            application = element;
-            break;
-        } 
-    }
-    if(application === null) throw new Error('Could not find application');
+    const application: ApplicationObject = cycle.applications.find(app => app._id.toString() === applicationId);
+    if(application === undefined) throw new Error('Could not find application');
 
-    let events: EventObject[] = [];
-    for(let element of application.events){
-        if(element._id.toString() === eventId){
-            continue;
-        }
-        events.push(element);
-    }
+    const events: Array<EventObject> = application.events.filter(e => e._id.toString() !== eventId);
     if(events.length === application.events.length) throw new Error('Could not find event');
     
     let updateInfo = await cyclesCollection.updateOne(
-        {
-        _id: new ObjectId(cycleId),
-        "applications._id": new ObjectId(applicationId)
-        }, 
-        {$set: {
-            "applications.$.events": events
-            }
-        }
+        { _id: cycleId, "applications._id": new ObjectId(applicationId) }, 
+        { $set: { "applications.$.events": events } }
     );
-    if (updateInfo.modifiedCount === 0) throw new Error('Could not remove event');
+    if(updateInfo.modifiedCount === 0) throw new Error('Could not remove event');
 
     return true;
-}
+};

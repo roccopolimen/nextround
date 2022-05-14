@@ -9,79 +9,71 @@ import { CycleObject, UserObject } from '../typings';
  * @returns {Promise<CycleObject>} Cycle object
  */
 export const getCycleByID = async (id: string): Promise<CycleObject> => {
-    if(!id || !checkObjectId(id)){
+    if(!id || !checkObjectId(id))
         throw new Error('Invalid id');
-    }
 
     const cycleCollection = await cycles();
-    const cycle: CycleObject = await cycleCollection.findOne({_id: new ObjectId(id)});
-    if(cycle === null)
-        throw new Error("There is no cycle with that id.");
+    const cycle: CycleObject = await cycleCollection.findOne({ _id: new ObjectId(id) });
+    if(cycle === null) throw new Error("There is no cycle with that id.");
 
     return cycle;
-}
+};
 
 /**
  * @description Get all cycles for a given user
  * @param userId User id
- * @returns {Promise<CycleObject[]>} List of cycles
+ * @returns {Promise<Array<CycleObject>>} List of cycles
  */
-export const getAllCycles = async (userId: string): Promise<CycleObject[]> => {
-    if(!userId || !checkObjectId(userId)){
+export const getAllCycles = async (userId: string): Promise<Array<CycleObject>> => {
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid id');
-    }
+
+    const userCollection = await users();
+    const user: UserObject = await userCollection.findOne({ _id: new ObjectId(userId) });
+    if(user === null) throw new Error("There is no user with that id.");
 
     const cycleCollection = await cycles();
-    const userCollection = await users();
-    const user: UserObject = await userCollection.findOne({
-        _id: new ObjectId(userId) });
-    if(user === null)
-        throw new Error("There is no user with that id.");
-
-    let userCycles: CycleObject[] = [];
-    for(let i = 0; i < user.cycles.length; i++) {
-        userCycles.push(await cycleCollection.findOne({
-            _id: new ObjectId(user.cycles[i]) }));
-    }
+    let userCycles: Array<CycleObject> = [];
+    for(let i = 0; i < user.cycles.length; i++)
+        userCycles.push(await cycleCollection.findOne({ _id: new ObjectId(user.cycles[i]) }));
+    
     return userCycles;
-}
+};
 
 /**
  * @description Create a new cycle
- * @param userId User id
+ * @param {string} userId User id
  * @returns {{Promise<CycleObject>}} The newly created cycle object
  */
 export const createCycle = async (userId: string): Promise<CycleObject> => {
     if(!userId || !checkObjectId(userId))
         throw new Error('Invalid id');
 
-    let currDate: Date = new Date();
-    let cycle: CycleObject = {
+    const currDate: Date = new Date();
+    const cycle: CycleObject = {
         _id: new ObjectId(),
         startDate: currDate,
         endDate: null,
         applications: []
-    }
+    };
 
     // Add to cycles document
     const cycleCollection = await cycles();
-    const userCollection = await users();
     const insertInfo = await cycleCollection.insertOne(cycle);
     if(insertInfo.insertedCount === 0)
         throw new Error("Could not add cycle.");
 
     // Finish previous cycle if unfinished
     const newId: ObjectId = insertInfo.insertedId;
+    const userCollection = await users();
     const user: UserObject = await userCollection.findOne({ _id: new ObjectId(userId) });
-    if(user === null)
-        throw new Error("There is no user with that id.");
+    if(user === null) throw new Error("There is no user with that id.");
 
     if(user.cycles.length > 0) {
         const currCycle: CycleObject = await cycleCollection.findOne({
             _id: new ObjectId(user.cycles[user.cycles.length - 1])
         });
-        if(currCycle.endDate === null)
-            await finishCycle(userId);
+        if(currCycle.endDate === null) await finishCycle(userId);
     }
 
     // Add to user's cycles list
@@ -95,11 +87,11 @@ export const createCycle = async (userId: string): Promise<CycleObject> => {
 
     // Return the new cycle object
     return await getCycleByID(newId.toString());
-}
+};
 
 /**
- * Finishes a cycle by setting its end date to the current date.
- * @param userId User id
+ * @description Finishes a cycle by setting its end date to the current date.
+ * @param {string} userId User id
  * @returns {{Promise<CycleObject>}} The updated cycle object
  */
 export const finishCycle = async (userId: string): Promise<CycleObject> => {
@@ -108,14 +100,12 @@ export const finishCycle = async (userId: string): Promise<CycleObject> => {
 
     const usersCollection = await users();
     const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
-    if(user === null)
-        throw new Error("There is no user with that id.");
+    if(user === null) throw new Error("There is no user with that id.");
 
     const cycleId: ObjectId = user.cycles[user.cycles.length-1];
     const cyclesCollection = await cycles();
     const cycle: CycleObject = await cyclesCollection.findOne({ _id: cycleId });
-    if(cycle === null)
-        throw new Error("User has no cycles.");
+    if(cycle === null) throw new Error("User has no cycles.");
 
     // Update the end date
     const updateInfo = await cyclesCollection.updateOne(
@@ -127,4 +117,4 @@ export const finishCycle = async (userId: string): Promise<CycleObject> => {
 
     // Return the updated cycle object
     return await getCycleByID(cycleId.toString());
-}
+};

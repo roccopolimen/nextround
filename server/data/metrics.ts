@@ -11,8 +11,7 @@ export const getMetricsByID = async (id: string): Promise<MetricsObject> => {
     if(!id || !checkObjectId(id)) throw new Error('Invalid id');
 
     const cycle: CycleObject = await getCycleByID(id);
-    if(cycle === null)
-        throw new Error("There is no cycle with that id.");
+    if(cycle === null) throw new Error("There is no cycle with that id.");
 
     // Set up variables for metrics object
     let num_saved: number = 0;
@@ -24,13 +23,11 @@ export const getMetricsByID = async (id: string): Promise<MetricsObject> => {
     let avg_salary: number = 0;
     let num_connections: number = 0;
     let application_timeline: Array<Date> = [];
-
     let salaries: Array<number> = [];
 
     for(let app of cycle.applications) { // For each application
         num_saved++; // another saved application
-        let interview_flag = false;
-
+        let interview_flag: boolean = false;
         for(let event of app.events) { // For each event
             if(event.title === "Apply" && event.status === true) {
                 num_applications++; // another application
@@ -46,16 +43,14 @@ export const getMetricsByID = async (id: string): Promise<MetricsObject> => {
 
         if(app.progress === 1) {
             num_offers++; // another offer
-            if(app.salary !== null)
-                salaries.push(app.salary); // add to salaries
+            if(app.salary !== null) salaries.push(app.salary); // add to salaries
         } else if(app.progress === 2) {
             num_rejections++; // another rejection
         }
         num_connections += app.contacts.length; // add to connections
     }
 
-    avg_salary = salaries.length === 0 ? 0 :
-     salaries.reduce((a, b) => a + b) / salaries.length;
+    avg_salary = salaries.length === 0 ? 0 : salaries.reduce((a, b) => a + b) / salaries.length;
     
     // sort application timeline
     application_timeline.sort((a, b) => {
@@ -64,7 +59,7 @@ export const getMetricsByID = async (id: string): Promise<MetricsObject> => {
         return 0;
     });
     
-    let metrics: MetricsObject = {
+    const metrics: MetricsObject = {
         num_saved: num_saved,
         num_applications: num_applications,
         num_interviewed: num_interviewed,
@@ -75,5 +70,6 @@ export const getMetricsByID = async (id: string): Promise<MetricsObject> => {
         num_connections: num_connections,
         application_timeline: application_timeline
     };
+
     return metrics;
-}
+};

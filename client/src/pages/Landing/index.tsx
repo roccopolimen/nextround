@@ -17,7 +17,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NavBar from "components/NavBar";
 
-export default function Landing() {
+const Landing = (): JSX.Element => {
     let navigate = useNavigate();
     // Responsive design
     const mobile: boolean = useMediaQuery("(max-width: 600px)");
@@ -150,4 +150,6 @@ export default function Landing() {
             </Box>
         </>
     );
-}
+};
+
+export default Landing;

@@ -1,32 +1,25 @@
 import './style.css';
 import { useEffect, useRef, useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import { Link, useNavigate } from 'react-router-dom';
+import { Alert, Avatar, Box, Button, Container, Grid, IconButton, TextField, Typography } from "@mui/material";
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AuthContent, useAuthContext } from 'context';
 import { useSignUpWithEmail, useSignUpWithGoogle } from 'api';
-import { Link, useNavigate } from 'react-router-dom';
-import { Alert, IconButton } from '@mui/material';
 import NavBar from 'components/NavBar';
 import Loading from 'components/Loading';
-import { useAuthContext } from 'context';
 
-const SignUp = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [displayName, setDisplayName] = useState('');
-    const [failedAuth, setFailedAuth] = useState(false);
+const SignUp = (): JSX.Element => {
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [displayName, setDisplayName] = useState<string>('');
+    const [failedAuth, setFailedAuth] = useState<boolean>(false);
     const checkAuth = useRef<boolean>(false);
     const { isLoading: isLoadingEmail, refetch: refetchEmail } = useSignUpWithEmail(email, password, displayName);
     const { isLoading: isLoadingGoogle, refetch: refetchGoogle } = useSignUpWithGoogle();
     const navigate = useNavigate();
-    const user = useAuthContext();
+    const user: AuthContent = useAuthContext();
 
     useEffect(() => {
         if(!checkAuth.current && user) navigate('/dashboard');

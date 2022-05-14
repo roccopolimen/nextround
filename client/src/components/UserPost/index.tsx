@@ -4,16 +4,19 @@ import { Card, CardHeader, CardContent } from "@mui/material";
 import { ForumPostObject } from 'typings';
 import StatCard from 'components/StatCard';
 
-const UserPost = (props: {post: ForumPostObject}) => {
-    const [ post ] = useState(props.post);
+interface PropType {
+    post: ForumPostObject
+};
 
-    const getDateString: Function = (post: ForumPostObject) => {
+const UserPost = (props: PropType): JSX.Element => {
+    const [ post ] = useState<ForumPostObject>(props.post);
+
+    const getDateString = (post: ForumPostObject): string => {
         if(post && post.postDate) {
             let tempDate: Date = new Date(post.postDate);
             return ((tempDate.getMonth()+1)+'-'+tempDate.getDate()+'-'+tempDate.getFullYear());
-        } else {
-            return "";
         }
+        return "";
     };
 
     //Responsive Design
@@ -34,6 +37,5 @@ const UserPost = (props: {post: ForumPostObject}) => {
         </Grid>
     );
 };
-
 
 export default UserPost;
