@@ -12,11 +12,11 @@ import { ApplicationObject, ContactObject, CycleObject, UserObject } from '../ty
  */
 export const getContactById = async (userId: string, applicationId: string, contactId: string): 
                                                                                 Promise<ContactObject> => {
-    if(!checkObjectId(userId))
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    if(!checkObjectId(applicationId))
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    if(!checkObjectId(contactId))
+    if(!contactId || !checkObjectId(contactId))
         throw new Error('Invalid contactId');
 
     const usersCollection = await users();
@@ -45,9 +45,9 @@ export const getContactById = async (userId: string, applicationId: string, cont
  */
  export const getAllContacts = async (userId: string, applicationId: string): Promise<ContactObject[]> => {
 
-    if(!checkObjectId(userId))
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    if(!checkObjectId(applicationId))
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
 
     const usersCollection = await users();
@@ -77,16 +77,16 @@ export const getContactById = async (userId: string, applicationId: string, cont
  export const createContact = async (userId: string, applicationId: string, name: string,
                                         phone: string, email: string): Promise<ContactObject> => {
 
-    if(!checkObjectId(userId))
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    if(!checkObjectId(applicationId))
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    if(!checkName(name))
+    if(!name || !checkName(name))
         throw new Error('Invalid name');
-    if(!checkPhoneNumber(phone))
+    if(!phone || !checkPhoneNumber(phone))
         throw new Error('Invalid phone number');
-    if(!checkEmail(email))
-        throw new Error('Invalid Email');
+    if(!email || !checkEmail(email))
+        throw new Error('Invalid email.');
 
     const usersCollection = await users();
     const user: UserObject = await usersCollection.findOne({ _id: new ObjectId(userId) });
@@ -129,11 +129,11 @@ export const getContactById = async (userId: string, applicationId: string, cont
  export const updateContact = async (userId: string, applicationId: string, contactId: string,
                                         name: string, phone: string, email: string): Promise<ContactObject> => {
 
-    if(!checkObjectId(userId))
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    if(!checkObjectId(applicationId))
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    if(!checkObjectId(contactId))
+    if(!contactId || !checkObjectId(contactId))
         throw new Error('Invalid contactId');
 
     let updateFields: Partial<ContactObject> = {};
@@ -197,11 +197,11 @@ export const getContactById = async (userId: string, applicationId: string, cont
  */
  export const deleteContact = async (userId: string, applicationId: string, contactId: string): Promise<boolean> => {
 
-    if(!checkObjectId(userId))
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    if(!checkObjectId(applicationId))
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    if(!checkObjectId(contactId))
+    if(!contactId || !checkObjectId(contactId))
         throw new Error('Invalid contactId');
 
     const usersCollection = await users();

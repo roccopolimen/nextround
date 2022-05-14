@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { useGetForum } from 'api';
 import { ForumPostObject } from 'typings';
 import { useSearchParams } from 'react-router-dom';
+import { checkNonNegativeNumber } from 'helpers/errors'
 import SideDrawer from 'components/SideDrawer';
 import UserPost from 'components/UserPost';
 import Loading from 'components/Loading';
@@ -38,7 +39,7 @@ const Forum = (): JSX.Element => {
 
     useEffect(() => {
         let userNumPosts: string | null = searchParams.get("num_posts");
-        if(userNumPosts) {
+        if(userNumPosts && checkNonNegativeNumber(parseInt(userNumPosts))) {
             setNumPosts(userNumPosts);
             setRefresh(true);
         }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled, Theme, useTheme } from "@mui/material/styles";
 import {
+    Alert,
     Box,
     Button,
     Collapse,
@@ -37,6 +38,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { useCreateApplication, useGetAllCycles, useGetCurrentCycle, useSignOut } from "api";
 import Loading from "components/Loading";
+import { checkNonEmptyString } from "helpers";
 
 
 const drawerWidth: number = 240;
@@ -69,6 +71,7 @@ const SideDrawer = (): JSX.Element => {
     const [addJobDescription, setAddJobDescription] = useState<string>('');
     const today: Date = new Date();
     const [addApplyDate, setAddApplyDate] = useState<Date>(today);
+    const [jobError, setJobError] = useState<boolean>(false);
     let date_picker: JSX.Element | null = null;
     const {refetch: fetchCurrentCycle} = useGetCurrentCycle();
     const { refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addApplyDate);
@@ -110,19 +113,28 @@ const SideDrawer = (): JSX.Element => {
 
     const handleAddJob = async() => {
         try{
-            await fetchCreateApplication({ throwOnError: true });
-            await fetchCurrentCycle({ throwOnError: true });
-        } catch(e) {}
-        setChanged(true);
-        setOpenModal(false);
-        
-        setAddJobCompany('');
-        setAddJobPosition('');
-        setAddJobLocation('');
-        setAddJobJobPostUrl('');
-        setAddJobDescription('');
+            if(!checkNonEmptyString(addJobCompany) || !checkNonEmptyString(addJobPosition)
+            || !checkNonEmptyString(addJobLocation) || !checkNonEmptyString(addJobJobPostUrl)
+            || !checkNonEmptyString(addJobDescription)) {
+                setJobError(true);
+            } else {
+                setJobError(false);
+                await fetchCreateApplication({ throwOnError: true });
+                await fetchCurrentCycle({ throwOnError: true });
+                setChanged(true);
+                setOpen(false);
+                
+                setAddJobCompany('');
+                setAddJobPosition('');
+                setAddJobLocation('');
+                setAddJobJobPostUrl('');
+                setAddJobDescription('');
 
-        setChanged(false);
+                setChanged(false);
+            }
+        } catch(e) {
+            setJobError(true);
+        }
     };
 
     /**
@@ -241,6 +253,7 @@ const SideDrawer = (): JSX.Element => {
                             >
                                 Submit
                             </Button>
+                            {jobError && <Alert sx={{mt: 1}} severity="error">All fields must be properly filled out</Alert>}
                         </FormGroup>
                     </Modal>
                     <ListItem

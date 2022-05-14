@@ -20,6 +20,7 @@ import MyContacts from "components/JobSections/MyContacts";
 import MyNotes from "components/JobSections/MyNotes";
 import Loading from "components/Loading";
 import SideDrawer from "components/SideDrawer";
+import Error from 'components/Error';
 
 const Job = (): JSX.Element => {
     let params = useParams();
@@ -326,9 +327,7 @@ const Job = (): JSX.Element => {
         return (
             <div>
                 <SideDrawer />
-                <Typography variant="h1" sx={{ fontSize: 16 }}>
-                    Error retrieving application details.
-                </Typography>
+                <Error />
             </div>
         );
     } else {

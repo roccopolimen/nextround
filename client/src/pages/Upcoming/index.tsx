@@ -5,6 +5,7 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Alert,
     Box,
     Button,
     FormGroup,
@@ -27,6 +28,8 @@ import UpcomingBox from "components/UpcomingBox";
 import JobCard from "components/JobCard";
 import Loading from "components/Loading";
 import SideDrawer from "components/SideDrawer";
+import Error from 'components/Error';
+import { checkNonEmptyString } from "helpers";
 
 const Upcoming = () => {
     const navigate = useNavigate();
@@ -44,7 +47,7 @@ const Upcoming = () => {
     const [addJobDescription, setAddJobDescription] = useState<string>('');
     const today = new Date();
     const [addApplyDate, setAddApplyDate] = useState<Date>(today);
-    
+    const [jobError, setJobError ] = useState<boolean>(false);
     let date_picker: JSX.Element | null = null;
     const [upcoming, setUpcoming] = useState<Array<JSX.Element | null>>([]);
     const [toApply, setToApply] = useState<Array<JSX.Element | undefined>>([]);
@@ -212,19 +215,28 @@ const Upcoming = () => {
 
     const handleAddJob = async() => {
         try{
-            await fetchCreateApplication({ throwOnError: true });
-            await fetchCurrentCycle({ throwOnError: true });
-        } catch(e) {}
-        setChanged(true);
-        setOpen(false);
-        
-        setAddJobCompany('');
-        setAddJobPosition('');
-        setAddJobLocation('');
-        setAddJobJobPostUrl('');
-        setAddJobDescription('');
+            if(!checkNonEmptyString(addJobCompany) || !checkNonEmptyString(addJobPosition)
+            || !checkNonEmptyString(addJobLocation) || !checkNonEmptyString(addJobJobPostUrl)
+            || !checkNonEmptyString(addJobDescription)) {
+                setJobError(true);
+            } else {
+                setJobError(false);
+                await fetchCreateApplication({ throwOnError: true });
+                await fetchCurrentCycle({ throwOnError: true });
+                setChanged(true);
+                setOpen(false);
+                
+                setAddJobCompany('');
+                setAddJobPosition('');
+                setAddJobLocation('');
+                setAddJobJobPostUrl('');
+                setAddJobDescription('');
 
-        setChanged(false);
+                setChanged(false);
+            }
+        } catch(e) {
+            setJobError(true);
+        }
     };
 
     /**
@@ -264,7 +276,7 @@ const Upcoming = () => {
     if(CycleIsLoading || !built) {
         return <Loading open={ true } />;
     } else if(CycleIsError) {
-        return <div>Error...</div>;
+        return <Error />;
     } else {
         return (
             <>       
@@ -329,6 +341,7 @@ const Upcoming = () => {
                                         sx={{ mt: 2, width: '50%', mx: 'auto' }}
                                         onClick={handleAddJob}
                                     >Submit</Button>
+                                    {jobError && <Alert sx={{mt: 1}} severity="error">Error: Make sure you have a current cycle and that all fields are properly filled out</Alert>}
                                 </FormGroup>
                             </Modal>
                             <br/>

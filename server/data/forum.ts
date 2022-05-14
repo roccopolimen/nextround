@@ -27,8 +27,10 @@ export const getForumPosts = async (num_posts: number): Promise<Array<ForumPostO
  */
 export const createForumPost = async (userId: string, content: string): Promise<ForumPostObject> => {
     
-    if(!checkObjectId(userId))
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid id');
+    if(!content)
+        throw new Error('Invalid content');
 
     const poster: UserObject = await getUserById(userId);
     if(poster === null) throw new Error("There is no user with that id.");
