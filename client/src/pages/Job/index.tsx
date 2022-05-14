@@ -1,65 +1,71 @@
-import { Alert, Box, Button, Snackbar, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Alert, Box, Button, Snackbar, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { Delete, Info, Event, Contacts, Description } from '@mui/icons-material';
-import JobDetails from "components/JobSections/JobDetails";
+import {
+    useCreateContact,
+    useCreateEvent,
+    useCreateNote,
+    useDeleteApplication,
+    useDeleteContact,
+    useDeleteEvent,
+    useGetApplication,
+    useUpdateApplication,
+    useUpdateEvent
+} from "api";
 import { ApplicationObject } from "typings";
 import Events from "components/JobSections/Events";
-import { useCreateContact, useCreateEvent, useCreateNote, useDeleteApplication, useDeleteContact, useDeleteEvent, useGetApplication, useUpdateApplication, useUpdateEvent } from "api";
-import { useNavigate, useParams } from "react-router-dom";
+import JobDetails from "components/JobSections/JobDetails";
 import MyContacts from "components/JobSections/MyContacts";
 import MyNotes from "components/JobSections/MyNotes";
 import Loading from "components/Loading";
 import SideDrawer from "components/SideDrawer";
 
-export default function Job() {
+const Job = (): JSX.Element => {
     let params = useParams();
     const navigate = useNavigate();
-    // State variables
-    const [currTab, setCurrTab] = useState(0);
-    const [data, setData] = useState(
-        undefined as ApplicationObject | undefined);
-    const [fetchApp, setFetchApp] = useState(false);
-    const [patchApp, setPatchApp] = useState(false);
-    const [shouldCreateEvent, setShouldCreateEvent] = useState(false);
-    const [shouldDeleteEvent, setShouldDeleteEvent] = useState(false);
-    const [shouldPatchEvent, setShouldPatchEvent] = useState(false);
-    const [shouldCreateContact, setShouldCreateContact] = useState(false);
-    const [shouldDeleteContact, setShouldDeleteContact] = useState(false);
-    const [shouldCreateNote, setShouldCreateNote] = useState(false);
-    const [hasNewData, setHasNewData] = useState(false);
-    const [component, setComponent] = useState(undefined as
-                                     ReactElement<any, any> | undefined);
-    // State variables for mutation
-    const [id, setId] = useState(data ? data._id : "");
-    const [company, setCompany] = useState(data ? data.company : "");
-    const [position, setPosition] = useState(data ? data.position : "");
-    const [location, setLocation] = useState(data ? data.location : "");
-    const [jobPostUrl, setJobPostUrl] = useState(data ? data.jobPostUrl : "");
-    const [description, setDescription] = useState(
-                                            data ? data.description : "");
-    const [salary, setSalary] = useState(data && data.salary ? data.salary : 0);
-    const [cardColor, setCardColor] = useState(data ? data.cardColor : "#fff");
-    const [progress, setProgress] = useState(data ? data.progress : 0);
+    const [currTab, setCurrTab] = useState<number>(0);
+    const [data, setData] = useState<ApplicationObject | undefined>(undefined);
+    const [fetchApp, setFetchApp] = useState<boolean>(false);
+    const [patchApp, setPatchApp] = useState<boolean>(false);
+    const [shouldCreateEvent, setShouldCreateEvent] = useState<boolean>(false);
+    const [shouldDeleteEvent, setShouldDeleteEvent] = useState<boolean>(false);
+    const [shouldPatchEvent, setShouldPatchEvent] = useState<boolean>(false);
+    const [shouldCreateContact, setShouldCreateContact] = useState<boolean>(false);
+    const [shouldDeleteContact, setShouldDeleteContact] = useState<boolean>(false);
+    const [shouldCreateNote, setShouldCreateNote] = useState<boolean>(false);
+    const [hasNewData, setHasNewData] = useState<boolean>(false);
+    const [component, setComponent] = useState<ReactElement<any, any> | undefined>(undefined);
 
-    const [eventTitle, setEventTitle] = useState("");
-    const [eventDate, setEventDate] = useState(new Date());
-    const [eventLocation, setEventLocation] = useState("");
+    const [id, setId] = useState<string>(data ? data._id : "");
+    const [company, setCompany] = useState<string>(data ? data.company : "");
+    const [position, setPosition] = useState<string>(data ? data.position : "");
+    const [location, setLocation] = useState<string>(data ? data.location : "");
+    const [jobPostUrl, setJobPostUrl] = useState<string>(data ? data.jobPostUrl : "");
+    const [description, setDescription] = useState<string>(data ? data.description : "");
+    const [salary, setSalary] = useState<number>(data && data.salary ? data.salary : 0);
+    const [cardColor, setCardColor] = useState<string>(data ? data.cardColor : "#fff");
+    const [progress, setProgress] = useState<number>(data ? data.progress : 0);
 
-    const [eventId, setEventId] = useState("");
+    const [eventTitle, setEventTitle] = useState<string>("");
+    const [eventDate, setEventDate] = useState<Date>(new Date());
+    const [eventLocation, setEventLocation] = useState<string>("");
 
-    const [eventStatus, setEventStatus] = useState(false);
-    const [eventIdUpdate, setEventIdUpdate] = useState("");
+    const [eventId, setEventId] = useState<string>("");
 
-    const [contactName, setContactName] = useState("");
-    const [contactPhone, setContactPhone] = useState("");
-    const [contactEmail, setContactEmail] = useState("");
+    const [eventStatus, setEventStatus] = useState<boolean>(false);
+    const [eventIdUpdate, setEventIdUpdate] = useState<string>("");
 
-    const [contactId, setContactId] = useState("");
+    const [contactName, setContactName] = useState<string>("");
+    const [contactPhone, setContactPhone] = useState<string>("");
+    const [contactEmail, setContactEmail] = useState<string>("");
 
-    const [note, setNote] = useState("");
+    const [contactId, setContactId] = useState<string>("");
 
-    const [snackOpen, setSnackOpen] = useState(false);
-    const [snackMessage, setSnackMessage] = useState("");
+    const [note, setNote] = useState<string>("");
+
+    const [snackOpen, setSnackOpen] = useState<boolean>(false);
+    const [snackMessage, setSnackMessage] = useState<string>("");
 
 
     let appId: string = params.id ? params.id : "";
@@ -76,18 +82,13 @@ export default function Job() {
     let imgSize: number = mobile ? 45 : 75;
 
     // Queries & Mutations
-    const { data: api_data, isLoading, isError,
-         refetch: fetchApplication } = useGetApplication(appId);
-    const { refetch: updateApplication } = useUpdateApplication(id, company,
-         position, location, jobPostUrl, description, salary,
-         cardColor, progress);
-    const { refetch: createEvent } = useCreateEvent(appId, eventTitle,
-                                                 eventDate, eventLocation);
+    const { data: api_data, isLoading, isError, refetch: fetchApplication } = useGetApplication(appId);
+    const { refetch: updateApplication } = useUpdateApplication(id, company, position, location, jobPostUrl,
+                                                                    description, salary, cardColor, progress);
+    const { refetch: createEvent } = useCreateEvent(appId, eventTitle, eventDate, eventLocation);
     const { refetch: deleteEvent } = useDeleteEvent(appId, eventId);
-    const { refetch: updateEvent } = useUpdateEvent(appId,
-        eventIdUpdate, eventStatus);
-    const { refetch: createContact } = useCreateContact(appId, contactName,
-         contactPhone, contactEmail);
+    const { refetch: updateEvent } = useUpdateEvent(appId, eventIdUpdate, eventStatus);
+    const { refetch: createContact } = useCreateContact(appId, contactName, contactPhone, contactEmail);
     const { refetch: deleteContact } = useDeleteContact(appId, contactId);
     const { refetch: createNote } = useCreateNote(appId, note);
     const { refetch: deleteApplication } = useDeleteApplication(appId);
@@ -293,28 +294,19 @@ export default function Job() {
         }
 
         /**
-         * Chooses the component to be rendered based on the tab
+         * @description Chooses the component to be rendered based on the tab
          * @returns {JSX.Element} The component to be rendered
          */
         const chooseComponent = (): JSX.Element => {
             switch (currTab) {
                 case 0:
-                    return (
-                        <JobDetails data={data}
-                                    update={updateApp} />
-                    );
+                    return <JobDetails data={data} update={updateApp} />;
                 case 1:
-                    return (<Events data={data}
-                                    update={changeEvent}
-                                    addEvent={addEvent}
-                                    deleteEvent={deleteEvent} />);
+                    return <Events data={data} update={changeEvent} addEvent={addEvent} deleteEvent={deleteEvent} />;
                 case 2:
-                    return (<MyContacts data={data}
-                                        addContact={addContact}
-                                        deleteContact={deleteContact} />);
+                    return <MyContacts data={data} addContact={addContact} deleteContact={deleteContact} />;
                 case 3:
-                    return (<MyNotes data={data}
-                                     addNote={addNote} />);
+                    return <MyNotes data={data} addNote={addNote} />;
                 default:
                     return <div>Error</div>;
             }
@@ -323,21 +315,14 @@ export default function Job() {
     }, [currTab, data, fetchApplication, updateApplication]);
 
     /**
-     * Changes the current tab
+     * @description Changes the current tab
      * @param {React.SyntheticEvent} _event click information
      * @param {number} newValue new tab index
      */
-    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-        setCurrTab(newValue);
-    };
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => setCurrTab(newValue);
 
-    if(isLoading) {
-        return (
-            <div>
-                <Loading open={ true } />
-            </div>
-        );
-    } else if(isError || !data) {
+    if(isLoading) return <Loading open={ true } />;
+    else if(isError || !data) {
         return (
             <div>
                 <SideDrawer />
@@ -426,3 +411,5 @@ export default function Job() {
         );
     }
 };
+
+export default Job;

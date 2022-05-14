@@ -1,5 +1,6 @@
 import express from 'express';
 import session from 'express-session';
+import { Express } from 'express-serve-static-core';
 import cors from 'cors';
 import configRoutes from './routes';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
@@ -7,12 +8,13 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { getSession } from './helpers';
 
+// establish link to environment variables
 dotenv.config({ path: path.resolve() + '/.env' });
-initializeApp({
-    credential: applicationDefault()
-});
 
-const app = express();
+// establish link to firebase
+initializeApp({ credential: applicationDefault() });
+
+const app: Express = express();
 app.use(cors({ credentials: true, origin: process.env.ORIGIN_URL }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,7 +25,7 @@ app.use((req, _, next) => {
     }
     next();
 });
-app.set('trust proxy', 1)
+app.set('trust proxy', 1);
 app.use(session({
     name: 'AuthCookie',
     secret: "Michael Karsen is an iPad kid",
@@ -52,12 +54,11 @@ app.use('*', (req, _, next) => {
     }
 });
 app.use('*', (req, _, next) => {
-    let date = new Date().toUTCString();
-    let reqmethod = req.method;
-    let reqroute = req.originalUrl;
-    let loggedin = false;
+    const date: string = new Date().toUTCString();
+    const reqmethod: string = req.method;
+    const reqroute: string = req.originalUrl;
+    const loggedin: boolean = req.session.user !== null;
     console.log('Session user: ', req.session.user);
-    if(req.session.user) loggedin = true;
     console.log(`[${date}]: ${reqmethod} ${reqroute} | Authorized: ${loggedin}`);
     next();
 });

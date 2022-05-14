@@ -1,13 +1,8 @@
 import { Box, Typography } from "@mui/material";
 
-const Error = () => {
+const Error = (): JSX.Element => {
     return (
-        <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100vh"
-        >
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
             <Typography>Something went wrong...</Typography>
         </Box>
     );

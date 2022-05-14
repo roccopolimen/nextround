@@ -1,5 +1,18 @@
 import express from 'express';
-import { createApplication, createContact, createEvent, createNote, deleteApplication, deleteContact, deleteEvent, getApplicationById, getApplicationFromCycleById, updateApplication, updateContact, updateEvent } from '../data';
+import {
+    createApplication,
+    createContact,
+    createEvent,
+    createNote,
+    deleteApplication,
+    deleteContact,
+    deleteEvent,
+    getApplicationById,
+    getApplicationFromCycleById,
+    updateApplication,
+    updateContact,
+    updateEvent
+} from '../data';
 import { checkDate, checkNonEmptyString, checkObjectId, checkNonNegativeNumber, isUsersApplication } from '../helpers';
 import { ApplicationObject, ContactObject, EventObject } from '../typings';
 
@@ -21,7 +34,10 @@ router.get('/:applicationId', async (req, res) => {
         const application: ApplicationObject = await getApplicationById(req.session.user._id, applicationId);
         res.json(application);
     } catch(e) {
-        res.status(500).json({ message: 'Could not get information about the requested application from the database.', error: e.message });
+        res.status(500).json({
+            message: 'Could not get information about the requested application from the database.',
+            error: e.message
+        });
     }
 });
 
@@ -43,7 +59,10 @@ router.get('/:cycleId/:applicationId', async (req, res) => {
         const application: ApplicationObject = await getApplicationFromCycleById(cycleId, applicationId);
         res.json(application);
     } catch(e) {
-        res.status(500).json({ message: 'Could not get information about the requested application from the database.', error: e.message });
+        res.status(500).json({
+            message: 'Could not get information about the requested application from the database.',
+            error: e.message
+        });
     }
 });
 
@@ -75,7 +94,8 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const application: ApplicationObject = await createApplication(req.session.user._id, company, position, location, jobPostUrl, description, applyDate);
+        const application: ApplicationObject = await createApplication(req.session.user._id, company, position,
+                                                                        location, jobPostUrl, description, applyDate);
         res.json(application);
     } catch(e) {
         res.status(500).json({ message: 'problem creating the application.', error: e.message });
@@ -146,7 +166,6 @@ router.post('/event/:applicationId', async (req, res) => {
     } catch(e) {
         res.status(500).json({ message: 'problem creating event for the given application.', error: e.message });
     }
-
 });
 
 // POST /contact/:applicationId
@@ -181,9 +200,8 @@ router.post('/contact/:applicationId', async (req, res) => {
         const contact: ContactObject = await createContact(req.session.user._id, applicationId, name, phone, email);
         res.json(contact);
     } catch(e) {
-        res.status(500).json({ message: 'problem creating contact for application.', error: e.message })
+        res.status(500).json({ message: 'problem creating contact for application.', error: e.message });
     }
-
 });
 
 // PATCH /:applicationId
@@ -201,7 +219,8 @@ router.patch('/:applicationId', async (req, res) => {
     if(!req.body)
         return res.status(400).json({ message: 'no body provided for contact creation.' });
 
-    let company: string, position: string, location: string, jobPostUrl: string, description: string, salary: number, cardColor: string, progress: number;
+    let company: string, position: string, location: string, jobPostUrl: string, description: string,
+        salary: number, cardColor: string, progress: number;
     let newDataObject: Partial<ApplicationObject> = {};
     try {
         ({ company, position, location, jobPostUrl, description, salary, cardColor, progress } = req.body);
@@ -436,7 +455,10 @@ router.delete('/contact/:applicationId/:contactId', async (req, res) => {
         await deleteContact(req.session.user._id, applicationId, contactId);
         res.json({ message: 'deleted successfully.' });
     } catch(e) {
-        res.status(500).json({ message: 'problem occurred while deleting contact from application.', error: e.message });
+        res.status(500).json({
+            message: 'problem occurred while deleting contact from application.',
+            error: e.message
+        });
     }
 });
 

@@ -1,6 +1,6 @@
 import './style.css';
 import { useEffect, useState } from "react";
-import { Grid, Typography, useMediaQuery } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 import {
     Avatar,
     Card,
@@ -8,60 +8,54 @@ import {
     CardContent,
     CardActions,
     Button,
+    FormGroup,
+    Grid,
     Modal,
     TextField,
-    FormGroup
+    Typography,
+    useMediaQuery
 } from "@mui/material";
 import { ApplicationObject } from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
-import { useNavigate } from 'react-router-dom';
 import SideDrawer from 'components/SideDrawer';
 import Loading from 'components/Loading';
 
-export default function OfferDash () {
-    const emptyApps: ApplicationObject[] = [];
+const OfferDash = (): JSX.Element => {
+    const emptyApps: Array<ApplicationObject> = [];
 
-    const [offerData, setOfferData] = useState(emptyApps);
-    const [accept, setAccept] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [postText, setPostText] = useState('');
+    const [offerData, setOfferData] = useState<Array<ApplicationObject>>(emptyApps);
+    const [accept, setAccept] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+    const [postText, setPostText] = useState<string>('');
     const navigate = useNavigate();
 
-    
-
     //Queries
-    const { data: userCycle, isLoading: isLoadingCycle,
-        refetch: refetchCycle } = useGetCurrentCycle();
+    const { data: userCycle, isLoading: isLoadingCycle, refetch: refetchCycle } = useGetCurrentCycle();
     const { data: newPost, refetch: refetchPost } = useCreatePost(postText);
     const { refetch: refetchFinishCycle } = useFinishCycles();
-
 
     useEffect(() => {
         (async () => { 
             try {
                 await refetchCycle({ throwOnError: true });
-                let offerApplications: ApplicationObject[] = [];
-                if(userCycle && userCycle["applications"]) {
-                    let cycleApp: ApplicationObject; 
-                    for(cycleApp of userCycle["applications"]) {
-                        if(cycleApp["progress"] === 1) {
+                let offerApplications: Array<ApplicationObject> = [];
+                if(userCycle && userCycle.applications)
+                    for(let cycleApp of userCycle.applications)
+                        if(cycleApp.progress === 1)
                             offerApplications.push(cycleApp);
-                        }
-                    }
-                }
                 setOfferData(offerApplications);
             } catch(e) {
                 navigate('/create');
             }
         })();
-    }, [refetchCycle, userCycle]);
+    }, [navigate, refetchCycle, userCycle]);
 
-    const acceptOffer: Function = (offer: ApplicationObject) => {
+    const acceptOffer = (offer: ApplicationObject) => {
         setAccept(true);
         setOpen(true);
     };
 
-    const postOffer: Function = async (offer: ApplicationObject) => {
+    const postOffer = async () => {
         try {
             console.log("Offer posted");
             await refetchPost();
@@ -75,7 +69,7 @@ export default function OfferDash () {
         }
     };
 
-    const noPostOffer: Function = async () => {
+    const noPostOffer = async () => {
         try {
             console.log("Offer not posted");
             await refetchFinishCycle(); 
@@ -86,7 +80,7 @@ export default function OfferDash () {
         }
     };
 
-    const makeButton: Function = (offer: ApplicationObject, accept: boolean ) => {
+    const makeButton = (offer: ApplicationObject, accept: boolean ) => {
         if(!accept) {
             return (
                 <Button onClick={() => { acceptOffer(offer) }} sx={{marginLeft: 'auto'}} variant="contained" color="success">
@@ -97,7 +91,7 @@ export default function OfferDash () {
         }
     };
 
-    const emptyOffers: Function = (offerData: ApplicationObject[]) => {
+    const emptyOffers = (offerData: ApplicationObject[]) => {
         if(offerData && offerData.length === 0) {
             return (
                 <Typography sx={{ml: 7, mt: 7, color:'grey'}}>
@@ -107,7 +101,7 @@ export default function OfferDash () {
         }
     };
 
-    const closeModal: Function = () => {
+    const closeModal = () => {
         setOpen(false);
         setAccept(false); 
     };
@@ -191,3 +185,5 @@ export default function OfferDash () {
         </>
     );
 };
+
+export default OfferDash;

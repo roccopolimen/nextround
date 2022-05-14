@@ -1,71 +1,72 @@
-import { Box,
-        Button,
-        Checkbox,
-        Chip,
-        FormControlLabel,
-        FormGroup, 
-        IconButton, 
-        Modal, 
-        TextField, 
-        Typography,
-        useMediaQuery
-    } from "@mui/material";
+import { 
+    Box,
+    Button,
+    Checkbox,
+    Chip,
+    FormControlLabel,
+    FormGroup, 
+    IconButton, 
+    Modal, 
+    TextField, 
+    Typography,
+    useMediaQuery
+} from "@mui/material";
 import { Add, Delete } from '@mui/icons-material';
 import { useState, useEffect } from "react";
 import { ApplicationObject, EventObject } from "typings";
-import { Timeline,
-         TimelineConnector,
-         TimelineContent,
-         TimelineDot,
-         TimelineItem,
-         TimelineOppositeContent,
-         TimelineSeparator
-        } from "@mui/lab";
+import {
+    Timeline,
+    TimelineConnector,
+    TimelineContent,
+    TimelineDot,
+    TimelineItem,
+    TimelineOppositeContent,
+    TimelineSeparator
+} from "@mui/lab";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import Loading from 'components/Loading';
 
-export default function Events(props: {
-        data: ApplicationObject | undefined,
-        update: (id: string, status: boolean) => Promise<void>,
-        addEvent: (title: string, date: string,
-             location: string) => void,
-        deleteEvent: (eventId: string) => void
-    }
-) {
-   // State variables
-   const [data, setData] = useState(
-       undefined as ApplicationObject | undefined);
-   const [changed, setChanged] = useState(false);
-   const [open, setOpen] = useState(false);
-   const today = new Date();
-   const [title, setTitle] = useState('');
-   const [location, setLocation] = useState('');
-   const [selectedDate, setSelectedDate] = useState(today as Date | null);
+interface PropType {
+    data: ApplicationObject | undefined,
+    update: (id: string, status: boolean) => Promise<void>,
+    addEvent: (title: string, date: string, location: string) => void,
+    deleteEvent: (eventId: string) => void
+};
 
-   // Responsive design
-   const se: boolean = useMediaQuery('(max-width: 525px)');
-   const mobile: boolean = useMediaQuery('(max-width: 900px)');
-   let timeline_title_size: string = se ? "5rem" : (mobile ? "15rem" : "100%");
-   let font_size: string = se ? "1.5rem" : (mobile ? "1.5rem" : "2rem");
-   let date_picker: JSX.Element | undefined = undefined;
-   
-   
-   useEffect(() => {
-       // On mount and data change
-       if (props.data && !changed) {
-           setData(props.data);
-       }
-   }, [data, props.data, changed]);
+const Events = (props: PropType): JSX.Element => {
+    // State variables
+    const [data, setData] = useState<ApplicationObject | undefined>(undefined);
+    const [changed, setChanged] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+    const today = new Date();
+    const [title, setTitle] = useState<string>('');
+    const [location, setLocation] = useState<string>('');
+    const [selectedDate, setSelectedDate] = useState<Date | null>(today);
 
-   /**
-    * Create a proper date picker given the device type
+    // Responsive design
+    const se: boolean = useMediaQuery('(max-width: 525px)');
+    const mobile: boolean = useMediaQuery('(max-width: 900px)');
+    let timeline_title_size: string = se ? "5rem" : (mobile ? "15rem" : "100%");
+    let font_size: string = se ? "1.5rem" : (mobile ? "1.5rem" : "2rem");
+    let date_picker: JSX.Element | undefined = undefined;
+
+
+    useEffect(() => {
+        // On mount and data change
+        if (props.data && !changed) {
+            setData(props.data);
+        }
+    }, [data, props.data, changed]);
+
+    /**
+    * @description Create a proper date picker given the device type
     * @param {boolean} mobile if the device is mobile
     * @returns {JSX.Element | undefined} date picker
     */
-   const buildDatePicker = (mobile: boolean): JSX.Element => {
+    const buildDatePicker = (mobile: boolean): JSX.Element => {
         return (
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Box m={2}>
@@ -90,18 +91,17 @@ export default function Events(props: {
                 </Box>
             </LocalizationProvider>
         );  
-   }
+    }
 
-   date_picker = buildDatePicker(mobile);
+    date_picker = buildDatePicker(mobile);
 
-   /**
-    * Mark events as complete/incomplete
+    /**
+    * @description Mark events as complete/incomplete
     * @param {React.ChangeEvent<HTMLInputElement>} event event info
     * @param {boolean} checked whether the box is now checked
     */
-   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>,
-                            checked: boolean) => {
-         // On checkbox change
+    const handleToggle = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+            // On checkbox change
         if (data) {
             let newData: ApplicationObject = {
                 ...data,
@@ -118,12 +118,12 @@ export default function Events(props: {
             setData(newData);
             props.update(event.target.id, checked);
         }
-        };
+    };
 
     /**
      * Adds an event with info from the form
      */
-   const handleAddEvent = () => {
+    const handleAddEvent = () => {
         if(title === "" || location === "") return;
         if (data && selectedDate) {
             props.addEvent(title, selectedDate.toLocaleDateString(), location);
@@ -148,14 +148,8 @@ export default function Events(props: {
         }
     };
 
-   if(!data) {
+    if(!data) return <Loading open={ true } />;
     return (
-        <div>
-            <Loading open={ true } />
-        </div>
-    );
-   } else {
-       return (
         <Box>
             {/* Add event button */}
             <Box sx={{ display: "flex" }}>
@@ -284,5 +278,6 @@ export default function Events(props: {
             </Timeline>
         </Box>
     );
-    }
-}
+};
+
+export default Events;

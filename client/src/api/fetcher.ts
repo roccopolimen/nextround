@@ -2,10 +2,10 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import firebase from 'firebase/compat/app';
 
 const headers: Readonly<Record<string, string | boolean>> = {
-  Accept: "application/json",
-  "Content-Type": "application/json; charset=utf-8",
-  "Access-Control-Allow-Credentials": true,
-  "X-Requested-With": "XMLHttpRequest",
+    Accept: "application/json",
+    "Content-Type": "application/json; charset=utf-8",
+    "Access-Control-Allow-Credentials": true,
+    "X-Requested-With": "XMLHttpRequest",
 };
 
 const injectToken = async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
@@ -19,6 +19,7 @@ const injectToken = async (config: AxiosRequestConfig): Promise<AxiosRequestConf
     return config;
 };
 
+// ref (https://stackoverflow.com/questions/69417883/axios-post-request-with-typescript-issue)
 class Fetcher {
     private instance: AxiosInstance | null = null;
 

@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled, Theme, useTheme } from "@mui/material/styles";
 import {
     Box,
     Button,
     Collapse,
     Divider,
     Drawer,
+    FormGroup,
     IconButton,
     List,
     ListItem,
     ListItemButton,
     ListItemIcon,
-    ListItemText
+    ListItemText,
+    Modal,
+    TextField,
+    Typography,
+    useMediaQuery
 } from "@mui/material";
+import Add from '@mui/icons-material/Add';
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -25,18 +31,15 @@ import ForumIcon from "@mui/icons-material/Forum";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useGetAllCycles, useSignOut } from "api";
-import Loading from "components/Loading";
-
-import { FormGroup, Modal, TextField, Typography, useMediaQuery} from '@mui/material';
-import { useGetCurrentCycle, useCreateApplication } from "api";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { Add } from '@mui/icons-material';
+import { useCreateApplication, useGetAllCycles, useGetCurrentCycle, useSignOut } from "api";
+import Loading from "components/Loading";
 
-const drawerWidth = 240;
+
+const drawerWidth: number = 240;
 const DrawerHeader = styled("div")(({ theme }) => ({
     display: "flex",
     alignItems: "center",
@@ -45,8 +48,8 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     justifyContent: "flex-end",
 }));
 
-const SideDrawer = () => {
-    const theme = useTheme();
+const SideDrawer = (): JSX.Element => {
+    const theme: Theme = useTheme();
     const navigate = useNavigate();
 
     const [open, setOpen] = useState<boolean>(false);
@@ -56,16 +59,16 @@ const SideDrawer = () => {
     const { data:allCycles, isLoading:isLoadingAllCycles , refetch:getAllCycles } = useGetAllCycles();
 
     // modal stuff
-    const [, setChanged] = useState(false);
-    const [, setBuilt] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
-    const [addJobCompany, setAddJobCompany] = useState('');
-    const [addJobPosition, setAddJobPosition] = useState('');
-    const [addJobLocation, setAddJobLocation] = useState('');
-    const [addJobJobPostUrl, setAddJobJobPostUrl] = useState('');
-    const [addJobDescription, setAddJobDescription] = useState('');
-    const today = new Date();
-    const [addApplyDate, setAddApplyDate] = useState(today as Date);
+    const [, setChanged] = useState<boolean>(false);
+    const [, setBuilt] = useState<boolean>(false);
+    const [openModal, setOpenModal] = useState<boolean>(false);
+    const [addJobCompany, setAddJobCompany] = useState<string>('');
+    const [addJobPosition, setAddJobPosition] = useState<string>('');
+    const [addJobLocation, setAddJobLocation] = useState<string>('');
+    const [addJobJobPostUrl, setAddJobJobPostUrl] = useState<string>('');
+    const [addJobDescription, setAddJobDescription] = useState<string>('');
+    const today: Date = new Date();
+    const [addApplyDate, setAddApplyDate] = useState<Date>(today);
     let date_picker: JSX.Element | null = null;
     const {refetch: fetchCurrentCycle} = useGetCurrentCycle();
     const { refetch: fetchCreateApplication} = useCreateApplication(addJobCompany, addJobPosition, addJobLocation, addJobJobPostUrl, addJobDescription, addApplyDate);
@@ -100,9 +103,7 @@ const SideDrawer = () => {
         const fetchData = async () => {
             try{
                 await fetchCurrentCycle({ throwOnError: true });
-            } catch(e) {
-
-            }
+            } catch(e) { }
         };
         fetchData();
     }, [fetchCurrentCycle]);
@@ -111,9 +112,7 @@ const SideDrawer = () => {
         try{
             await fetchCreateApplication({ throwOnError: true });
             await fetchCurrentCycle({ throwOnError: true });
-        } catch(e) {
-
-        }
+        } catch(e) {}
         setChanged(true);
         setOpenModal(false);
         
@@ -127,11 +126,11 @@ const SideDrawer = () => {
     };
 
     /**
-        * Create a proper date picker given the device type
-        * @param {boolean} mobile if the device is mobile
-        * @returns {JSX.Element | undefined} date picker
-        */
-     const buildDatePicker = (mobile: boolean): JSX.Element => {
+    * @description Create a proper date picker given the device type
+    * @param {boolean} mobile if the device is mobile
+    * @returns {JSX.Element | undefined} date picker
+    */
+    const buildDatePicker = (mobile: boolean): JSX.Element => {
         return (
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Box m={2}>
@@ -156,7 +155,7 @@ const SideDrawer = () => {
                 </Box>
             </LocalizationProvider>
         );  
-    }
+    };
 
     date_picker = buildDatePicker(mobile);
 

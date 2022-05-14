@@ -8,14 +8,14 @@ import SideDrawer from 'components/SideDrawer';
 import UserPost from 'components/UserPost';
 import Loading from 'components/Loading';
 
-export default function Forum() {
-    let startPosts: ForumPostObject[] = [];
+const Forum = (): JSX.Element => {
+    let startPosts: Array<ForumPostObject> = [];
 
     const [searchParams] = useSearchParams();
-    const [posts, setPosts] = useState(startPosts);
-    const [loading, setLoading] = useState(true);
-    const [refresh, setRefresh] = useState(true);
-    const [numPosts, setNumPosts] = useState('0');
+    const [posts, setPosts] = useState<Array<ForumPostObject>>(startPosts);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [refresh, setRefresh] = useState<boolean>(true);
+    const [numPosts, setNumPosts] = useState<string>('0');
 
     //Queries
     const { data: postData, isLoading: isLoadingPosts, refetch: refetchPosts } = useGetForum(parseInt(numPosts));
@@ -37,21 +37,15 @@ export default function Forum() {
     }, [refresh, postData, refetchPosts, numPosts]);
 
     useEffect(() => {
-        async function getNumPosts() {
-            let userNumPosts: string | null = await searchParams.get("num_posts");
-            if(userNumPosts) {
-                setNumPosts(userNumPosts);
-                setRefresh(true);
-            }
+        let userNumPosts: string | null = searchParams.get("num_posts");
+        if(userNumPosts) {
+            setNumPosts(userNumPosts);
+            setRefresh(true);
         }
-        getNumPosts();
-        
     }, [numPosts, setNumPosts, searchParams]);
 
     useEffect(() => {
-        if(postData) {
-            setPosts(postData);
-        }
+        if(postData) setPosts(postData);
     }, [postData, setPosts, numPosts]);
 
     //Responsive Design
@@ -76,4 +70,6 @@ export default function Forum() {
             </Stack>
         </>
     );
-}
+};
+
+export default Forum;

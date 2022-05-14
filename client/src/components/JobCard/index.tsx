@@ -3,15 +3,22 @@ import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { Grid, Box, Card, CardMedia, CardContent, Typography } from '@mui/material';
 
+interface PropType {
+    applicationId: string,
+    url: string,
+    company: string,
+    role: string,
+    color: string
+};
 
-const JobCard = (props: {applicationId: string, url: string, company: string, role: string, color: string}) => {
+const JobCard = (props: PropType): JSX.Element => {
 
     // State variables
-    const [applicationId, setApplicationId] = useState('');
-    const [url, setUrl] = useState('');
-    const [company, setCompany] = useState('');
-    const [role, setRole] = useState('');
-    const [color, setColor] = useState('');
+    const [applicationId, setApplicationId] = useState<string>('');
+    const [url, setUrl] = useState<string>('');
+    const [company, setCompany] = useState<string>('');
+    const [role, setRole] = useState<string>('');
+    const [color, setColor] = useState<string>('');
 
     useEffect(() => {
         setApplicationId(props.applicationId);
@@ -33,8 +40,7 @@ const JobCard = (props: {applicationId: string, url: string, company: string, ro
         setColor(props.color);
     }, [props.color]);
     
-     // NOTE: I dont know a way to use one Link tag and keep the styling the same
-     return (
+    return (
         <Grid item xs={12}>
             <Link to={`/application/${applicationId}`} style={{textDecoration: 'none'}}>
                 <Card className='card' style={{ backgroundColor: color }}>
@@ -58,7 +64,7 @@ const JobCard = (props: {applicationId: string, url: string, company: string, ro
                 </Card>
             </Link>
         </Grid>
-      );
-}
+    );
+};
 
 export default JobCard;

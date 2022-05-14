@@ -4,8 +4,9 @@ import cyclesRoutes from './cycles';
 import metricsRoutes from './metrics';
 import offersRoutes from './offers';
 import forumRoutes from './forum';
+import { Express } from 'express-serve-static-core';
 
-const constructorMethod = (app: any) => {
+const constructorMethod = (app: Express) => {
     
     app.use('/application', applicationRoutes);
     app.use('/users', usersRoutes);
