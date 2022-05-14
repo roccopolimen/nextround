@@ -252,7 +252,7 @@ const SideDrawer = () => {
                             >
                                 Submit
                             </Button>
-                            {jobError && <Alert sx={{mt: 1}} severity="error">All fields must be filled out</Alert>}
+                            {jobError && <Alert sx={{mt: 1}} severity="error">All fields must be properly filled out</Alert>}
                         </FormGroup>
                     </Modal>
                     <ListItem

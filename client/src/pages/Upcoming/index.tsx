@@ -336,7 +336,7 @@ const Upcoming = () => {
                                     >
                                         Submit
                                     </Button>
-                                    {jobError && <Alert sx={{mt: 1}} severity="error">All fields must be filled out</Alert>}
+                                    {jobError && <Alert sx={{mt: 1}} severity="error">Error: Make sure you have a current cycle and that all fields are properly filled out</Alert>}
                                 </FormGroup>
                             </Modal>
 
