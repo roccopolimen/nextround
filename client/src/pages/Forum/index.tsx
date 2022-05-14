@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { useGetForum } from 'api';
 import { ForumPostObject } from 'typings';
 import { useSearchParams } from 'react-router-dom';
+import { checkNonNegativeNumber } from 'helpers/errors'
 import SideDrawer from 'components/SideDrawer';
 import UserPost from 'components/UserPost';
 import Loading from 'components/Loading';
@@ -15,7 +16,7 @@ export default function Forum() {
     const [posts, setPosts] = useState(startPosts);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
-    const [numPosts, setNumPosts] = useState('0');
+    const [numPosts, setNumPosts] = useState('10');
 
     //Queries
     const { data: postData, isLoading: isLoadingPosts, refetch: refetchPosts } = useGetForum(parseInt(numPosts));
@@ -39,7 +40,7 @@ export default function Forum() {
     useEffect(() => {
         async function getNumPosts() {
             let userNumPosts: string | null = await searchParams.get("num_posts");
-            if(userNumPosts) {
+            if(userNumPosts && checkNonNegativeNumber(parseInt(userNumPosts))) {
                 setNumPosts(userNumPosts);
                 setRefresh(true);
             }

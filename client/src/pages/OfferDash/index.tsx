@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Grid, Typography, useMediaQuery } from "@mui/material";
 import {
     Avatar,
+    Alert,
     Card,
     CardHeader,
     CardContent,
@@ -15,8 +16,10 @@ import {
 import { ApplicationObject } from "typings";
 import { useGetCurrentCycle, useFinishCycles, useCreatePost } from "api";
 import { useNavigate } from 'react-router-dom';
+import Error from 'components/Error';
 import SideDrawer from 'components/SideDrawer';
 import Loading from 'components/Loading';
+import { checkNonEmptyString } from 'helpers';
 
 export default function OfferDash () {
     const emptyApps: ApplicationObject[] = [];
@@ -25,6 +28,8 @@ export default function OfferDash () {
     const [accept, setAccept] = useState(false);
     const [open, setOpen] = useState(false);
     const [postText, setPostText] = useState('');
+    const [error, setError ] = useState(false);
+    const [postError, setPostError ] = useState(false);
     const navigate = useNavigate();
 
     
@@ -62,27 +67,26 @@ export default function OfferDash () {
     };
 
     const postOffer: Function = async (offer: ApplicationObject) => {
-        try {
-            console.log("Offer posted");
-            await refetchPost();
-            console.log("Make Post");
-            console.log(newPost);
-            await refetchFinishCycle(); 
-            console.log("Finish Cycle");
-            navigate('/forum');
-        } catch(e) {
-            navigate('/error');
+        if(!checkNonEmptyString(postText)) {
+            setPostError(true);
+        } else {
+            setPostError(false);
+            try {
+                await refetchPost();
+                await refetchFinishCycle(); 
+                navigate('/forum');
+            } catch(e) {
+                setError(true);
+            }
         }
     };
 
     const noPostOffer: Function = async () => {
         try {
-            console.log("Offer not posted");
-            await refetchFinishCycle(); 
-            console.log("Finish Cycle");
+            await refetchFinishCycle();
             navigate('/create');
         } catch(e) {
-            navigate('/error');
+            setError(true);
         }
     };
 
@@ -119,6 +123,16 @@ export default function OfferDash () {
     let formWidth: number = mobile ? 175: 225;
     let margins: number = mobile ? 2 : 7;
 
+    if(error) {
+        return (
+            <>
+                <Loading open={isLoadingCycle} />
+                <SideDrawer />
+                <Error />
+            </>
+        );
+    }
+
     return (
         <>  
             <Loading open={isLoadingCycle} />
@@ -149,6 +163,7 @@ export default function OfferDash () {
                             <Button onClick={() => noPostOffer()} sx={{marginLeft: 'auto', marginRight: 2, mt: 1}} variant="contained">
                                 Don't Post
                             </Button>
+                            {postError && <Alert sx={{mt: 1}} severity="error">Please enter a message to post</Alert>}
                         </CardContent>
                     </Card>
             </Modal>

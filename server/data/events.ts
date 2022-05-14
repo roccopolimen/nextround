@@ -12,13 +12,13 @@ import { ApplicationObject, CycleObject, EventObject, UserObject } from '../typi
  */
 export const getEventById = async(userId: string, applicationId: string, eventId: string):Promise<EventObject> => {
     
-    if(!checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId)){
         throw new Error('Invalid userId');
     }
-    if(!checkObjectId(applicationId)){
+    if(!applicationId || !checkObjectId(applicationId)){
         throw new Error('Invalid applicationId');
     }
-    if(!checkObjectId(eventId)){
+    if(!eventId || !checkObjectId(eventId)){
         throw new Error('Invalid eventId');
     }
 
@@ -59,10 +59,10 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  */
  export const getAllEvents = async (userId: string, applicationId: string): Promise<EventObject[]> => {
 
-    if(!checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId)){
         throw new Error('Invalid userId');
     }
-    if(!checkObjectId(applicationId)){
+    if(!applicationId || !checkObjectId(applicationId)){
         throw new Error('Invalid applicationId');
     }
 
@@ -101,19 +101,19 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  */
  export const createEvent = async (userId: string, applicationId: string, title: string, date: string, location: string): Promise<EventObject> => {
 
-    if(!checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId)){
         throw new Error('Invalid userId');
     }
-    if(!checkObjectId(applicationId)){
+    if(!applicationId || !checkObjectId(applicationId)){
         throw new Error('Invalid applicationId');
     }
-    if(!checkNonEmptyString(title)){
+    if(!title || !checkNonEmptyString(title)){
         throw new Error('Invalid title');
     }
-    if(!checkDate(date)){
+    if(!date || !checkDate(date)){
         throw new Error('Invalid date');
     }
-    if(!checkNonEmptyString(location)){
+    if(!location || !checkNonEmptyString(location)){
         throw new Error('Invalid location');
     }
 
@@ -169,11 +169,11 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  * @returns {Promise<EventObject>} if event  was updated 
  */
  export const updateEvent = async (userId: string, applicationId: string, eventId: string, status: boolean): Promise<EventObject> => {
-    if(!checkObjectId(userId))
+    if(!userId || !checkObjectId(userId))
         throw new Error('Invalid userId');
-    if(!checkObjectId(applicationId))
+    if(!applicationId || !checkObjectId(applicationId))
         throw new Error('Invalid applicationId');
-    if(!checkObjectId(eventId))
+    if(!eventId || !checkObjectId(eventId))
         throw new Error('Invalid eventId');
 
     let updateFields: Partial<EventObject> = {};
@@ -224,13 +224,13 @@ export const getEventById = async(userId: string, applicationId: string, eventId
  */
  export const deleteEvent = async (userId: string, applicationId: string, eventId: string): Promise<boolean> => {
 
-    if(!checkObjectId(userId)){
+    if(!userId || !checkObjectId(userId)){
         throw new Error('Invalid userId');
     }
-    if(!checkObjectId(applicationId)){
+    if(!applicationId || !checkObjectId(applicationId)){
         throw new Error('Invalid applicationId');
     }
-    if(!checkObjectId(eventId)){
+    if(!eventId || !checkObjectId(eventId)){
         throw new Error('Invalid eventId');
     }
 

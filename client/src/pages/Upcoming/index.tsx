@@ -4,7 +4,7 @@ import { useGetCurrentCycle, useCreateApplication } from "api";
 import { useEffect, useState } from "react";
 
 import { Box, Button, FormGroup, Grid, Modal, Slide, TextField, Typography, useMediaQuery} from '@mui/material';
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert } from '@mui/material';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Add } from '@mui/icons-material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -14,9 +14,12 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 import './style.css';
 import { ApplicationObject, UpcomingObject } from "typings";
+import { checkNonEmptyString } from "helpers";
 import Loading from "components/Loading";
 import SideDrawer from "components/SideDrawer";
+import Error from 'components/Error';
 import { useNavigate } from "react-router-dom";
+import { setDefaultResultOrder } from "dns/promises";
 
 const Upcoming = () => {
     const navigate = useNavigate();
@@ -34,6 +37,7 @@ const Upcoming = () => {
     const [addJobDescription, setAddJobDescription] = useState('');
     const today = new Date();
     const [addApplyDate, setAddApplyDate] = useState(today as Date);
+    const [jobError, setJobError ] = useState(false);
     
     let date_picker: JSX.Element | null = null;
     const [upcoming, setUpcoming] = useState(null as JSX.Element[] | null);
@@ -209,21 +213,28 @@ const Upcoming = () => {
 
     const handleAddJob = async() => {
         try{
-            await fetchCreateApplication({ throwOnError: true });
-            await fetchCurrentCycle({ throwOnError: true });
+            if(!checkNonEmptyString(addJobCompany) || !checkNonEmptyString(addJobPosition)
+            || !checkNonEmptyString(addJobLocation) || !checkNonEmptyString(addJobJobPostUrl)
+            || !checkNonEmptyString(addJobDescription)) {
+                setJobError(true);
+            } else {
+                setJobError(false);
+                await fetchCreateApplication({ throwOnError: true });
+                await fetchCurrentCycle({ throwOnError: true });
+                setChanged(true);
+                setOpen(false);
+                
+                setAddJobCompany('');
+                setAddJobPosition('');
+                setAddJobLocation('');
+                setAddJobJobPostUrl('');
+                setAddJobDescription('');
+
+                setChanged(false);
+            }
         } catch(e) {
-
+            setJobError(true);
         }
-        setChanged(true);
-        setOpen(false);
-        
-        setAddJobCompany('');
-        setAddJobPosition('');
-        setAddJobLocation('');
-        setAddJobJobPostUrl('');
-        setAddJobDescription('');
-
-        setChanged(false);
     };
 
     /**
@@ -263,7 +274,7 @@ const Upcoming = () => {
     if(CycleIsLoading || !built) {
         return <Loading open={ true } />;
     } else if(CycleIsError) {
-        return <div>Error...</div>;
+        return <Error />;
     } else {
         return (
             <>       
@@ -325,6 +336,7 @@ const Upcoming = () => {
                                     >
                                         Submit
                                     </Button>
+                                    {jobError && <Alert sx={{mt: 1}} severity="error">Error: Make sure you have a current cycle and that all fields are properly filled out</Alert>}
                                 </FormGroup>
                             </Modal>
 
