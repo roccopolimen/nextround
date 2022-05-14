@@ -42,7 +42,7 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
      return (
         <Grid item xs={12} margin='10px'>
             <Box sx={{ display: 'flex', flexDirection: 'column', margin: '10px', borderBottom: 1}}>            
-                <Link to={`/application/${applicationId}`} style={{textDecoration: 'none'}}>
+                
                     <CardContent className='insideCard'>
                         <Grid container>
                             <Grid item xs={1} >
@@ -54,12 +54,14 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
                                 />
                             </Grid>
                             <Grid item xs={7} textAlign='left'>
-                                <Typography id='title' variant='h4' sx={{ ml: 1 }}>
-                                    {title}
-                                </Typography>
+                                <Link to={`/application/${applicationId}`} style={{textDecoration: 'none'}}>
+                                    <Typography id='title' variant='h2' sx={{ ml: 1 }}>
+                                        {title}
+                                    </Typography>
+                                </Link>
                             </Grid>
                             <Grid item xs={4} textAlign='right'>
-                                <Typography id='company' variant='h6'>
+                                <Typography id='company' variant='h3'>
                                     {company}
                                 </Typography>
                             </Grid>
@@ -78,7 +80,7 @@ const UpcomingBox = (props: {applicationId: string, url: string, title: string, 
                             </Grid>
                         </Grid>
                     </CardContent>
-                </Link>
+                
             </Box>
         </Grid>
       );

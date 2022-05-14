@@ -31,6 +31,7 @@ import {
 import { ApplicationObject, MetricsObject } from "typings";
 import Loading from 'components/Loading';
 import SideDrawer from "components/SideDrawer";
+import './style.css';
 
 export default function Metrics() {
     const navigate = useNavigate();
@@ -215,7 +216,7 @@ export default function Metrics() {
                                     <XAxis dataKey="name" minTickGap={10} />
                                     <YAxis />
                                     <Tooltip />
-                                    <Legend />
+                                    <Legend iconSize={30} />
                                     <Line type="monotone" dataKey="apps"
                                         stroke="#8884d8" />
                                 </LineChart>

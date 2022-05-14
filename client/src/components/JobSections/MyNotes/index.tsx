@@ -33,6 +33,9 @@ export default function MyNotes(props: {
                 {/* Text area for adding a new note */}
                 <TextField multiline value={note} minRows={5}
                     sx={{ width: '75%', margin: 'auto' }}
+                    inputProps={{
+                        "aria-label": "Add a note",
+                    }}
                     placeholder="Add a new note..."
                     onChange={(e) => setNote(e.target.value)} />
                 <Button sx={{ ml: 2 }} onClick={() => {

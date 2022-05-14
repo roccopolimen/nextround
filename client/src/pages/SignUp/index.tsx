@@ -140,7 +140,7 @@ const SignUp = () => {
                     </Box>
                 </Box>
                 <div className="logos">
-                    <IconButton onClick={handleGoogle}>
+                    <IconButton aria-label="Sign Up with Google" onClick={handleGoogle}>
                         <FontAwesomeIcon className="google-logo" icon={faGoogle} size="2x"/>
                     </IconButton>
                 </div>

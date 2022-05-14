@@ -14,7 +14,7 @@
     box-shadow: "none";
     font-family: "Poppins", Helvetica, Arial, sans-serif;
     align-items: right;
-    color: #F9F8FF;
+    color: black;
 }
 .role {
     text-decoration: none;
@@ -22,7 +22,7 @@
     box-shadow: "none";
     font-family: "Poppins", Helvetica, Arial, sans-serif;
     align-items: right;
-    color: #ADA7BD;
+    color: black;
 }
 .image {
     height: 60px;

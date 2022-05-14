@@ -196,7 +196,7 @@ const SideDrawer = () => {
                 open={open}
             >
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
+                    <IconButton aria-label="Close Drawer" onClick={handleDrawerClose}>
                         {theme.direction === "ltr" ? (
                             <ChevronLeftIcon />
                         ) : (

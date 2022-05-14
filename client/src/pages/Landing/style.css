@@ -27,3 +27,17 @@
 .amazon-logo {
   color: #ff9900;
 }
+
+#title {
+  font-size: 33pt;
+}
+
+#blurb {
+  font-size: 12pt;
+  line-height: 25px;
+  font-style: normal;
+}
+
+#subtitle {
+  font-size: 18pt;
+}

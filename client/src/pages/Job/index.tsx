@@ -367,6 +367,7 @@ export default function Job() {
                     {/* delete button */}
                     <Button 
                         variant="contained"
+                        aria-label="Delete"
                         onClick={async () => {
                             await deleteApplication();
                             // redirect to home page
