@@ -118,8 +118,8 @@ export default function MyContacts(props: {
                             <Grid item key={index}>
                                 <Card>
                                     <CardContent>
-                                        <Typography variant="subtitle1"
-                                            sx={{fontSize: 20}}>
+                                        <Typography variant="h3"
+                                            sx={{fontSize: 20, lineHeight: 2}}>
                                             {contact.name}
                                         </Typography>
                                         <Stack direction="row"

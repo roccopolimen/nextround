@@ -119,7 +119,7 @@ export default function SignIn() {
                         </Box>
                     </Box>
                     <div className="logos">
-                        <IconButton onClick={handleGoogle}>
+                        <IconButton aria-label="Sign In with Google" onClick={handleGoogle}>
                             <FontAwesomeIcon className="google-logo" icon={faGoogle} size="2x"/>
                         </IconButton>
                     </div>

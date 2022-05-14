@@ -34,12 +34,14 @@ const NavBar = () => {
                         onClick={() => navigate('/signin')}
                     >Login
                     </Button>
-                    <Button
+                    <IconButton
                         id="github-button"
                         color="inherit"
+                        aria-label="GitHub Link"
                         onClick={() => window.open("https://github.com/roccopolimen/nextround")}
-                    ><GithubIcon />
-                    </Button>
+                    >
+                        <GithubIcon />
+                    </IconButton>
                 </div>
             </div>
             </Toolbar>
