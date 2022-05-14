@@ -416,7 +416,7 @@ const Upcoming = () => {
                                 </Accordion> : null
                             }
                             <br/>
-                            {offered && offered.length > 0 ? 
+                            {waitlisted && waitlisted.length > 0 ? 
                                 <Accordion>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
