@@ -15,7 +15,7 @@ export const getForumPosts = async (num_posts: number): Promise<Array<ForumPostO
         throw new Error('Invalid number of posts');
 
     const forumCollection = await media();
-    const forumPosts: Array<ForumPostObject> = await forumCollection.find({}).limit(num_posts).toArray();
+    const forumPosts: Array<ForumPostObject> = await forumCollection.find({}).sort({postDate: -1}).limit(num_posts).toArray();
     return forumPosts;
 };
 
