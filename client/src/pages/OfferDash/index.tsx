@@ -171,8 +171,12 @@ const OfferDash = (): JSX.Element => {
                                         <CardHeader
                                                 avatar={
                                                     <Avatar
-                                                    alt={offer["company"]}
-                                                    src={offer["companyLogo"]}
+                                                        alt={offer.company}
+                                                        src={offer.companyLogo}
+                                                        onError={({ currentTarget }: { currentTarget: any }) => {
+                                                            currentTarget.onerror = null;
+                                                            currentTarget.src = require('../../images/no-company-logo.png');
+                                                        }}
                                                     />
                                                 }
                                                 titleTypographyProps={{variant: "h5"}}

@@ -60,7 +60,11 @@ const UpcomingBox = (props: PropType): JSX.Element => {
                                 <CardMedia
                                     sx={{borderRadius:'100%', maxHeight: '50px', maxWidth: '50px', mr: 1}}
                                     component='img'
-                                    image={`${url}`}
+                                    src={url}
+                                    onError={({ currentTarget }: { currentTarget: any }) => {
+                                        currentTarget.onerror = null;
+                                        currentTarget.src = require('../../images/no-company-logo.png');
+                                    }}
                                     alt='company logo'
                                 />
                             </Grid>

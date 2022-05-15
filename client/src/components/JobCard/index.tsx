@@ -48,7 +48,11 @@ const JobCard = (props: PropType): JSX.Element => {
                         <CardMedia
                             className='image'
                             component='img'
-                            image={`${url}`}
+                            src={url}
+                            onError={({ currentTarget }: { currentTarget: any }) => {
+                                currentTarget.onerror = null;
+                                currentTarget.src = require('../../images/no-company-logo.png');
+                            }}
                             alt='company logo'
                             sx={{ width: '60px', height: '60px' }}
                         /> 

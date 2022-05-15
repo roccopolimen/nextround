@@ -340,6 +340,10 @@ const Job = (): JSX.Element => {
                         sx={{ mx: 5, height: imgSize, width: imgSize,
                             borderRadius: '50%' }} 
                         src={data.companyLogo}
+                        onError={({ currentTarget }: { currentTarget: any }) => {
+                            currentTarget.onerror = null;
+                            currentTarget.src = require('../../images/no-company-logo.png');
+                        }}
                         alt={data.company} />
                     <div className="job-page-typography">
                         <Typography variant="h1" id="role"
