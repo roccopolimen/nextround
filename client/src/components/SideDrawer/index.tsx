@@ -174,6 +174,47 @@ const SideDrawer = (): JSX.Element => {
     return (
         <Box sx={{ display: "flex", ml: 2 }}>
             <Loading open={isLoadingSignOut || isLoadingAllCycles} />
+            <Modal open={openModal} onClose={() => setOpenModal(false)}
+                aria-labelledby="Add job form" >
+                <FormGroup sx={{ position: 'absolute', top: '50%', left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: '50%', bgcolor: 'background.paper',
+                                boxShadow: 24,
+                                padding: 1}}>
+                    <Typography variant="h4">
+                        Job Details
+                    </Typography>
+                    <TextField required id="job-company" variant="outlined"
+                        label="Company" size="small" value={addJobCompany}
+                        margin='normal'
+                        onChange={(e) => setAddJobCompany(e.target.value)} />
+                    <TextField required id="job-position" variant="outlined"
+                        label="Position" size="small" value={addJobPosition}
+                        margin='normal'
+                        onChange={(e) => setAddJobPosition(e.target.value)} />
+                    <TextField required id="job-location" variant="outlined"
+                        label="Location" size="small" value={addJobLocation}
+                        margin='normal'
+                        onChange={(e) => setAddJobLocation(e.target.value)} />
+                    <TextField required id="job-jobposturl" variant="outlined"
+                        label="Job Post Url" size="small" value={addJobJobPostUrl}
+                        margin='normal'
+                        onChange={(e) => setAddJobJobPostUrl(e.target.value)} />
+                    <TextField required id="job-description" variant="outlined"
+                        label="Description" size="small" value={addJobDescription}
+                        margin='normal'
+                        onChange={(e) => setAddJobDescription(e.target.value)} />
+                    {date_picker && date_picker}
+                    <Button variant="contained" color="primary"
+                        startIcon={<Add />}
+                        sx={{ mt: 2, width: '50%', mx: 'auto' }}
+                        onClick={handleAddJob}
+                    >
+                        Submit
+                    </Button>
+                    {jobError && <Alert sx={{mt: 1}} severity="error">All fields must be properly filled out and you must have a current cycle</Alert>}
+                </FormGroup>
+            </Modal>
             <Box sx={{ width: 30, height: 30, margin: 2 }}>
                 <IconButton
                     color="inherit"
@@ -215,55 +256,13 @@ const SideDrawer = (): JSX.Element => {
                             onClick={() => setOpenModal(true)}
                         >Add Job Application</Button>
                     </Box>
-                    <Modal open={openModal} onClose={() => setOpenModal(false)}
-                        aria-labelledby="Add job form" >
-                        <FormGroup sx={{ position: 'absolute', top: '50%', left: '50%',
-                                        transform: 'translate(-50%, -50%)',
-                                        width: '50%', bgcolor: 'background.paper',
-                                        boxShadow: 24,
-                                        padding: 1}}>
-                            <Typography variant="h4">
-                                Job Details
-                            </Typography>
-                            <TextField required id="job-company" variant="outlined"
-                                label="Company" size="small" value={addJobCompany}
-                                margin='normal'
-                                onChange={(e) => setAddJobCompany(e.target.value)} />
-                            <TextField required id="job-position" variant="outlined"
-                                label="Position" size="small" value={addJobPosition}
-                                margin='normal'
-                                onChange={(e) => setAddJobPosition(e.target.value)} />
-                            <TextField required id="job-location" variant="outlined"
-                                label="Location" size="small" value={addJobLocation}
-                                margin='normal'
-                                onChange={(e) => setAddJobLocation(e.target.value)} />
-                            <TextField required id="job-jobposturl" variant="outlined"
-                                label="Job Post Url" size="small" value={addJobJobPostUrl}
-                                margin='normal'
-                                onChange={(e) => setAddJobJobPostUrl(e.target.value)} />
-                            <TextField required id="job-description" variant="outlined"
-                                label="Description" size="small" value={addJobDescription}
-                                margin='normal'
-                                onChange={(e) => setAddJobDescription(e.target.value)} />
-                            {date_picker && date_picker}
-                            <Button variant="contained" color="primary"
-                                startIcon={<Add />}
-                                sx={{ mt: 2, width: '50%', mx: 'auto' }}
-                                onClick={handleAddJob}
-                            >
-                                Submit
-                            </Button>
-                            {jobError && <Alert sx={{mt: 1}} severity="error">All fields must be properly filled out and you must have a current cycle</Alert>}
-                        </FormGroup>
-                    </Modal>
-                    <ListItem
-                        button
+                    <ListItemButton
                         key="Home"
                         onClick={() => navigate("/dashboard")}
                     >
                         <ListItemIcon><HomeIcon /></ListItemIcon>
                         <ListItemText primary="Home" />
-                    </ListItem>
+                    </ListItemButton>
                     <ListItem
                         button
                         key="Metrics"

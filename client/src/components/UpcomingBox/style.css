@@ -2,27 +2,27 @@
     border-radius: 100%;
 }
 
-#title {
+.title {
     font-family: "Poppins", Helvetica, Arial, sans-serif;
     color: #190446;
 }
 
-#title:hover {
+.title:hover {
     color: #800080 ;
 }
 
-#company {
+.company {
     font-family: "Poppins", Helvetica, Arial, sans-serif;
     font-size: 18pt;
     color: #190446;
 }
 
-#role {
+.role {
     font-family: "Poppins", Helvetica, Arial, sans-serif;
     color: #776e90;
 }
 
-#date {
+.date {
     font-family: "Poppins", Helvetica, Arial, sans-serif;
     color: #190446;
 }

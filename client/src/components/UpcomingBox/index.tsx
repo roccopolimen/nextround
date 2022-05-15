@@ -70,32 +70,30 @@ const UpcomingBox = (props: PropType): JSX.Element => {
                             </Grid>
                             <Grid item xs={7} textAlign='left'>
                                 <Link to={`/application/${applicationId}`} style={{textDecoration: 'none'}}>
-                                    <Typography id='title' variant='h2' sx={{ ml: 1 }}>
+                                    <Typography className='title' variant='h4' component='h2' sx={{ ml: 1 }}>
                                         {title}
                                     </Typography>
                                 </Link>
                             </Grid>
                             <Grid item xs={4} textAlign='right'>
-                                <Typography id='company' variant='h3'>
-                                    {company}
+                                <Typography className='company' variant='h5' component='h3'>
+                                    {company.slice(0, 10)}
                                 </Typography>
                             </Grid>
                             <Grid item xs={1}>
-                                
                             </Grid>
                             <Grid item xs={7} textAlign='left'>
-                                <Typography id='role'>
+                                <Typography className='role'>
                                     {role}
                                 </Typography>
                             </Grid>
                             <Grid item xs={4} textAlign='right'>
-                                <Typography id='date'>
+                                <Typography className='date'>
                                     {date}
                                 </Typography>
                             </Grid>
                         </Grid>
                     </CardContent>
-                
             </Box>
         </Grid>
     );

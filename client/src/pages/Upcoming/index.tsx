@@ -111,7 +111,7 @@ const Upcoming = () => {
         // Set the structure
         const buildJobCards = (application: ApplicationObject) => {
             return <JobCard
-                        key={application._id}
+                        key={`jobcard ${application._id}`}
                         applicationId={application._id}
                         url={application.companyLogo}
                         company={application.company}
@@ -196,7 +196,7 @@ const Upcoming = () => {
         const buildUpcomingBox = (upcoming: UpcomingObject) => {
             if(upcoming.date.getTime() < today.getTime() || upcoming.status === true) return null;
             return <UpcomingBox 
-                        key={upcoming.eventId}
+                        key={`upcoming ${upcoming.eventId}`}
                         applicationId={upcoming.applicationId}
                         url={upcoming.companyLogo}
                         company={upcoming.company}
@@ -280,13 +280,13 @@ const Upcoming = () => {
     } else {
         return (
             <>       
-                <SideDrawer />   
+                <SideDrawer /> 
                 <Grid container className='grid' spacing={5} justifyContent="space-around" alignItems="stretch">
                     <Slide direction='right' in={true} timeout={800}>
                         <Grid item xs={12} sm={12} md={6} lg={6} xl={6} justifyContent="center" alignItems="center" >
                             <br/>
                             <Typography
-                                className="title"
+                                id="title"
                                 variant='h1'
                                 margin='20px'
                                 sx={{
@@ -345,7 +345,9 @@ const Upcoming = () => {
                                 </FormGroup>
                             </Modal>
                             <br/>
-                            {upcoming && upcoming.length > 0 ? upcoming :
+                            {upcoming && upcoming.length > 0 
+                                ? upcoming
+                                :
                                 <Box sx={{ margin: 'auto', width: "50%" }}>
                                     <Box component="img"
                                     src={require('../../images/read_relax.png')}
@@ -354,7 +356,7 @@ const Upcoming = () => {
                                         No upcoming events.
                                     </Typography>
                                 </Box>
-                            } 
+                            }
                         </Grid>
                     </Slide>
                     <Slide direction='left' in={true} timeout={800}>
@@ -367,8 +369,7 @@ const Upcoming = () => {
                             {toApply && toApply.length > 0 ? 
                                 <Accordion sx={{ mb: 1 }}>
                                     <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content" >
+                                        expandIcon={<ExpandMoreIcon />}>
                                         <Typography>To Apply</Typography> 
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -380,8 +381,7 @@ const Upcoming = () => {
                             {applied && applied.length > 0 ?
                                 <Accordion sx={{ mb: 1 }}>
                                     <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content" >
+                                        expandIcon={<ExpandMoreIcon />}>
                                         <Typography>Applied</Typography> 
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -393,8 +393,7 @@ const Upcoming = () => {
                             {rejected && rejected.length > 0 ? 
                                 <Accordion sx={{ mb: 1 }}>
                                     <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content" >
+                                        expandIcon={<ExpandMoreIcon />}>
                                         <Typography>Rejected</Typography> 
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -406,8 +405,7 @@ const Upcoming = () => {
                             {offered && offered.length > 0 ? 
                                 <Accordion sx={{ mb: 1 }}>
                                     <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content" >
+                                        expandIcon={<ExpandMoreIcon />}>
                                         <Typography>Offered</Typography> 
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -419,8 +417,7 @@ const Upcoming = () => {
                             {waitlisted && waitlisted.length > 0 ? 
                                 <Accordion>
                                     <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content" >
+                                        expandIcon={<ExpandMoreIcon />}>
                                         <Typography>Waitlisted</Typography> 
                                     </AccordionSummary>
                                     <AccordionDetails>
