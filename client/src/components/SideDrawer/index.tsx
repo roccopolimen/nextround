@@ -131,6 +131,7 @@ const SideDrawer = (): JSX.Element => {
                 setAddJobDescription('');
 
                 setChanged(false);
+                setOpenModal(false);
             }
         } catch(e) {
             setJobError(true);

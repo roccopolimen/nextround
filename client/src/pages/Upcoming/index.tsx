@@ -84,7 +84,7 @@ const Upcoming = () => {
         if (cycleData) {
             setApplications(cycleData.applications);
         }
-    }, [cycleData])
+    }, [cycleData]);
 
     useEffect(() => {
         // Used to get the information needed to display events in the proper order
@@ -92,7 +92,7 @@ const Upcoming = () => {
         let sortedObj: any = {};
         for(let application of applications) {
             for(let event of application.events) {
-                obj[new Date(event.date).getTime()] = {
+                obj[`${event._id} ${new Date(event.date).getTime()} ${event.title}`] = {
                     eventId: event._id,
                     applicationId: application._id, 
                     companyLogo: application.companyLogo, 
@@ -105,7 +105,11 @@ const Upcoming = () => {
             }
         }
 
-        Object.keys(obj).sort(function(a: any, b: any){return a-b}).forEach(key => sortedObj[key] = obj[key]);
+        Object.keys(obj).sort((a: string, b: string) => {
+            const time1: number = parseInt(a.split(' ')[1]);
+            const time2: number = parseInt(b.split(' ')[1]);
+            return time1 - time2;
+        }).forEach(key => sortedObj[key] = obj[key]);
         setOrderUpcoming(Object.values(sortedObj));
 
         // Set the structure
