@@ -25,10 +25,13 @@ export const useGetUser = (): UseQueryResult<UserObject> => {
 export const useSignInWithEmail = (email: string, password: string): UseQueryResult<boolean> => {
     return useQuery('signInWithEmail', async () => {
         await doEmailSignIn(email, password);
-        const { data, status } = await fetcher.post<Failure>('/users/signIn');
-        if(status === 200) return true;
-        await doSignOut();
-        throw new Error(`${data.message}\n\n${data.error}`);
+        try {
+            const { status } = await fetcher.post<Failure>('/users/signIn');
+            if(status === 200) return true;
+        } catch(e) {
+            await doSignOut();
+            throw new Error('could not log in');
+        }
     });
 };
 
@@ -39,10 +42,13 @@ export const useSignInWithEmail = (email: string, password: string): UseQueryRes
 export const useSignInWithGoogle = (): UseQueryResult<boolean> => {
     return useQuery('signInWithGoogle', async () => {
         await doGoogleSignIn();
-        const { data, status } = await fetcher.post<Failure>('/users/signIn');
-        if(status === 200) return true;
-        await doSignOut();
-        throw new Error(`${data.message}\n\n${data.error}`);
+        try {
+            const { status } = await fetcher.post<Failure>('/users/signIn');
+            if(status === 200) return true;
+        } catch(e) {
+            await doSignOut();
+            throw new Error('could not log in');
+        }
     });
 };
 
@@ -56,10 +62,13 @@ export const useSignInWithGoogle = (): UseQueryResult<boolean> => {
 export const useSignUpWithEmail = (email: string, password: string, displayName: string): UseQueryResult<boolean> => {
     return useQuery('signUpWithEmail', async () => {
         await doEmailSignUp(email, password, displayName);
-        const { data, status } = await fetcher.post<Failure>('/users/signUp');
-        if(status === 200) return true;
-        await doSignOut();
-        throw new Error(`${data.message}\n\n${data.error}`);
+        try {
+            const { status } = await fetcher.post<Failure>('/users/signUp');
+            if(status === 200) return true;
+        } catch(e) {
+            await doSignOut();
+            throw new Error('could not sign up');
+        }
     });
 };
 
@@ -70,10 +79,13 @@ export const useSignUpWithEmail = (email: string, password: string, displayName:
 export const useSignUpWithGoogle = (): UseQueryResult<boolean> => {
     return useQuery('signUpWithGoogle', async () => {
         await doGoogleSignIn();
-        const { data, status } = await fetcher.post<Failure>('/users/signUp');
-        if(status === 200) return true;
-        await doSignOut();
-        throw new Error(`${data.message}\n\n${data.error}`);
+        try {
+            const { status } = await fetcher.post<Failure>('/users/signUp');
+            if(status === 200) return true;
+        } catch(e) {
+            await doSignOut();
+            throw new Error('could not sign up');
+        }
     });
 };
 

@@ -57,7 +57,7 @@ app.use('*', (req, _, next) => {
     const date: string = new Date().toUTCString();
     const reqmethod: string = req.method;
     const reqroute: string = req.originalUrl;
-    const loggedin: boolean = req.session.user !== null;
+    const loggedin: boolean = req.session.user !== undefined;
     console.log('Session user: ', req.session.user);
     console.log(`[${date}]: ${reqmethod} ${reqroute} | Authorized: ${loggedin}`);
     next();
