@@ -1,4 +1,5 @@
 import { 
+    Alert,
     Box,
     Button,
     Checkbox,
@@ -45,6 +46,7 @@ const Events = (props: PropType): JSX.Element => {
     const [title, setTitle] = useState<string>('');
     const [location, setLocation] = useState<string>('');
     const [selectedDate, setSelectedDate] = useState<Date | null>(today);
+    const [eventError, setEventError ] = useState<boolean>(false);
 
     // Responsive design
     const se: boolean = useMediaQuery('(max-width: 525px)');
@@ -124,7 +126,7 @@ const Events = (props: PropType): JSX.Element => {
      * Adds an event with info from the form
      */
     const handleAddEvent = () => {
-        if(title === "" || location === "") return;
+        if(title === "" || location === "") setEventError(true);
         if (data && selectedDate) {
             props.addEvent(title, selectedDate.toLocaleDateString(), location);
             setChanged(true);
@@ -133,6 +135,7 @@ const Events = (props: PropType): JSX.Element => {
             setSelectedDate(today);
             setLocation('');
             setChanged(false);
+            setEventError(false);
         }
     };
 
@@ -192,6 +195,7 @@ const Events = (props: PropType): JSX.Element => {
                     >
                         Submit
                     </Button>
+                    { eventError && <Alert sx={{mt: 1}} severity="error">Error: Make sure that all fields are properly filled out</Alert>}
                 </FormGroup>
             </Modal>
 

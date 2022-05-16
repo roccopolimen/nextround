@@ -1,4 +1,5 @@
 import {
+    Alert,
     Box,
     Button,
     Card,
@@ -32,6 +33,7 @@ const MyContacts = (props: PropType): JSX.Element => {
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [phone, setPhone] = useState<string>('');
+    const [contactError, setContactError ] = useState<boolean>(false);
 
     useEffect(() => {
         // On mount and data change
@@ -44,7 +46,10 @@ const MyContacts = (props: PropType): JSX.Element => {
      * Adds an event with info from the form
      */
     const handleAddContact = () => {
-        if(name === "" || phone === "" || email === "") return;
+        if(name === "" || phone === ""  || email === "" ||
+           !name || !phone || !email ||
+           typeof(name) != 'string' || typeof(phone) != 'number' || typeof(email) != 'string') 
+           setContactError(true);
         if (data) {
             props.addContact(name, phone, email);
             setChanged(true);
@@ -53,6 +58,7 @@ const MyContacts = (props: PropType): JSX.Element => {
             setPhone('');
             setEmail('');
             setChanged(false);
+            setContactError(false);
         }
     };
 
@@ -104,7 +110,7 @@ const MyContacts = (props: PropType): JSX.Element => {
                         onChange={(e) => setName(e.target.value)} />
                     <TextField required id="contact-phone"
                         variant="outlined" label="Phone #" size="small"
-                        value={phone} margin='normal'
+                        value={phone} type='number' margin='normal'
                         onChange={(e) => setPhone(e.target.value)} />
                     <TextField required id="contact-email"
                         variant="outlined" label="Email" size="small"
@@ -117,6 +123,7 @@ const MyContacts = (props: PropType): JSX.Element => {
                     >
                         Submit
                     </Button>
+                    { contactError && <Alert sx={{mt: 1}} severity="error">Error: Make sure that all fields are properly filled out</Alert>}
                 </FormGroup>
             </Modal>
             {/* List of contact cards */}
